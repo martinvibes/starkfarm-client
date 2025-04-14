@@ -44,7 +44,14 @@ const TVL: React.FC = () => {
       width="100%"
     >
       <GridItem display="flex">
-        <Card width="100%" padding={'15px 30px'} color="white" bg="color2_50p">
+        <Card
+          width={'100%'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'dark_navy'}
+          borderWidth={'1px'}
+          borderColor={'slate_blue'}
+        >
           <Stat>
             <StatLabel>Total Value locked (TVL)</StatLabel>
             <StatNumber>
@@ -62,7 +69,14 @@ const TVL: React.FC = () => {
       </GridItem>
 
       <GridItem display="flex">
-        <Card width="100%" padding={'15px 30px'} color="white" bg="color2_50p">
+        <Card
+          width={'100%'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'dark_navy'}
+          borderWidth={'1px'}
+          borderColor={'slate_blue'}
+        >
           <Stat>
             <StatLabel>Your holdings</StatLabel>
             <StatNumber>
@@ -72,7 +86,7 @@ const TVL: React.FC = () => {
               ) : !userData ? (
                 0
               ) : (
-                Number(userData?.holdingsUSD.toFixed(2)).toLocaleString()
+                Number(userData?.holdingsUSD?.toFixed(2)).toLocaleString()
               )}
             </StatNumber>
           </Stat>
@@ -80,7 +94,14 @@ const TVL: React.FC = () => {
       </GridItem>
 
       <GridItem display="flex">
-        <Card width="100%" padding={'15px 30px'} color="white" bg="purple">
+        <Card
+          width={'100%'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'dark_navy'}
+          borderWidth={'1px'}
+          borderColor={'slate_blue'}
+        >
           <Stat>
             <StatLabel fontWeight={'bold'}>
               Your referral link{' '}

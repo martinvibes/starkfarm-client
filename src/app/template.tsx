@@ -37,17 +37,31 @@ const theme = extendTheme({
     color2: 'rgba(132, 132, 195, 1)',
     color2Text: 'rgb(184 184 239)',
     color2_65p: 'rgba(132, 132, 195, 0.65)',
-    color2_50p: 'rgba(132, 132, 195, 0.15)',
+    color2_50p: 'rgba(30, 30, 44, 0.5)',
     highlight: '#1a1a27', // light grey
     light_grey: '#9ca9ad',
     disabled_text: '#818181',
     disabled_bg: '#5f5f5f',
-    purple: '#6e53dc',
+
+    purple: '#6F4FF2',
+    purple_hover: '#4C2CD7',
+    purple_hover_2: '#C5A6FF',
+    purple_active: '#3B20B4',
+    bright_purple: '#907CFF',
+    purple_gray: '#DFDFEC',
     cyan: '#7DFACB',
-    bg: '#111119', // dark blue
+    bg: '#181824', // dark blue
     grey_text: '#B6B6B6',
+    text: '#F8F8FF',
     yellow: '#EFDB72',
     red: '#e18787',
+    light_green: '#3EE5C2',
+    dark_navy: '#181824',
+    slate_blue: '#2D2D3D',
+    silver_gray: '#8E8E8E',
+
+    color_3: '#363651',
+    color_4: '#4DB8FF',
   },
   fontSizes: {
     large: '50px',

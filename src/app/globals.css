@@ -18,22 +18,18 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  /* background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb)); */
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.pagination-container {
-  padding: 20px 0px 2px 0px !important;
 }
 
 .glow-button {
@@ -130,7 +126,7 @@ body {
 
 .text-cell {
   border-bottom: 1px solid var(--chakra-colors-bg);
-  padding: 3px;
+  /* padding: 3px; */
 }
 
 .embla {
@@ -173,14 +169,18 @@ body {
   );
 }
 
+.connect-button-gradient {
+  background: linear-gradient(90deg, #8f6cff 0%, #6e59ff 100%);
+}
+
 td,
-th {
+tr {
   border-color: var(--chakra-colors-bg) !important;
-  vertical-align: top;
+  border-bottom: 1px solid var(--chakra-colors-slate_blue) !important;
 }
 
 th {
-  color: var(--chakra-colors-color2Text) !important;
+  border-bottom: none !important;
 }
 
 .orange {

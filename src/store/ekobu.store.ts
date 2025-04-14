@@ -177,7 +177,7 @@ export class Ekubo extends IDapp<EkuboBaseAprDoc> {
         priceOfUsdc,
       } = data.data;
 
-      const strkToken = tokens.find((t) => t.symbol === 'STRK');
+      const strkToken = tokens?.find((t) => t.symbol === 'STRK');
 
       const getTokenPrice = (symbol: string): number => {
         switch (symbol) {
@@ -196,9 +196,9 @@ export class Ekubo extends IDapp<EkuboBaseAprDoc> {
         .map((p) => {
           const t0 = BigInt(p.token0);
           const t1 = BigInt(p.token1);
-          const token0 = tokens.find((t) => BigInt(t.l2_token_address) === t0);
+          const token0 = tokens?.find((t) => BigInt(t.l2_token_address) === t0);
           if (!token0 || token0.hidden) return;
-          const token1 = tokens.find((t) => BigInt(t.l2_token_address) === t1);
+          const token1 = tokens?.find((t) => BigInt(t.l2_token_address) === t1);
           if (!token1 || token1.hidden) return;
 
           const springPair = defiSpringData.pairs.find(

@@ -28,7 +28,6 @@ import useEmblaCarousel from 'embla-carousel-react';
 import mixpanel from 'mixpanel-browser';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
 
 const banner_images = [
   // {
@@ -71,7 +70,7 @@ export default function Home() {
   }
 
   function handleTabsChange(index: number) {
-    if (index === 0) {
+    if (index === 1) {
       setRoute('strategies');
     } else {
       setRoute('pools');
@@ -86,29 +85,28 @@ export default function Home() {
     (async () => {
       const tab = searchParams.get('tab');
       if (tab === 'pools') {
-        setTabIndex(1);
-      } else {
         setTabIndex(0);
+      } else {
+        setTabIndex(1);
       }
     })();
   }, [searchParams]);
 
   return (
-    <Container maxWidth={'1000px'} margin={'0 auto'}>
+    <Container width={'90%'} margin={'0 auto'}>
       <Box padding={'15px 30px'} borderRadius="10px" margin={'20px 0px 10px'}>
         <Text
+          color={'light_green'}
           fontSize={{ base: '28px', md: '35px' }}
           lineHeight={'30px'}
           marginBottom={'10px'}
           textAlign={'center'}
         >
-          <b className="theme-gradient-text">
-            Starknet&apos;s Yield Powerhouse
-          </b>
+          <b>Starknet&apos;s Yield Powerhouse</b>
           🚀
         </Text>
         <Text
-          color="color2"
+          color="white"
           textAlign={'center'}
           fontSize={{ base: '16px', md: '18px' }}
           marginBottom={'0px'}
@@ -118,7 +116,7 @@ export default function Home() {
         </Text>
       </Box>
 
-      <Box className="embla" ref={emblaRef} margin={0} width={'100%'}>
+      {/* <Box className="embla" ref={emblaRef} margin={0} width={'100%'}>
         <Box className="embla__container" cursor={'pointer'}>
           {banner_images.map((banner, index) => (
             <Box
@@ -145,9 +143,9 @@ export default function Home() {
             </Box>
           ))}
         </Box>
-      </Box>
+      </Box> */}
 
-      <Box display="grid" justifyContent="center" gap="1.2rem" mb="1.5rem">
+      {/* <Box display="grid" justifyContent="center" gap="1.2rem" mb="1.5rem">
         <Box
           display="flex"
           flexWrap="wrap"
@@ -176,7 +174,7 @@ export default function Home() {
             />
           ))}
         </Box>
-      </Box>
+      </Box> */}
 
       <TVL />
 
@@ -190,37 +188,52 @@ export default function Home() {
       >
         <TabList>
           <Tab
-            color="light_grey"
-            _selected={{ color: 'purple' }}
-            onClick={() => {
-              mixpanel.track('Strategies opened');
-            }}
-          >
-            Strategies✨
-          </Tab>
-          <Tab
-            color="light_grey"
-            _selected={{ color: 'purple' }}
+            color={'silver_gray'}
+            _selected={{ color: 'light_green', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('All pools clicked');
             }}
           >
             Find yields
           </Tab>
+          <Tab
+            color={'silver_gray'}
+            _selected={{ color: 'light_green', fontWeight: 'bold' }}
+            onClick={() => {
+              mixpanel.track('Strategies opened');
+            }}
+          >
+            Strategies✨
+          </Tab>
         </TabList>
         <TabIndicator
           mt="-1.5px"
-          height="2px"
-          bg="purple"
+          height="3px"
+          bg="light_green"
           color="color1"
           borderRadius="1px"
+          boxShadow={'0px 0px 8px 0px #3EE5C2'}
         />
         <TabPanels>
-          <TabPanel bg="highlight" float={'left'} width={'100%'}>
-            <Strategies />
-          </TabPanel>
-          <TabPanel bg="highlight" width={'100%'} float={'left'}>
+          <TabPanel
+            bg="highlight"
+            width={'100%'}
+            float={'left'}
+            borderWidth={'1px'}
+            borderColor={'slate_blue'}
+            borderRadius={'8px'}
+          >
             <Pools />
+          </TabPanel>
+          <TabPanel
+            bg="highlight"
+            float={'left'}
+            width={'100%'}
+            borderWidth={'1px'}
+            borderColor={'slate_blue'}
+            borderRadius={'8px'}
+          >
+            <Strategies />
           </TabPanel>
         </TabPanels>
       </Tabs>

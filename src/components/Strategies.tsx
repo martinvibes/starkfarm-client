@@ -1,5 +1,6 @@
 import { usePagination } from '@ajna/pagination';
 import {
+  Box,
   Container,
   Link,
   Skeleton,
@@ -44,21 +45,51 @@ export default function Strategies() {
   }, [_filteredPools, currentPage]);
 
   return (
-    <Container width="100%" float={'left'} padding={'0px'} marginTop={'0px'}>
-      <Text color="color2Text" fontSize={'15px'}>
-        <b>What are strategies?</b>
-      </Text>
-      <Text color="color2Text" fontSize={'15px'} marginBottom={'15px'}>
-        Strategies are a combination of investment steps that combine various
-        pools to maximize yield.
-      </Text>
-      <Table variant="simple">
-        <Thead display={{ base: 'none', md: 'table-header-group' }}>
-          <Tr fontSize={'18px'} color={'white'} bg="bg">
-            <Th>Strategy name</Th>
-            <Th textAlign={'right'}>APY</Th>
-            <Th textAlign={'right'}>Risk</Th>
-            <Th textAlign={'right'}>TVL</Th>
+    <Container
+      width="100%"
+      float={'left'}
+      padding={'0px'}
+      marginTop={'0px'}
+      display={'flex'}
+      flexDirection={'column'}
+      gap={'16px'}
+    >
+      <Box>
+        <Text color="white" fontSize={'18px'} fontWeight={'600'}>
+          <b>What are strategies?</b>
+        </Text>
+        <Text
+          color="white"
+          fontSize={'15px'}
+          fontWeight={'400'}
+          marginBottom={'15px'}
+        >
+          Strategies are a combination of investment steps that combine various
+          pools to maximize yield.
+        </Text>
+      </Box>
+
+      <Table
+        variant="simple"
+        borderWidth={'1px'}
+        borderColor={'#2D2D3D'}
+        sx={{
+          borderRadius: '12px',
+          overflow: 'hidden',
+          'border-collapse': 'separate',
+          'border-spacing': '0px',
+        }}
+      >
+        <Thead
+          display={{ base: 'none', md: 'table-header-group' }}
+          bg={'color_3'}
+        >
+          <Tr color={'white'}>
+            <Th color="white">Strategy name</Th>
+            <Th color="white">APY</Th>
+            <Th color="white">Risk</Th>
+            <Th color="white">TVL</Th>
+            <Th color="white">MY BAL</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -82,7 +113,7 @@ export default function Strategies() {
         </Stack>
       )}
       <Text
-        color="color2"
+        color="white"
         textAlign={'center'}
         width={'100%'}
         margin="15px 0"

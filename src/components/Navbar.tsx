@@ -1,4 +1,4 @@
-import { ChevronDownIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, HamburgerIcon, EmailIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -29,6 +29,7 @@ import {
 } from 'starknetkit';
 
 import tg from '@/assets/tg.svg';
+import argentMobile from '@/assets/argentMobile.svg';
 import CONSTANTS from '@/constants';
 import { getERC20Balance } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
@@ -157,6 +158,16 @@ export function getConnectors(isMobile: boolean) {
   return sortedConnectors;
 }
 
+const walletIconMap: Record<string, any> = {
+  argentMobile,
+  argentWebWallet: EmailIcon,
+};
+
+const getWalletIcon = (walletId: string) => {
+  console.log(walletId, 'walletId');
+  return walletIconMap[walletId];
+};
+
 interface NavbarProps {
   hideTg?: boolean;
   forceShowConnect?: boolean;
@@ -201,6 +212,7 @@ export default function Navbar(props: NavbarProps) {
   async function connectWallet(config = connectorConfig) {
     try {
       const { connector } = await connect(config);
+      console.log(connector, 'connector');
 
       if (connector) {
         connectSnReact({ connector: connector as any });
@@ -383,28 +395,11 @@ export default function Navbar(props: NavbarProps) {
           </Link>
 
           {!props.hideTg && (
-            <Link href={CONSTANTS.COMMUNITY_TG} isExternal>
-              <Button
-                margin="0 0 0 auto"
-                borderColor="color2"
-                color="color2"
-                variant="outline"
-                rightIcon={
-                  <Avatar
-                    size="sm"
-                    bg="highlight"
-                    color="color2"
-                    name="T G"
-                    src={tg.src}
-                  />
-                }
-                _hover={{
-                  bg: 'color2_50p',
-                }}
-                display={{ base: 'none !important', md: 'flex !important' }}
-              >
-                Join Telegram
-              </Button>
+            <Link
+              href={CONSTANTS.COMMUNITY_TG}
+              textDecoration="none !important"
+              isExternal
+            >
               <IconButton
                 aria-label="tg"
                 variant={'ghost'}
@@ -424,6 +419,28 @@ export default function Navbar(props: NavbarProps) {
                   />
                 }
               />
+              <Button
+                margin="0 0 0 auto"
+                borderColor="purple"
+                color="white"
+                variant="outline"
+                leftIcon={
+                  <Avatar
+                    size="xs"
+                    bg="highlight"
+                    color="color2"
+                    name="T G"
+                    src={tg.src}
+                  />
+                }
+                _hover={{
+                  bg: 'purple_hover_2',
+                  color: 'black',
+                }}
+                display={{ base: 'none !important', md: 'flex !important' }}
+              >
+                Telegram
+              </Button>
             </Link>
           )}
 
@@ -434,26 +451,22 @@ export default function Navbar(props: NavbarProps) {
                 rightIcon={address ? <ChevronDownIcon /> : <></>}
                 iconSpacing={{ base: '1px', sm: '5px' }}
                 bgColor={'purple'}
-                color="white"
-                borderColor={'purple'}
-                borderWidth="1px"
-                _hover={{
-                  bg: 'bg',
-                  borderColor: 'purple',
-                  borderWidth: '1px',
-                  color: 'purple',
-                }}
-                _active={{
-                  bg: 'bg',
-                  borderColor: 'purple',
-                  color: 'purple',
-                }}
+                color={'black'}
+                borderRadius={'100px'}
                 marginLeft={'10px'}
                 display={{ base: 'flex' }}
                 height={{ base: '2rem', sm: '2.5rem' }}
                 my={{ base: 'auto', sm: 'initial' }}
                 paddingX={{ base: '0.5rem', sm: '1rem' }}
-                fontSize={{ base: '0.8rem', sm: '1rem' }}
+                fontSize={{ base: '0.5rem', sm: '0.8rem' }}
+                fontWeight={'bold'}
+                size="xs"
+                _hover={{
+                  bgColor: 'purple_hover',
+                }}
+                _active={{
+                  bgColor: 'purple_active',
+                }}
                 onClick={
                   address
                     ? undefined
@@ -461,19 +474,22 @@ export default function Navbar(props: NavbarProps) {
                         connectWallet();
                       }
                 }
-                size="xs"
               >
                 <Center>
                   {address ? (
                     <Center display="flex" alignItems="center" gap=".5rem">
                       <Image
+                        // src={getWalletIcon(connector?.id ?? '').src}
                         src={
-                          starkProfile?.profilePicture ||
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s'
+                          connector?.id === 'argentMobile'
+                            ? getWalletIcon(connector?.id ?? '').src
+                            : (connector?.icon.toString() ??
+                              (starkProfile?.profilePicture ||
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s'))
                         }
                         alt="pfp"
-                        width={{ base: '20px', sm: '30px' }}
-                        height={{ base: '20px', sm: '30px' }}
+                        width={{ base: '20px', sm: '25px' }}
+                        height={{ base: '20px', sm: '25px' }}
                         rounded="full"
                       />{' '}
                       <Text as="h3" marginTop={'3px !important'}>
@@ -483,7 +499,7 @@ export default function Navbar(props: NavbarProps) {
                       </Text>
                     </Center>
                   ) : (
-                    'Connect'
+                    'Connect wallet'
                   )}
                 </Center>
               </MenuButton>

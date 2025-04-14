@@ -2,24 +2,21 @@ import React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import {
   Avatar,
-  AvatarBadge,
-  AvatarGroup,
   Box,
+  Grid,
   HStack,
-  IconButton,
   Tag,
   TagLabel,
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { CloseIcon } from '@chakra-ui/icons';
 import {
   ALL_FILTER,
   filterAtoms,
   filters,
   updateFiltersAtom,
 } from '@/store/protocols';
-import { getTokenInfoFromName } from '@/utils';
 import { Category, PoolType } from '@/store/pools';
 import mixpanel from 'mixpanel-browser';
 
@@ -34,111 +31,157 @@ export function ProtocolFilters() {
   }
 
   function atleastOneProtocolSelected() {
-    return protocolsFilter.length > 0;
+    return (
+      protocolsFilter.includes(ALL_FILTER) ||
+      (protocolsFilter.length > 0 && !protocolsFilter.includes(ALL_FILTER))
+    );
   }
+
+  function getSelectedProtocolsCount() {
+    if (protocolsFilter.includes(ALL_FILTER)) {
+      return filters.protocols.length;
+    }
+    return protocolsFilter.length;
+  }
+
   const updateFilters = useSetAtom(updateFiltersAtom);
 
   return (
-    <Box width={'100%'}>
-      {filters.protocols.map((p) => (
-        <Tag
-          size="lg"
-          borderRadius="full"
-          padding={'2px'}
-          bg="color1"
-          marginRight={'10px'}
-          marginBottom={'10px'}
-          as="button"
-          onClick={() => {
-            console.log('clicked', p.name);
-            // generated list of protocols selected. All means array of all protocols.
-            const selectedProtocols = protocolsFilter.includes(ALL_FILTER)
-              ? []
-              : protocolsFilter;
+    <Box
+      width={'100%'}
+      display={'flex'}
+      flexDirection={{ base: 'column', md: 'row' }}
+      justifyContent={'space-between'}
+    >
+      <Grid
+        templateColumns={{
+          base: 'repeat(auto-fit, minmax(40px, 1fr))',
+          md: `repeat(${filters.protocols.length}, 52px)`,
+        }}
+        gap={0}
+        width={{ base: '100%', md: 'auto' }}
+      >
+        {filters.protocols.map((p, index) => (
+          <Tag
+            key={p.name}
+            as="button"
+            alignItems={'center'}
+            justifyContent={'center'}
+            size={{ base: 'md', md: 'lg' }}
+            padding={{ base: '3px', md: '5px' }}
+            bg={
+              isProtocolSelected(p.name) &&
+              !protocolsFilter.includes(ALL_FILTER)
+                ? 'purple'
+                : 'transparent'
+            }
+            borderLeftWidth={index === 0 ? '1px' : '0px'}
+            borderRightWidth={'1px'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderTopLeftRadius={index === 0 ? '8px' : 'none'}
+            borderTopRightRadius={
+              index === filters.protocols.length - 1 ? '8px' : 'none'
+            }
+            borderBottomLeftRadius={index === 0 ? '8px' : 'none'}
+            borderBottomRightRadius={
+              index === filters.protocols.length - 1 ? '8px' : 'none'
+            }
+            borderColor={'slate_blue'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+            onClick={() => {
+              const selectedProtocols = protocolsFilter.includes(ALL_FILTER)
+                ? []
+                : protocolsFilter;
 
-            let updatedProtocols = [];
-            if (selectedProtocols.includes(p.name)) {
-              updatedProtocols = selectedProtocols.filter((x) => x !== p.name);
-            } else {
-              updatedProtocols = [...selectedProtocols, p.name];
-            }
-            if (updatedProtocols.length === filters.protocols.length) {
-              updatedProtocols = [ALL_FILTER];
-            }
-            console.log('updateFilters', updatedProtocols);
-            mixpanel.track('Protocol Filter', {
-              protocol: p.name,
-              selected:
-                updatedProtocols.includes(p.name) ||
-                updatedProtocols.includes(ALL_FILTER),
-              updatedProtocols: JSON.stringify(updatedProtocols),
-            });
-            updateFilters('protocols', updatedProtocols);
-          }}
-          key={p.name}
-          _hover={{
-            boxShadow: '0px 0px 5px var(--chakra-colors-color1)',
-          }}
-        >
-          <Tooltip label={p.name}>
-            <Avatar
-              src={`${p.logo}`}
-              border={'1px solid var(--chakra-colors-bg)'}
-              size="sm"
-              name={p.name}
-              filter={
-                isProtocolSelected(p.name)
-                  ? 'none'
-                  : 'grayscale(100%) sepia(20%) hue-rotate(210deg) brightness(1.2) invert(0.2)'
+              let updatedProtocols = [];
+              if (selectedProtocols.includes(p.name)) {
+                updatedProtocols = selectedProtocols.filter(
+                  (x) => x !== p.name,
+                );
+              } else {
+                updatedProtocols = [...selectedProtocols, p.name];
               }
-            />
-          </Tooltip>
-        </Tag>
-      ))}
+              if (updatedProtocols.length === filters.protocols.length) {
+                updatedProtocols = [ALL_FILTER];
+              }
+              mixpanel.track('Protocol Filter', {
+                protocol: p.name,
+                selected:
+                  updatedProtocols.includes(p.name) ||
+                  updatedProtocols.includes(ALL_FILTER),
+                updatedProtocols: JSON.stringify(updatedProtocols),
+              });
+              updateFilters('protocols', updatedProtocols);
+            }}
+          >
+            <Tooltip label={p.name}>
+              <Avatar
+                src={`${p.logo}`}
+                border={'1px solid var(--chakra-colors-bg)'}
+                size="sm"
+                name={p.name}
+                filter={
+                  isProtocolSelected(p.name)
+                    ? 'none'
+                    : 'grayscale(100%) sepia(20%) hue-rotate(210deg) brightness(1.2) invert(0.2)'
+                }
+              />
+            </Tooltip>
+          </Tag>
+        ))}
+      </Grid>
 
       {/* Clear all or select all button */}
       <Tag
+        display={'flex'}
+        gap={'10px'}
         size="lg"
-        borderRadius="full"
-        padding={'2px'}
-        bg="color1"
+        borderWidth={'1px'}
+        borderRadius="md"
+        borderColor={'slate_blue'}
+        padding={'12px'}
+        fontSize={'14px'}
+        fontWeight={'normal'}
+        bg={'transparent'}
+        color={'white'}
         marginRight={'5px'}
         as="button"
         marginTop={'1px'}
+        aria-label={atleastOneProtocolSelected() ? 'Clear all' : 'Select all'}
+        _hover={{
+          bg: 'purple_hover_2',
+          '& > *': {
+            color: 'black',
+          },
+        }}
+        onClick={() => {
+          updateFilters(
+            'protocols',
+            atleastOneProtocolSelected() ? [] : [ALL_FILTER],
+          );
+          mixpanel.track('Clear/Select all protocols', {
+            atleastOneProtocolSelected: atleastOneProtocolSelected(),
+          });
+        }}
       >
-        <Tooltip
-          label={
-            atleastOneProtocolSelected()
-              ? 'Clear all DApps'
-              : 'Select all DApps'
-          }
+        <Text
+          bg={'purple'}
+          color={'white'}
+          padding={'4px'}
+          borderRadius={'4px'}
+          fontSize={'10px'}
         >
-          <IconButton
-            isRound={true}
-            size={'sm'}
-            variant="solid"
-            bg={atleastOneProtocolSelected() ? 'bg' : 'purple'}
-            color={atleastOneProtocolSelected() ? 'purple' : 'bg'}
-            fontSize="10px"
-            aria-label={
-              atleastOneProtocolSelected() ? 'Clear all' : 'Select all'
-            }
-            icon={atleastOneProtocolSelected() ? <CloseIcon /> : <CheckIcon />}
-            onClick={() => {
-              updateFilters(
-                'protocols',
-                atleastOneProtocolSelected() ? [] : [ALL_FILTER],
-              );
-              mixpanel.track('Clear/Select all protocols', {
-                atleastOneProtocolSelected: atleastOneProtocolSelected(),
-              });
-            }}
-            _hover={{
-              bg: atleastOneProtocolSelected() ? 'bg' : 'purple',
-              boxShadow: '0px 0px 5px var(--chakra-colors-color1)',
-            }}
-          />
-        </Tooltip>
+          {getSelectedProtocolsCount()}
+        </Text>
+        <Text>
+          {atleastOneProtocolSelected() ? 'Clear filters' : 'Select all'}
+        </Text>
       </Tag>
     </Box>
   );
@@ -233,234 +276,312 @@ export function CategoryFilters() {
   function getTextProps(isActive: boolean) {
     return {
       fontSize: '14px',
-      color: isActive ? 'bg' : 'color2Text',
+      fontWeight: isActive ? '600' : 'normal',
+      color: isActive ? 'black' : 'white',
+      _hover: {
+        color: 'black',
+      },
     };
   }
 
   return (
-    <Box width={'100%'}>
-      {/* <Text color={'white'}>Protocols: {JSON.stringify(protocolFilters)}</Text>
-      <Text color={'white'}>Category: {JSON.stringify(categoriesFilter)}</Text>
-      <Text color={'white'}>Risk: {JSON.stringify(riskLevelFilters)}</Text>
-      <Text color={'white'}>Types: {JSON.stringify(poolTypeFilters)}</Text> */}
-
-      {/* Stable pools */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'6px 10px'}
-        as={'button'}
-        onClick={() => {
-          updateCategory(Category.Stable);
-        }}
-        bg={
-          categoriesFilter.includes(Category.Stable.valueOf())
-            ? 'purple'
-            : 'color1'
-        }
-        marginBottom={'10px'}
-      >
-        <AvatarGroup size={'xs'} spacing={'-15px'} mr={'5px'}>
-          <Avatar
-            src={getTokenInfoFromName('USDC').logo}
-            name="USDC"
-            key={'USDC'}
-          />
-          <Avatar
-            src={getTokenInfoFromName('USDT').logo}
-            name="USDC"
-            key={'USDT'}
-          />
-        </AvatarGroup>
-        <TagLabel
-          {...getTextProps(
-            categoriesFilter.includes(Category.Stable.valueOf()),
-          )}
-        >
-          {Category.Stable.valueOf()}
-        </TagLabel>
-      </Tag>
-
-      {/* STRK pools */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'6px 10px'}
-        as={'button'}
-        onClick={() => {
-          updateCategory(Category.STRK);
-        }}
-        bg={
-          categoriesFilter.includes(Category.STRK.valueOf())
-            ? 'purple'
-            : 'color1'
-        }
-        marginBottom={'10px'}
-      >
-        <AvatarGroup size={'xs'} spacing={'-15px'} mr={'5px'}>
-          <Avatar
-            src={getTokenInfoFromName('STRK').logo}
-            name="STRK"
-            key={'STRK'}
-          />
-        </AvatarGroup>
-        <TagLabel
-          {...getTextProps(categoriesFilter.includes(Category.STRK.valueOf()))}
-        >
-          {Category.STRK.valueOf()}
-        </TagLabel>
-      </Tag>
-
-      {/* ETH pools */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'6px 10px'}
-        as={'button'}
-        onClick={() => {
-          updateCategory(Category.ETH);
-        }}
-        bg={
-          categoriesFilter.includes(Category.ETH.valueOf())
-            ? 'purple'
-            : 'color1'
-        }
-        marginBottom={'10px'}
-      >
-        <AvatarGroup size={'xs'} spacing={'-15px'} mr={'5px'}>
-          <Avatar
-            src={getTokenInfoFromName('ETH').logo}
-            name="ETH"
-            key={'ETH'}
-          />
-        </AvatarGroup>
-        <TagLabel
-          {...getTextProps(categoriesFilter.includes(Category.ETH.valueOf()))}
-        >
-          {Category.ETH.valueOf()}
-        </TagLabel>
-      </Tag>
-
-      {/* Low risk pools */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'6px 10px'}
-        as={'button'}
-        onClick={() => {
-          updateRiskLevel(['1', '2']);
-        }}
-        bg={isLowRisk() ? 'purple' : 'color1'}
-        marginBottom={'10px'}
-      >
-        <AvatarGroup size={'xs'} spacing={'-15px'} mr={'5px'}>
-          {['USDC', 'USDT', 'STRK', 'ETH'].map((token, index) => (
-            <Avatar
-              src={getTokenInfoFromName(token).logo}
-              name={token}
-              key={token}
+    <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
+      <Box width={'100%'} display={'flex'} gap={'28px'}>
+        <Grid templateColumns={'repeat(4, 1fr)'} gap={0}>
+          {/* Stable pools */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            bg={
+              categoriesFilter.includes(Category.Stable.valueOf())
+                ? 'purple'
+                : 'transparent'
+            }
+            color={'white'}
+            borderLeftWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderTopLeftRadius={'8px'}
+            borderBottomLeftRadius={'8px'}
+            borderTopRightRadius={'none'}
+            borderBottomRightRadius={'none'}
+            borderColor={'slate_blue'}
+            display={'flex'}
+            justifyContent={'center'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+            onClick={() => {
+              updateCategory(Category.Stable);
+            }}
+          >
+            <TagLabel
+              {...getTextProps(
+                categoriesFilter.includes(Category.Stable.valueOf()),
+              )}
             >
-              {index == 0 && <AvatarBadge boxSize="1.25em" bg="green.500" />}
-            </Avatar>
-          ))}
-        </AvatarGroup>
-        <TagLabel {...getTextProps(isLowRisk())}>Low risk</TagLabel>
-      </Tag>
+              {Category.Stable.valueOf().split(' ')[0]}
+            </TagLabel>
+          </Tag>
 
-      {/* DEXes */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'8px 10px'}
-        as={'button'}
-        onClick={() => {
-          updatePoolType([PoolType.DEXV2, PoolType.DEXV3], 'DEX');
-        }}
-        bg={
-          poolTypeFilters.includes(PoolType.DEXV2.valueOf()) ||
-          poolTypeFilters.includes(PoolType.DEXV3.valueOf())
-            ? 'purple'
-            : 'color1'
-        }
-        marginBottom={'10px'}
-      >
-        <TagLabel
-          {...getTextProps(
-            poolTypeFilters.includes(PoolType.DEXV2.valueOf()) ||
-              poolTypeFilters.includes(PoolType.DEXV3.valueOf()),
-          )}
+          {/* STRK pools */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            onClick={() => {
+              updateCategory(Category.STRK);
+            }}
+            bg={
+              categoriesFilter.includes(Category.STRK.valueOf())
+                ? 'purple'
+                : 'transparent'
+            }
+            color={'white'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderRadius={'none'}
+            borderColor={'slate_blue'}
+            display={'flex'}
+            justifyContent={'center'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+          >
+            <TagLabel
+              {...getTextProps(
+                categoriesFilter.includes(Category.STRK.valueOf()),
+              )}
+            >
+              {Category.STRK.valueOf().split(' ')[0]}
+            </TagLabel>
+          </Tag>
+
+          {/* ETH pools */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            onClick={() => {
+              updateCategory(Category.ETH);
+            }}
+            bg={
+              categoriesFilter.includes(Category.ETH.valueOf())
+                ? 'purple'
+                : 'transparent'
+            }
+            color={'white'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderRadius={'none'}
+            borderColor={'slate_blue'}
+            display={'flex'}
+            justifyContent={'center'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+          >
+            <TagLabel
+              {...getTextProps(
+                categoriesFilter.includes(Category.ETH.valueOf()),
+              )}
+            >
+              {Category.ETH.valueOf().split(' ')[0]}
+            </TagLabel>
+          </Tag>
+
+          {/* Low risk pools */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            onClick={() => {
+              updateRiskLevel(['1', '2']);
+            }}
+            bg={isLowRisk() ? 'purple' : 'transparent'}
+            color={'white'}
+            display={'flex'}
+            justifyContent={'center'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderTopLeftRadius={'none'}
+            borderBottomLeftRadius={'none'}
+            borderTopRightRadius={'8px'}
+            borderBottomRightRadius={'8px'}
+            borderColor={'slate_blue'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+          >
+            <TagLabel {...getTextProps(isLowRisk())}>Low risk</TagLabel>
+          </Tag>
+        </Grid>
+
+        <Grid templateColumns={'repeat(3, 1fr)'} gap={0}>
+          {/* DEXes */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            onClick={() => {
+              updatePoolType([PoolType.DEXV2, PoolType.DEXV3], 'DEX');
+            }}
+            bg={
+              poolTypeFilters.includes(PoolType.DEXV2.valueOf()) ||
+              poolTypeFilters.includes(PoolType.DEXV3.valueOf())
+                ? 'purple'
+                : 'transparent'
+            }
+            color={'white'}
+            borderLeftWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderTopLeftRadius={'8px'}
+            borderBottomLeftRadius={'8px'}
+            borderTopRightRadius={'none'}
+            borderBottomRightRadius={'none'}
+            borderColor={'slate_blue'}
+            display={'flex'}
+            justifyContent={'center'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+          >
+            <TagLabel
+              {...getTextProps(
+                poolTypeFilters.includes(PoolType.DEXV2.valueOf()) ||
+                  poolTypeFilters.includes(PoolType.DEXV3.valueOf()),
+              )}
+            >
+              DEX
+            </TagLabel>
+          </Tag>
+
+          {/* Lending */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            onClick={() => {
+              updatePoolType([PoolType.Lending], 'Lending');
+            }}
+            bg={
+              poolTypeFilters.includes(PoolType.Lending)
+                ? 'purple'
+                : 'transparent'
+            }
+            color={'white'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderRadius={'none'}
+            borderColor={'slate_blue'}
+            display={'flex'}
+            justifyContent={'center'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+          >
+            <TagLabel
+              {...getTextProps(poolTypeFilters.includes(PoolType.Lending))}
+            >
+              Lending
+            </TagLabel>
+          </Tag>
+
+          {/* Derivatives */}
+          <Tag
+            size="md"
+            padding={'12px'}
+            as={'button'}
+            onClick={() => {
+              updatePoolType([PoolType.Derivatives], 'Derivatives');
+            }}
+            bg={
+              poolTypeFilters.includes(PoolType.Derivatives)
+                ? 'purple'
+                : 'transparent'
+            }
+            color={'white'}
+            display={'flex'}
+            justifyContent={'center'}
+            borderTopWidth={'1px'}
+            borderBottomWidth={'1px'}
+            borderRightWidth={'1px'}
+            borderTopLeftRadius={'none'}
+            borderBottomLeftRadius={'none'}
+            borderTopRightRadius={'8px'}
+            borderBottomRightRadius={'8px'}
+            borderColor={'slate_blue'}
+            _hover={{
+              bg: 'purple_hover_2',
+              '& > *': {
+                color: 'black',
+              },
+            }}
+          >
+            <TagLabel
+              {...getTextProps(poolTypeFilters.includes(PoolType.Derivatives))}
+            >
+              Derivative
+            </TagLabel>
+          </Tag>
+        </Grid>
+
+        {/* Reset */}
+        <Tag
+          size="md"
+          bg="transparent"
+          color={'white'}
+          borderRadius="md"
+          borderWidth={'1px'}
+          borderColor={'slate_blue'}
+          padding={'12px'}
+          as={'button'}
+          _hover={{
+            bg: 'purple_hover_2',
+            '& > *': {
+              color: 'black',
+            },
+          }}
+          onClick={() => {
+            updateFilters('categories', [ALL_FILTER]);
+            updateFilters('risk', [ALL_FILTER]);
+            updateFilters('poolTypes', [ALL_FILTER]);
+            mixpanel.track('Reset Filters');
+          }}
         >
-          DEX Pools
-        </TagLabel>
-      </Tag>
-
-      {/* Lending */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'8px 10px'}
-        as={'button'}
-        onClick={() => {
-          updatePoolType([PoolType.Lending], 'Lending');
-        }}
-        bg={poolTypeFilters.includes(PoolType.Lending) ? 'purple' : 'color1'}
-        marginBottom={'10px'}
-      >
-        <TagLabel {...getTextProps(poolTypeFilters.includes(PoolType.Lending))}>
-          Lending Pools
-        </TagLabel>
-      </Tag>
-
-      {/* Derivatives */}
-      <Tag
-        size="lg"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'8px 10px'}
-        as={'button'}
-        onClick={() => {
-          updatePoolType([PoolType.Derivatives], 'Derivatives');
-        }}
-        bg={
-          poolTypeFilters.includes(PoolType.Derivatives) ? 'purple' : 'color1'
-        }
-        marginBottom={'10px'}
-      >
-        <TagLabel
-          {...getTextProps(poolTypeFilters.includes(PoolType.Derivatives))}
-        >
-          Derivative Pools
-        </TagLabel>
-      </Tag>
-
-      {/* Reset */}
-      <Tag
-        size="lg"
-        bg="color1"
-        borderRadius="full"
-        mr={'10px'}
-        padding={'8px 10px'}
-        as={'button'}
-        onClick={() => {
-          updateFilters('categories', [ALL_FILTER]);
-          updateFilters('risk', [ALL_FILTER]);
-          updateFilters('poolTypes', [ALL_FILTER]);
-          mixpanel.track('Reset Filters');
-        }}
-        marginBottom={'10px'}
-      >
-        <TagLabel {...getTextProps(false)}>
-          <HStack>
-            <Text>Reset</Text> <CloseIcon fontSize={'10px'} />
-          </HStack>
-        </TagLabel>
-      </Tag>
+          <TagLabel {...getTextProps(false)}>
+            <HStack>
+              <Text>Reset</Text> <CloseIcon fontSize={'10px'} />
+            </HStack>
+          </TagLabel>
+        </Tag>
+      </Box>
     </Box>
   );
 }

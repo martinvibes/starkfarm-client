@@ -6,7 +6,7 @@ import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
 import { UserStats, userStatsAtom } from '@/store/utils.atoms';
 import { isLive, StrategyLiveStatus } from '@/strategies/IStrategy';
 import { getDisplayCurrencyAmount } from '@/utils';
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   AvatarGroup,
@@ -17,7 +17,6 @@ import {
   GridItem,
   Heading,
   HStack,
-  Icon,
   Image,
   Link,
   Spinner,
@@ -26,13 +25,11 @@ import {
   Text,
   Tooltip,
   Tr,
-  VStack,
 } from '@chakra-ui/react';
 import { useAtomValue } from 'jotai';
 import mixpanel from 'mixpanel-browser';
 import { useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
-import { FaWallet } from 'react-icons/fa';
 
 export interface YieldCardProps {
   pool: PoolInfo;
@@ -45,7 +42,7 @@ export function getStratCardBg(status: StrategyLiveStatus, index: number) {
     return '#414173';
   }
   if (isLive(status)) {
-    return index % 2 === 0 ? 'color1_50p' : 'color2_50p';
+    return index % 2 === 0 ? 'dark_navy' : 'color2_50p';
   }
   if (status == StrategyLiveStatus.RETIRED) {
     return 'black';
@@ -55,10 +52,10 @@ export function getStratCardBg(status: StrategyLiveStatus, index: number) {
 
 function getStratCardBadgeBg(status: StrategyLiveStatus) {
   if (isLive(status)) {
-    return 'cyan';
+    return 'color_4';
   } else if (status === StrategyLiveStatus.COMING_SOON) {
     return 'yellow';
-  } else if (status == StrategyLiveStatus.RETIRED) {
+  } else if (status === StrategyLiveStatus.RETIRED) {
     return 'grey';
   }
   return 'bg';
@@ -77,7 +74,12 @@ export function StrategyInfo(props: YieldCardProps) {
         </AvatarGroup>
         <Box>
           <HStack spacing={2}>
-            <Heading size="sm" marginTop={'2px'}>
+            <Heading
+              marginTop={'2px'}
+              fontSize={'14px'}
+              fontWeight={'600'}
+              color={'text'}
+            >
               {pool.pool.name}
             </Heading>
             {pool.additional &&
@@ -89,7 +91,7 @@ export function StrategyInfo(props: YieldCardProps) {
                       ml="1"
                       bg={getStratCardBadgeBg(tag)}
                       fontFamily={'sans-serif'}
-                      padding="2px 8px"
+                      padding="4px 8px"
                       textTransform="capitalize"
                       fontWeight={500}
                       key={tag}
@@ -109,6 +111,8 @@ export function StrategyInfo(props: YieldCardProps) {
                     justifyContent="center"
                     backgroundColor={'rgba(0, 0, 0, 0.2)'}
                     borderRadius={'50%'}
+                    bg={'#61FCAE'}
+                    padding={'3px 5px'}
                   >
                     <Image src={shield.src} alt="badge" />
                   </Box>
@@ -119,7 +123,12 @@ export function StrategyInfo(props: YieldCardProps) {
           {props.showProtocolName && (
             <HStack marginTop={'5px'} spacing={1}>
               <Avatar size={'2xs'} src={pool.protocol.logo} />
-              <Heading size="xs" marginTop={'2px'} color={'light_grey'}>
+              <Heading
+                fontSize={'14px'}
+                fontWeight={'400'}
+                marginTop={'2px'}
+                color={'light_grey'}
+              >
                 {pool.protocol.name}
               </Heading>
             </HStack>
@@ -139,7 +148,7 @@ function getAPRWithToolTip(pool: PoolInfo) {
             <Text key="1" width={'70%'}>
               {split.title} {split.description ? `(${split.description})` : ''}
             </Text>
-            <Text fontSize={'xs'} width={'30%'} textAlign={'right'} key="2">
+            <Text fontSize={'xs'} width={'30%'} textAlign={'left'} key="2">
               {split.apr === 'Err' ? split.apr : (split.apr * 100).toFixed(2)}%
             </Text>
           </Flex>
@@ -154,16 +163,16 @@ function getAPRWithToolTip(pool: PoolInfo) {
         marginRight={'0px'}
         marginLeft={'auto'}
         display={'flex'}
-        justifyContent={'flex-end'}
+        justifyContent={'flex-start'}
       >
         {pool.isLoading && <Spinner />}
         {!pool.isLoading && (
           <>
             <Text
-              textAlign={'right'}
+              textAlign={'left'}
               color="white"
-              fontSize={'16px'}
-              fontWeight={'bolder'}
+              fontSize={'14px'}
+              fontWeight={'600'}
             >
               {(pool.apr * 100).toFixed(2)}%
             </Text>
@@ -181,13 +190,13 @@ function StrategyAPY(props: YieldCardProps) {
   }, [pool]);
 
   return (
-    <Box width={'100%'} marginBottom={'5px'}>
+    <Box width={'100%'}>
       {isRetired ? (
         <Text ml="auto" w="fit-content" mr="6">
           -
         </Text>
       ) : (
-        <>
+        <Text float={'left'}>
           {getAPRWithToolTip(pool)}
 
           {/* {pool.additional && pool.additional.leverage && (
@@ -209,7 +218,7 @@ function StrategyAPY(props: YieldCardProps) {
               </Box>
             </Tooltip>
           )} */}
-        </>
+        </Text>
       )}
     </Box>
   );
@@ -242,6 +251,33 @@ export function getStrategyWiseHoldingsInfo(
 
 export function StrategyTVL(props: YieldCardProps) {
   const { pool } = props;
+
+  const isPoolLive =
+    pool.additional &&
+    pool.additional.tags[0] &&
+    isLive(pool.additional.tags[0]);
+
+  return (
+    <Box
+      width={'100%'}
+      fontWeight={600}
+      display={'flex'}
+      flexDirection={'column'}
+      justifyContent={'center'}
+      alignItems={'flex-start'}
+    >
+      {isPoolLive && (
+        <Text fontSize={'14px'} fontWeight={'600'} float={'left'}>
+          ${getDisplayCurrencyAmount(pool.tvl || 0, 0)}
+        </Text>
+      )}
+      {!isPoolLive && <Text>-</Text>}
+    </Box>
+  );
+}
+
+export function StrategyBalance(props: YieldCardProps) {
+  const { pool } = props;
   const address = useAtomValue(addressAtom);
   const { data: userData } = useAtomValue(userStatsAtom);
 
@@ -255,70 +291,24 @@ export function StrategyTVL(props: YieldCardProps) {
   return (
     <Box
       width={'100%'}
-      textAlign={'right'}
       fontWeight={600}
       display={'flex'}
       flexDirection={'column'}
       justifyContent={'center'}
-      alignItems={'flex-end'}
+      alignItems={'flex-start'}
     >
-      {isPoolLive && (
-        <Text fontSize={'16px'}>
-          ${getDisplayCurrencyAmount(pool.tvl || 0, 0)}
-        </Text>
-      )}
       {!isPoolLive && <Text>-</Text>}
-      {address && isPoolLive && pool.protocol.name == 'STRKFarm' && (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius={'20px'}
-          color="grey_text"
-          fontSize={'12px'}
-          width={'100%'}
-          mt="5px"
-        >
-          <Tooltip label="Your deposits in this STRKFarm strategy">
-            <Box width={'100%'} fontWeight={600}>
-              <Flex>
-                <Text width={'100%'} justifyContent={'flex-end'}>
-                  ${getDisplayCurrencyAmount(holdingsInfo.usdValue, 0)}
-                </Text>
-                <Box>
-                  <Icon as={FaWallet} marginLeft={'3px'} mt={'-3px'} />
-                </Box>
-              </Flex>
-              {holdingsInfo.amount != 0 && (
-                <Flex
-                  justifyContent={'flex-end'}
-                  marginTop={'-5px'}
-                  width={'100%'}
-                  opacity={0.5}
-                >
-                  {/* <Avatar size={'2xs'} src={holdingsInfo.tokenInfo.logo} mr={'2px'}/> */}
-                  <Text textAlign={'right'} fontSize={'11px'}>
-                    {getDisplayCurrencyAmount(
-                      holdingsInfo.amount,
-                      holdingsInfo.tokenInfo.displayDecimals,
-                    ).toLocaleString()}
-                  </Text>
-                  <Image
-                    width={'10px'}
-                    src={holdingsInfo.tokenInfo.logo}
-                    ml={'4px'}
-                    mr={'1px'}
-                    filter={'grayscale(1)'}
-                  />
-                </Flex>
-              )}
-            </Box>
-          </Tooltip>
-        </Box>
+      {address && isPoolLive && pool.protocol.name === 'STRKFarm' && (
+        <Tooltip label="Your deposits in this STRKFarm strategy">
+          <Text fontSize={'14px'} fontWeight={'600'}>
+            ${getDisplayCurrencyAmount(holdingsInfo.usdValue || 0, 0)}
+          </Text>
+        </Tooltip>
       )}
     </Box>
   );
 }
+
 // return sort heading text to match with sort options heading text
 function sortHeading(field: string) {
   if (field == 'APY') {
@@ -326,6 +316,7 @@ function sortHeading(field: string) {
   }
   return field.toUpperCase();
 }
+
 function GetRiskLevel(riskFactor: number) {
   let color = '';
   let bgColor = '';
@@ -353,8 +344,8 @@ function GetRiskLevel(riskFactor: number) {
     <Box
       width="100%"
       display="flex"
-      justifyContent={'flex-end'}
-      alignContent={'flex-end'}
+      justifyContent={'flex-start'}
+      alignContent={'flex-start'}
     >
       <Tooltip
         hasArrow
@@ -392,17 +383,6 @@ function GetRiskLevel(riskFactor: number) {
               ))}
             </Stack>
           </Box>
-          <Box
-            position={'absolute'}
-            backgroundColor={bgColor}
-            opacity={0.3}
-            filter={'blur(30.549999237060547px)'}
-            right={{ base: '-50', md: '-37px' }}
-            bottom={'-80px'}
-            width={'94px'}
-            height={'94px'}
-            zIndex={0}
-          />
         </Box>
       </Tooltip>
     </Box>
@@ -502,7 +482,7 @@ export default function YieldCard(props: YieldCardProps) {
       <Tr
         color={'white'}
         bg={getStratCardBg(pool.additional.tags[0], index)}
-        borderBottom={'1px solid #313144 !important'}
+        borderBottom={'1px solid #2D2D3D !important'}
         display={{ base: 'none', md: 'table-row' }}
         as={'a'}
         {...getLinkProps(pool, props.showProtocolName)}
@@ -529,7 +509,9 @@ export default function YieldCard(props: YieldCardProps) {
               -
             </Text>
           ) : pool.additional?.riskFactor ? (
-            GetRiskLevel(pool.additional?.riskFactor)
+            <Text float={'left'}>
+              {GetRiskLevel(pool.additional?.riskFactor)}
+            </Text>
           ) : (
             '-'
           )}
@@ -541,6 +523,15 @@ export default function YieldCard(props: YieldCardProps) {
             </Text>
           ) : (
             <StrategyTVL pool={pool} index={index} />
+          )}
+        </Td>
+        <Td>
+          {isRetired ? (
+            <Text ml="auto" w="fit-content" mr="2">
+              -
+            </Text>
+          ) : (
+            <StrategyBalance pool={pool} index={index} />
           )}
         </Td>
       </Tr>
@@ -584,25 +575,32 @@ export function HeaderSorter(props: {
       onClick={() => {
         props.onClick(order);
       }}
-      float={'right'}
+      float={'left'}
+      padding={0}
     >
       <Text color={props.mainColor}>{props.heading.toUpperCase()}</Text>
-      <VStack gap={0} spacing={0}>
-        <TriangleUpIcon
+      <HStack gap={0} spacing={0}>
+        <ArrowUpIcon
           color={
             order == 'asc' && props.active
               ? props.mainColor
               : props.inActiveColor
           }
+          height={'12px'}
+          width={'12px'}
+          marginTop={'-2px'}
         />
-        <TriangleDownIcon
+        <ArrowDownIcon
           color={
             order == 'desc' && props.active
               ? props.mainColor
               : props.inActiveColor
           }
+          height={'12px'}
+          width={'12px'}
+          marginBottom={'-2px'}
         />
-      </VStack>
+      </HStack>
     </HStack>
   );
 }
