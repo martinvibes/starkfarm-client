@@ -2,9 +2,12 @@ import React, { useMemo } from 'react';
 import {
   Box,
   Flex,
+  Link,
+  Spinner,
   Stat,
   StatLabel,
   StatNumber,
+  Tag,
   Text,
   Tooltip,
 } from '@chakra-ui/react';
@@ -12,11 +15,12 @@ import { useAccount } from '@starknet-react/core';
 import { StrategyInfo } from '@/store/strategies.atoms';
 import { HarvestTimeAtom } from '@/store/harvest.atom';
 import { useAtomValue } from 'jotai';
-import { formatTimediff, getDisplayCurrencyAmount, timeAgo } from '@/utils';
+import { formatTimediff, getDisplayCurrencyAmount } from '@/utils';
 import { isMobile } from 'react-device-detect';
 import STRKFarmAtoms, {
   STRKFarmStrategyAPIResult,
 } from '@/store/strkfarm.atoms';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 interface HarvestTimeProps {
   strategy: StrategyInfo<any>;
@@ -91,46 +95,72 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
   }, [strategyInfo]);
 
   return (
-    <Box>
-      <Flex justifyContent="space-between">
-        <Flex>
+    <Flex width={'100%'} flexDirection={'column'}>
+      <Flex width={'100%'} justifyContent={'space-between'}>
+        <Flex gap={'8px'}>
           <Tooltip label="Current APY including any fees. Net returns subject to change based on market conditions.">
             <Stat
-              marginRight={'5px'}
               display={'flex'}
               flexDirection={'column'}
-              justifyContent={'flex-end'}
+              bg={'dark_navy'}
+              height={'73px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+              borderRadius={'8px'}
+              padding={'8px'}
+              gap={'10px'}
             >
-              <StatLabel>APY</StatLabel>
-              <StatNumber color="cyan" lineHeight="24px">
+              <StatLabel
+                color={'border_light'}
+                fontSize={'14px'}
+                fontWeight={'500'}
+              >
+                APY
+              </StatLabel>
+              <StatNumber
+                color="light_green"
+                lineHeight="100%"
+                fontSize={'32px'}
+                fontWeight={'700'}
+              >
                 {((strategyInfo?.apy || 0) * 100).toFixed(2)}%
               </StatNumber>
             </Stat>
           </Tooltip>
-          {/* <Flex flexDirection={'column'} justifyContent={'flex-end'}>
-            <Tooltip label="This shows how much higher your yield is compared to zKLend">
-              <Tag
-                bg="bg"
-                color={'white'}
-                fontSize={'12px'}
-                padding={'2px 5px'}
-              >
-                🔥{leverage.toFixed(2)}x boosted
-                {leverage == 0 && (
-                  <Spinner size="xs" color="white" ml={'5px'} />
-                )}
-              </Tag>
-            </Tooltip>
-          </Flex> */}
+
+          <Tooltip label="This shows how much higher your yield is compared to zKLend">
+            <Tag
+              alignSelf={'flex-end'}
+              bg="bg_3"
+              color={'white'}
+              fontSize={'14px'}
+              fontWeight={'500'}
+              padding={'4px 8px'}
+              width={'fit-content'}
+              height={'29px'}
+              borderRadius={'20px'}
+            >
+              🔥{leverage.toFixed(2)}x boosted
+              {leverage === 0 && <Spinner size="xs" color="white" ml={'5px'} />}
+            </Tag>
+          </Tooltip>
         </Flex>
 
         {!isMobile && !strategy.settings.hideHarvestInfo && (
           <Tooltip
             label={`This is when your investment increases as STRK rewards are automatically claimed and reinvested into the strategy's tokens.`}
           >
-            <Box>
+            <Flex
+              alignItems={'center'}
+              gap={'32px'}
+              borderRadius={'8px'}
+              bg={'black_3p'}
+              padding={'8px 16px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+            >
               <Text
-                color="#D4D4D6"
+                color="border_light"
                 fontSize="14px"
                 fontWeight="500"
                 display={'flex'}
@@ -142,10 +172,10 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
                   </Text>
                 )}
               </Text>
+
               <Box
                 display="flex"
                 alignItems="center"
-                pt="5px"
                 gap="10px"
                 justifyContent="space-between"
               >
@@ -155,15 +185,21 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
                   justifyContent="center"
                   flexDirection="column"
                   gap="4px"
-                  bgColor="color2_50p"
+                  bg="bg"
                   width="53px"
                   height="53px"
                   borderRadius="8px"
+                  borderWidth={'1px'}
+                  borderColor={'slate_blue'}
                 >
-                  <Text color="#AEAEAE" fontSize="12px" fontWeight="300">
+                  <Text color="silver_gray" fontSize="12px" fontWeight="300">
                     Days
                   </Text>
-                  <Text color="white" fontWeight="semi-bold">
+                  <Text
+                    color="border_light"
+                    fontSize={'16px'}
+                    fontWeight={'600'}
+                  >
                     {harvestTimestamp.days ?? 0}
                   </Text>
                 </Box>
@@ -174,15 +210,21 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
                   justifyContent="center"
                   flexDirection="column"
                   gap="4px"
-                  bgColor="color2_50p"
+                  bg="bg"
                   width="53px"
                   height="53px"
                   borderRadius="8px"
+                  borderWidth={'1px'}
+                  borderColor={'slate_blue'}
                 >
-                  <Text color="#AEAEAE" fontSize="12px" fontWeight="300">
+                  <Text color="silver_gray" fontSize="12px" fontWeight="300">
                     Hour
                   </Text>
-                  <Text color="white" fontWeight="semi-bold">
+                  <Text
+                    color="border_light"
+                    fontSize={'16px'}
+                    fontWeight={'600'}
+                  >
                     {harvestTimestamp.hours ?? 0}
                   </Text>
                 </Box>
@@ -193,58 +235,125 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
                   justifyContent="center"
                   flexDirection="column"
                   gap="4px"
-                  bgColor="color2_50p"
+                  bg="bg"
                   width="53px"
                   height="53px"
                   borderRadius="8px"
+                  borderWidth={'1px'}
+                  borderColor={'slate_blue'}
                 >
-                  <Text color="#AEAEAE" fontSize="12px" fontWeight="300">
+                  <Text color="silver_gray" fontSize="12px" fontWeight="300">
                     Mins
                   </Text>
-                  <Text color="white" fontWeight="semi-bold">
+                  <Text
+                    color="border_light"
+                    fontSize={'16px'}
+                    fontWeight={'600'}
+                  >
                     {harvestTimestamp.minutes ?? 0}
                   </Text>
                 </Box>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  flexDirection="column"
+                  gap="4px"
+                  bg="bg"
+                  width="53px"
+                  height="53px"
+                  borderRadius="8px"
+                  borderWidth={'1px'}
+                  borderColor={'slate_blue'}
+                >
+                  <Text color="silver_gray" fontSize="12px" fontWeight="300">
+                    Secs
+                  </Text>
+                  <Text
+                    color="border_light"
+                    fontSize={'16px'}
+                    fontWeight={'600'}
+                  >
+                    {harvestTimestamp.seconds ?? 0}
+                  </Text>
+                </Box>
               </Box>
-            </Box>
+            </Flex>
           </Tooltip>
         )}
       </Flex>
 
-      {!strategy.settings.hideHarvestInfo && (
-        <Box
-          display="flex"
-          padding="5px"
-          width={'100%'}
-          bg="bg"
-          marginTop={'10px'}
-          borderRadius={'5px'}
-        >
-          <Text
-            color="white"
-            fontSize="12px"
-            fontWeight="normal"
-            textAlign={isMobile ? 'left' : 'right'}
-            width={'100%'}
+      <Flex justifyContent={'space-between'}>
+        <Flex alignItems={'center'} height={'40px'}>
+          <Link
+            color={'silver_gray'}
+            fontSize={'14px'}
+            fontWeight={'500'}
+            lineHeight={'100%'}
+            textDecoration={'none'}
           >
-            Harvested{' '}
-            <b>
+            Contract details <ExternalLinkIcon />
+          </Link>
+        </Flex>
+
+        {!strategy.settings.hideHarvestInfo && (
+          <Flex
+            alignItems={'center'}
+            height={'40px'}
+            bg={'bg'}
+            borderWidth={'1px'}
+            borderColor={'slate_blue'}
+            borderRadius={'8px'}
+            padding={'8px'}
+            marginTop={'10px'}
+            gap={'2px'}
+          >
+            <Text
+              color={'silver_gray'}
+              fontSize={'12px'}
+              fontWeight={'400'}
+              lineHeight={'100%'}
+            >
+              Total rewards harvested:
+            </Text>
+
+            <Text
+              color={'white'}
+              fontSize={'12px'}
+              fontWeight={'400'}
+              lineHeight={'100%'}
+            >
               {getDisplayCurrencyAmount(
                 harvestTime?.data?.totalStrkHarvestedByContract.STRKAmount || 0,
                 2,
               )}{' '}
               STRK
-            </b>{' '}
-            over <b>{harvestTime?.data?.totalHarvestsByContract} claims.</b>{' '}
-            {lastHarvest && (
-              <span>
-                Last harvested <b>{timeAgo(lastHarvest)}</b> (Across all users).
-              </span>
-            )}
-          </Text>
-        </Box>
-      )}
-    </Box>
+            </Text>
+
+            <Text color={'silver_gray'}> | </Text>
+
+            <Text
+              color={'silver_gray'}
+              fontSize={'12px'}
+              fontWeight={'400'}
+              lineHeight={'100%'}
+            >
+              Total number of times harvested:
+            </Text>
+
+            <Text
+              color={'white'}
+              fontSize={'12px'}
+              fontWeight={'400'}
+              lineHeight={'100%'}
+            >
+              -
+            </Text>
+          </Flex>
+        )}
+      </Flex>
+    </Flex>
   );
 };
 

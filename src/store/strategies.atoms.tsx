@@ -231,7 +231,7 @@ export function getStrategies() {
 
   // const xSTRKStrategy = new AutoXSTRKStrategy(
   //   'Stake STRK',
-  //   'Endur is Starknet’s dedicated staking platform, where you can stake STRK to earn staking rewards. This strategy, built on Endur, is an incentivized vault that boosts returns by offering additional rewards. In the future, it may transition to auto-compounding on DeFi Spring, reinvesting rewards for maximum growth. Changes will be announced at least three days in advance on our socials.',
+  //   'Endur is Starknet's dedicated staking platform, where you can stake STRK to earn staking rewards. This strategy, built on Endur, is an incentivized vault that boosts returns by offering additional rewards. In the future, it may transition to auto-compounding on DeFi Spring, reinvesting rewards for maximum growth. Changes will be announced at least three days in advance on our socials.',
   //   CONSTANTS.CONTRACTS.AutoxSTRKFarm,
   //   {
   //     maxTVL: 2000000,
@@ -324,18 +324,4 @@ export function getLiveStatusNumber(status: StrategyLiveStatus) {
     return 4;
   }
   return 5;
-}
-
-export function getLiveStatusEnum(status: number) {
-  if (status == 1) {
-    return StrategyLiveStatus.HOT;
-  }
-  if (status == 2) {
-    return StrategyLiveStatus.NEW;
-  } else if (status == 3) {
-    return StrategyLiveStatus.ACTIVE;
-  } else if (status == 4) {
-    return StrategyLiveStatus.COMING_SOON;
-  }
-  return StrategyLiveStatus.RETIRED;
 }

@@ -113,7 +113,7 @@ export function getDisplayCurrencyAmount(
   });
 }
 
-// returns time to endtime in days, hours, minutes
+// returns time to endtime in days, hours, minutes, seconds
 export function formatTimediff(endTime: Date) {
   const now = new Date();
   if (now.getTime() >= endTime.getTime()) {
@@ -121,11 +121,12 @@ export function formatTimediff(endTime: Date) {
       days: 0,
       hours: 0,
       minutes: 0,
+      seconds: 0,
       isZero: true,
     };
   }
 
-  // else return number of days, months, weeks, hours, minutrs, seconds to endtime
+  // else return number of days, months, weeks, hours, minutes, seconds to endtime
   const diff = endTime.getTime() - now.getTime();
   // get days floor
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -133,11 +134,14 @@ export function formatTimediff(endTime: Date) {
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   // after accounting days and hours, get remaining minutes
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  // after accounting days, hours and minutes, get remaining seconds
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
   return {
     days,
     hours,
     minutes,
+    seconds,
     isZero: false,
   };
 }

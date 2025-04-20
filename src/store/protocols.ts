@@ -10,7 +10,7 @@ import NostraDegenAtoms, { nostraDegen } from './nostradegen.store';
 import NostraDexAtoms, { nostraDex } from './nostradex.store';
 import NostraLendingAtoms, { nostraLending } from './nostralending.store';
 import { Category, isPoolRetired, PoolInfo, PoolType } from './pools';
-import { getLiveStatusEnum } from './strategies.atoms';
+import { getLiveStatusEnum } from '@/utils/strategyStatus';
 import STRKFarmAtoms, {
   strkfarm,
   STRKFarmStrategyAPIResult,

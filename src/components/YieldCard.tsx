@@ -29,7 +29,6 @@ import {
 import { useAtomValue } from 'jotai';
 import mixpanel from 'mixpanel-browser';
 import { useMemo } from 'react';
-import { isMobile } from 'react-device-detect';
 
 export interface YieldCardProps {
   pool: PoolInfo;
@@ -458,7 +457,7 @@ function StrategyMobileCard(props: YieldCardProps) {
 export function getLinkProps(pool: PoolInfo, showProtocolName?: boolean) {
   return {
     href: pool.protocol.link,
-    target: isMobile ? '_self' : '_blank',
+    // target: isMobile ? '_self' : '_blank',
     onClick: () => {
       mixpanel.track('Pool clicked', {
         pool: pool.pool.name,

@@ -12,7 +12,7 @@ import {
   PoolType,
   ProtocolAtoms,
 } from './pools';
-import { getLiveStatusEnum } from './strategies.atoms';
+import { getLiveStatusEnum } from '@/utils/strategyStatus';
 import { IInvestmentFlow } from '@strkfarm/sdk';
 
 export interface STRKFarmStrategyAPIResult {

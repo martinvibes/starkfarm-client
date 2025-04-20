@@ -18,16 +18,14 @@ import {
   Flex,
   Grid,
   GridItem,
+  Image,
   Image as ImageC,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
   Progress,
   Spinner,
   Text,
@@ -39,7 +37,7 @@ import mixpanel from 'mixpanel-browser';
 import { useEffect, useMemo, useState } from 'react';
 import LoadingWrap from './LoadingWrap';
 import TxButton from './TxButton';
-import { provider } from '@/constants';
+import CONSTANTS, { provider } from '@/constants';
 
 interface DepositProps {
   strategy: StrategyInfo<any>;
@@ -159,14 +157,10 @@ export default function Deposit(props: DepositProps) {
     }
   }, [maxAmount, isMaxClicked]);
 
-  function BalanceComponent(props: {
-    token: TokenInfo;
-    strategy: StrategyInfo<any>;
-    buttonText: string;
-  }) {
+  function BalanceComponent(props: { token: TokenInfo }) {
     return (
-      <Box color={'light_grey'} textAlign={'right'}>
-        <Text>Available balance </Text>
+      <Box textAlign={'right'}>
+        <Text color={'silver_gray'}>Wallet balance </Text>
         <LoadingWrap
           isLoading={balData.isLoading || balData.isPending}
           isError={balData.isError}
@@ -183,42 +177,10 @@ export default function Deposit(props: DepositProps) {
           }}
         >
           <Tooltip label={balance.toEtherStr()}>
-            <b style={{ marginLeft: '5px' }}>
-              {balance.toEtherToFixedDecimals(4)}
-            </b>
+            <Text fontSize={'18px'} fontWeight={'500'} color="text">
+              {balance.toEtherToFixedDecimals(4)} {props.token.name}
+            </Text>
           </Tooltip>
-          <Button
-            size={'sm'}
-            marginLeft={'5px'}
-            color="color2"
-            bg="highlight"
-            padding="0"
-            maxHeight={'25px'}
-            _hover={{
-              bg: 'highlight',
-              color: 'color_50p',
-            }}
-            _active={{
-              bg: 'highlight',
-              color: 'color_50p',
-            }}
-            onClick={() => {
-              setAmount(maxAmount);
-              setRawAmount(maxAmount.toEtherStr());
-              setIsMaxClicked(true);
-              mixpanel.track('Chose max amount', {
-                strategyId: props.strategy.id,
-                strategyName: props.strategy.name,
-                buttonText: props.buttonText,
-                amount: amount.toEtherStr(),
-                token: selectedMarket.name,
-                maxAmount: maxAmount.toEtherStr(),
-                address,
-              });
-            }}
-          >
-            [Max]
-          </Button>
         </LoadingWrap>
       </Box>
     );
@@ -231,21 +193,39 @@ export default function Deposit(props: DepositProps) {
             <MenuButton
               as={Button}
               height={'100%'}
-              rightIcon={<ChevronDownIcon />}
-              bgColor={'highlight'}
-              borderColor={'bg'}
+              rightIcon={<ChevronDownIcon width={'20px'} height={'20px'} />}
+              width={'200px'}
+              bg={'transparent'}
+              borderColor={'slate_blue'}
               borderWidth={'1px'}
-              color="color2"
+              color="border_light"
+              fontSize={'16px'}
+              fontWeight={'500'}
+              padding={'10px 16px'}
+              textAlign={'left'}
               _hover={{
-                bg: 'bg',
+                bg: 'transparent',
               }}
             >
-              <Center>
-                {/* <ImageC src={selectedMarket.logo.src} alt='' width={'20px'} marginRight='5px'/> */}
-                {balData.data && balData.data.tokenInfo
-                  ? balData.data.tokenInfo.name
-                  : '-'}
-              </Center>
+              <Flex alignItems={'center'}>
+                {balData.data && balData.data.tokenInfo && (
+                  <Image
+                    src={
+                      CONSTANTS.LOGOS[
+                        selectedMarket.name as keyof typeof CONSTANTS.LOGOS
+                      ]
+                    }
+                    alt=""
+                    width={'20px'}
+                    marginRight="5px"
+                  />
+                )}
+                <Text fontSize={'16px'} fontWeight={'500'} color="border_light">
+                  {balData.data && balData.data.tokenInfo
+                    ? balData.data.tokenInfo.name
+                    : '-'}
+                </Text>
+              </Flex>
             </MenuButton>
             <MenuList {...MyMenuListProps}>
               {actions.map((dep) => (
@@ -253,7 +233,7 @@ export default function Deposit(props: DepositProps) {
                   key={dep.tokenInfo.name}
                   {...MyMenuItemProps}
                   onClick={() => {
-                    if (selectedMarket.name != dep.tokenInfo.name) {
+                    if (selectedMarket.name !== dep.tokenInfo.name) {
                       setSelectedMarket(dep.tokenInfo);
                       setAmount(new MyNumber('0', dep.tokenInfo.decimals));
                       setDirty(false);
@@ -263,7 +243,11 @@ export default function Deposit(props: DepositProps) {
                 >
                   <Center>
                     <ImageC
-                      src={dep.tokenInfo.logo.src}
+                      src={
+                        CONSTANTS.LOGOS[
+                          dep.tokenInfo.name as keyof typeof CONSTANTS.LOGOS
+                        ]
+                      }
                       alt=""
                       width={'20px'}
                       marginRight="5px"
@@ -276,11 +260,7 @@ export default function Deposit(props: DepositProps) {
           </Menu>
         </GridItem>
         <GridItem colSpan={3}>
-          <BalanceComponent
-            token={selectedMarket}
-            strategy={props.strategy}
-            buttonText={props.buttonText}
-          />
+          <BalanceComponent token={selectedMarket} />
         </GridItem>
       </Grid>
 
@@ -290,8 +270,10 @@ export default function Deposit(props: DepositProps) {
         max={parseFloat(maxAmount.toEtherStr())}
         step={parseFloat(selectedMarket.stepAmount.toEtherStr())}
         color={'white'}
-        bg={'bg'}
+        bg={'transparent'}
         borderRadius={'10px'}
+        borderColor={'slate_blue'}
+        borderWidth={'1px'}
         onChange={(value) => {
           if (value && Number(value) > 0)
             setAmount(MyNumber.fromEther(value, selectedMarket.decimals));
@@ -311,7 +293,7 @@ export default function Deposit(props: DepositProps) {
             address,
           });
         }}
-        marginTop={'10px'}
+        marginTop={'20px'}
         keepWithinRange={false}
         clampValueOnBlur={false}
         value={rawAmount}
@@ -321,24 +303,57 @@ export default function Deposit(props: DepositProps) {
           border={'0px'}
           borderRadius={'10px'}
           placeholder="Amount"
+          paddingRight="60px"
+          color={'white'}
         />
-        <NumberInputStepper>
-          <NumberIncrementStepper color={'white'} border={'0px'} />
-          <NumberDecrementStepper color={'white'} border={'0px'} />
-        </NumberInputStepper>
+        <Button
+          size={'sm'}
+          position="absolute"
+          right="8px"
+          top="50%"
+          transform="translateY(-50%)"
+          color="white"
+          bg="transparent"
+          padding="0 8px"
+          height="24px"
+          fontSize={'14px'}
+          fontWeight={'500'}
+          _hover={{
+            bg: 'transparent',
+            color: 'white',
+          }}
+          onClick={() => {
+            setAmount(maxAmount);
+            setRawAmount(maxAmount.toEtherStr());
+            setIsMaxClicked(true);
+            mixpanel.track('Chose max amount', {
+              strategyId: props.strategy.id,
+              strategyName: props.strategy.name,
+              buttonText: props.buttonText,
+              amount: amount.toEtherStr(),
+              token: selectedMarket.name,
+              maxAmount: maxAmount.toEtherStr(),
+              address,
+            });
+          }}
+        >
+          MAX
+        </Button>
       </NumberInput>
+
       {amount.isZero() && dirty && (
         <Text marginTop="2px" marginLeft={'7px'} color="red" fontSize={'13px'}>
           Require amount {'>'} 0
         </Text>
       )}
+
       {amount.compare(maxAmount.toEtherStr(), 'gt') && (
         <Text marginTop="2px" marginLeft={'7px'} color="red" fontSize={'13px'}>
           Amount to be less than {maxAmount.toEtherToFixedDecimals(2)}
         </Text>
       )}
 
-      <Center marginTop={'10px'}>
+      <Center marginTop={'20px'}>
         <TxButton
           txInfo={txInfo}
           buttonText={props.buttonText}
@@ -354,26 +369,45 @@ export default function Deposit(props: DepositProps) {
         />
       </Center>
 
-      {!props.strategy.isRetired() && props.strategy.settings.maxTVL != 0 && (
-        <Box width="100%" marginTop={'15px'}>
-          <Flex justifyContent="space-between">
-            <Text fontSize={'12px'} color="color2" fontWeight={'bold'}>
-              Current TVL Limit:
-            </Text>
-            <Text fontSize={'12px'} color="color2">
+      <Flex justifyContent={'space-between'} marginTop={'30px'}>
+        <Text fontSize={'14px'} fontWeight={'400'} color="silver_gray">
+          Fees
+        </Text>
+        <Text fontSize={'14px'} color="border_light">
+          No additional fees by STRKFarm
+        </Text>
+      </Flex>
+
+      {!props.strategy.isRetired() && props.strategy.settings.maxTVL !== 0 && (
+        <Flex
+          flexDirection={'column'}
+          width="100%"
+          marginTop={'15px'}
+          gap={'6px'}
+        >
+          <Flex justifyContent={'flex-end'}>
+            <Text color="border_light" fontSize={'16px'} fontWeight={'500'}>
               {!tvlInfo || !tvlInfo?.data ? (
                 <Spinner size="2xs" />
               ) : (
                 Number(tvlInfo.data?.amount.toFixedStr(2)).toLocaleString()
               )}
+            </Text>
+            <Text color={'silver_gray'} fontSize={'16px'} fontWeight={'500'}>
+              {' '}
               {' / '}
+            </Text>
+            <Text color={'silver_gray'} fontSize={'16px'} fontWeight={'500'}>
               {props.strategy.settings.maxTVL.toLocaleString()}{' '}
               {selectedMarket.name}
             </Text>
           </Flex>
           <Progress
-            colorScheme="gray"
-            bg="bg"
+            colorScheme="teal"
+            bg="border_light_3p"
+            borderRadius={'6px'}
+            borderWidth={'1px'}
+            borderColor={'light_green_30p'}
             value={
               (100 *
                 (Number(tvlInfo.data?.amount.toEtherStr()) ||
@@ -396,7 +430,7 @@ export default function Deposit(props: DepositProps) {
             </Alert>
           )}
           {/* {tvlInfo.isError ? 1 : 0}{tvlInfo.isLoading ? 1 : 0} {JSON.stringify(tvlInfo.error)} */}
-        </Box>
+        </Flex>
       )}
     </Box>
   );

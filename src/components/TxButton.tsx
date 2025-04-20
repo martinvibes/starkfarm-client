@@ -42,10 +42,8 @@ export default function TxButton(props: TxButtonProps) {
   const referralCode = useAtomValue(referralCodeAtom);
 
   const disabledStyle = {
-    bg: 'var(--chakra-colors-disabled_bg)',
-    color: 'var(--chakra-colors-disabled_text)',
-    borderColor: 'var(--chakra-colors-disabled_bg)',
-    borderWidth: '1px',
+    bg: 'bright_purple',
+    color: 'black',
   };
 
   const {
@@ -103,7 +101,7 @@ export default function TxButton(props: TxButtonProps) {
       if (!address) return props.text;
       return '';
     }
-    if (!address) return 'Wallet not connected';
+    if (!address) return 'Connect wallet';
     return '';
   }, [isMobile, address, props]);
 
@@ -123,6 +121,8 @@ export default function TxButton(props: TxButtonProps) {
   if (disabledText) {
     return (
       <Button
+        fontSize={'14px'}
+        fontWeight={'700'}
         _disabled={{
           ...disabledStyle,
         }}
@@ -214,8 +214,8 @@ export default function TxButton(props: TxButtonProps) {
 
       <Box width={'100%'} textAlign={'center'}>
         <Button
-          color={'white'}
-          bg="purple"
+          color={'black'}
+          bg="bright_purple"
           variant={'ghost'}
           width={'100%'}
           _active={{
@@ -223,6 +223,10 @@ export default function TxButton(props: TxButtonProps) {
           }}
           _hover={{
             bg: 'var(--chakra-colors-color2)',
+          }}
+          _disabled={{
+            bg: 'disabled_button',
+            color: 'disabled_button_text',
           }}
           onClick={async () => {
             mixpanel.track('Click strategy button', {

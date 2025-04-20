@@ -267,8 +267,8 @@ export default function Navbar(props: NavbarProps) {
   return (
     <Container
       width={'100%'}
-      padding={'0'}
-      position={'fixed'}
+      padding={0}
+      position={'sticky'}
       bg="black"
       zIndex={999}
       top="0"
