@@ -37,9 +37,6 @@ export interface YieldCardProps {
 }
 
 export function getStratCardBg(status: StrategyLiveStatus, index: number) {
-  if (status == StrategyLiveStatus.HOT) {
-    return '#414173';
-  }
   if (isLive(status)) {
     return index % 2 === 0 ? 'dark_navy' : 'color2_50p';
   }
@@ -480,7 +477,7 @@ export default function YieldCard(props: YieldCardProps) {
     <>
       <Tr
         color={'white'}
-        bg={getStratCardBg(pool.additional.tags[0], index)}
+        bg={index % 2 === 0 ? 'dark_navy' : 'color2_50p'}
         borderBottom={'1px solid #2D2D3D !important'}
         display={{ base: 'none', md: 'table-row' }}
         as={'a'}
