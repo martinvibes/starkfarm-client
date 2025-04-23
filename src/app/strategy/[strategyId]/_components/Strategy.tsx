@@ -7,11 +7,13 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   Container,
   Flex,
   Image,
   Link,
   ListItem,
+  OrderedList,
   Spinner,
   Tab,
   TabIndicator,
@@ -192,6 +194,125 @@ function Manage({ strategy }: { strategy: StrategyInfo<any> }) {
             </TabPanel>
           </TabPanels>
         </Tabs>
+      </Flex>
+    </Flex>
+  );
+}
+
+function Risk({ strategy }: { strategy: StrategyInfo<any> }) {
+  return (
+    <Flex padding={'24px 0px'} gap={'24px'}>
+      <Flex
+        width={'623px'}
+        flexDirection={'column'}
+        gap={'16px'}
+        padding={'32px 16px'}
+      >
+        <OrderedList
+          fontSize={'14px'}
+          fontWeight={'400'}
+          color={'border_light'}
+          listStyleType="none"
+          css={{
+            '& li': {
+              position: 'relative',
+              paddingLeft: '2.5em',
+
+              '&::before': {
+                content: 'attr(data-number)',
+                position: 'absolute',
+                left: '10px',
+                top: '12px',
+                padding: '4px 8px',
+                color: 'black',
+                fontSize: '10px',
+                borderRadius: '50%',
+                backgroundColor: 'white',
+                width: '20px',
+                height: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+            },
+          }}
+          display={'flex'}
+          flexDirection={'column'}
+          gap={'32px'}
+        >
+          {strategy.risks.map((r, index) => (
+            <ListItem
+              color="border_light"
+              key={r}
+              width={'fit-content'}
+              fontSize={'14px'}
+              fontWeight={'500'}
+              alignItems={'justify'}
+              padding={'10px'}
+              borderRadius={'8px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+              data-number={index + 1}
+            >
+              {r}
+            </ListItem>
+          ))}
+        </OrderedList>
+      </Flex>
+    </Flex>
+  );
+}
+
+function Details({ strategy }: { strategy: StrategyInfo<any> }) {
+  return (
+    <Flex flexDirection={'column'} padding={'24px 0px'} gap={'24px'}>
+      <Flex flexDirection={'column'} gap={'8px'}>
+        <Text fontSize={'24px'} color={'white'} fontWeight={'600'}>
+          Behind the scenes
+        </Text>
+        <Text fontSize={'14px'} color={'border_light'}>
+          Actions done automatically by the strategy (smart-contract) with an
+          investment of $1000
+        </Text>
+      </Flex>
+
+      <Flex width={'623px'} gap={'16px'} padding={'32px 16px'}>
+        {strategy.actions.map((action, index) => (
+          <Box
+            className="text-cell"
+            display={{ base: 'block', md: 'flex' }}
+            key={index}
+            width={'100%'}
+            color="light_grey"
+            fontSize={'14px'}
+          >
+            <Text width={{ base: '100%', md: '50%' }} padding={'5px 10px'}>
+              {action.name}
+            </Text>
+            <Text width={{ base: '100%', md: '30%' }} padding={'5px 10px'}>
+              <Avatar
+                size="2xs"
+                bg={'black'}
+                src={action.pool.pool.logos[0]}
+                marginRight={'2px'}
+              />{' '}
+              {action.pool.pool.name} on
+              <Avatar
+                size="2xs"
+                bg={'black'}
+                src={action.pool.protocol.logo}
+                marginRight={'2px'}
+                marginLeft={'5px'}
+              />{' '}
+              {action.pool.protocol.name}
+            </Text>
+          </Box>
+        ))}
+        {strategy.actions.length == 0 && (
+          <Center width={'100%'} padding={'10px'}>
+            <Spinner size={'xs'} color="white" />
+          </Center>
+        )}
       </Flex>
     </Flex>
   );
@@ -637,6 +758,14 @@ const Strategy = ({ params }: StrategyParams) => {
             <TabPanels>
               <TabPanel width={'100%'} padding={0}>
                 {strategy && <Manage strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <Risk strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <Details strategy={strategy} />}
               </TabPanel>
             </TabPanels>
           </Tabs>
