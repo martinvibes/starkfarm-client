@@ -71,6 +71,7 @@ const theme = extendTheme({
     color_4: '#4DB8FF',
     color_5: '#16131E',
     color_6: '#111119',
+    color_7: '#6E59FF',
 
     border_light: '#CFCFEA',
     border_light_3p: '#CFCFEA0D',

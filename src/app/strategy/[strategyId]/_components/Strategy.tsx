@@ -1,6 +1,11 @@
 'use client';
 
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Alert,
   AlertIcon,
   Avatar,
@@ -313,6 +318,190 @@ function Details({ strategy }: { strategy: StrategyInfo<any> }) {
             <Spinner size={'xs'} color="white" />
           </Center>
         )}
+      </Flex>
+    </Flex>
+  );
+}
+
+function FAQ() {
+  return (
+    <Flex flexDirection={'column'} padding={'24px 0px'} gap={'24px'}>
+      <Text fontSize={'24px'} color={'white'} fontWeight={'600'}>
+        Get to know about all your doubts
+      </Text>
+
+      <Flex>
+        <Flex flexDirection={'column'} width={'696px'} gap={'16px'}>
+          <Accordion
+            width={'100%'}
+            display={'flex'}
+            flexDirection={'column'}
+            gap={'16px'}
+          >
+            <AccordionItem
+              borderRadius={'8px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+            >
+              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
+                <AccordionButton>
+                  <Box flex="1" textAlign="left">
+                    Question asked basis zkLend
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </Text>
+              <AccordionPanel
+                pb={4}
+                fontSize={'14px'}
+                fontWeight={'400'}
+                lineHeight={'20px'}
+                color={'silver_gray'}
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+
+            <AccordionItem
+              borderRadius={'8px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+            >
+              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
+                <AccordionButton>
+                  <Box flex="1" textAlign="left">
+                    Question asked basis zkLend
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </Text>
+              <AccordionPanel
+                pb={4}
+                fontSize={'14px'}
+                fontWeight={'400'}
+                lineHeight={'20px'}
+                color={'silver_gray'}
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+
+            <AccordionItem
+              borderRadius={'8px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+            >
+              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
+                <AccordionButton>
+                  <Box flex="1" textAlign="left">
+                    Question asked basis zkLend
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </Text>
+              <AccordionPanel
+                pb={4}
+                fontSize={'14px'}
+                fontWeight={'400'}
+                lineHeight={'20px'}
+                color={'silver_gray'}
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+
+            <AccordionItem
+              borderRadius={'8px'}
+              borderWidth={'1px'}
+              borderColor={'slate_blue'}
+            >
+              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
+                <AccordionButton>
+                  <Box flex="1" textAlign="left">
+                    Question asked basis zkLend
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </Text>
+              <AccordionPanel
+                pb={4}
+                fontSize={'14px'}
+                fontWeight={'400'}
+                lineHeight={'20px'}
+                color={'silver_gray'}
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </Flex>
+
+        <Flex
+          flexDirection={'column'}
+          alignItems={'center'}
+          alignSelf={'center'}
+          gap={'16px'}
+          marginLeft={'auto'}
+          marginRight={'auto'}
+        >
+          <Flex
+            flexDirection={'column'}
+            width={'415px'}
+            gap={'8px'}
+            padding={'10px'}
+            borderWidth={'1px'}
+            borderRadius={'8px'}
+            borderColor={'slate_blue'}
+          >
+            <Text
+              fontSize={'14px'}
+              fontWeight={'500'}
+              color={'border_light'}
+              textAlign={'center'}
+            >
+              For more queries reach out to us on Telegram
+            </Text>
+            <Text
+              fontSize={'14px'}
+              fontWeight={'400'}
+              color={'silver_gray'}
+              textAlign={'center'}
+            >
+              Our team will respond to you soon!
+            </Text>
+          </Flex>
+
+          <Link href="https://t.me/+HQ_eHaXmF-1lZDc1">
+            <Button
+              bg={'transparent'}
+              padding={'12px 20px'}
+              borderRadius={'100px'}
+              borderWidth={'1px'}
+              borderColor={'color_7'}
+              color={'color_7'}
+              fontSize={'14px'}
+              fontWeight={'700'}
+              _hover={{
+                bg: 'transparent',
+                color: 'color_7',
+              }}
+            >
+              Connect on Telegram
+            </Button>
+          </Link>
+        </Flex>
       </Flex>
     </Flex>
   );
@@ -766,6 +955,10 @@ const Strategy = ({ params }: StrategyParams) => {
 
               <TabPanel width={'100%'} padding={0}>
                 {strategy && <Details strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                <FAQ />
               </TabPanel>
             </TabPanels>
           </Tabs>
