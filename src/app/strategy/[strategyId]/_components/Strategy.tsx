@@ -9,6 +9,7 @@ import {
   Alert,
   AlertIcon,
   Avatar,
+  AvatarGroup,
   Badge,
   Box,
   Button,
@@ -16,20 +17,20 @@ import {
   Container,
   Flex,
   Image,
+  HStack,
   Link,
   ListItem,
   OrderedList,
   Spinner,
   Tab,
-  TabIndicator,
   TabList,
-  TabPanel,
   TabPanels,
+  TabPanel,
   Tabs,
+  TabIndicator,
   Text,
   Tooltip,
   UnorderedList,
-  VStack,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -39,16 +40,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import shield from '@/assets/shield.svg';
 
-import Deposit from '@/components/Deposit';
 import HarvestTime from '@/components/HarvestTime';
-import { DUMMY_BAL_ATOM } from '@/store/balance.atoms';
+import { DUMMY_BAL_ATOM, returnEmptyBal } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
 import { strategiesAtom, StrategyInfo } from '@/store/strategies.atoms';
-import { transactionsAtom, TxHistoryAtom } from '@/store/transactions.atom';
+import { TxHistoryAtom } from '@/store/transactions.atom';
 import { getTokenInfoFromAddr } from '@/utils';
 import MyNumber from '@/utils/MyNumber';
 import { StrategyParams } from '../page';
 import { getRiskExplaination } from '@strkfarm/sdk';
+import {
+  STRKFarmBaseAPYsAtom,
+  STRKFarmStrategyAPIResult,
+} from '@/store/strkfarm.atoms';
+import { TokenDeposit } from './TokenDeposit';
 
 function Manage({ strategy }: { strategy: StrategyInfo<any> }) {
   return (
@@ -107,98 +112,13 @@ function Manage({ strategy }: { strategy: StrategyInfo<any> }) {
         borderWidth={'1px'}
         borderColor={'slate_blue'}
       >
-        <Tabs position="relative" variant="unstyled" width={'100%'}>
-          <TabList borderRadius={'8px'}>
-            <Tab
-              width={'100%'}
-              bg="purple_60p"
-              color="color_5"
-              fontSize={'14px'}
-              fontWeight={'700'}
-              borderTopLeftRadius={'8px'}
-              _selected={{ bg: 'bright_purple', color: 'black' }}
-              onClick={() => {}}
-            >
-              Deposit
-            </Tab>
-            <Tab
-              width={'100%'}
-              bg="purple_60p"
-              color="color_5"
-              fontSize={'14px'}
-              fontWeight={'700'}
-              borderTopRightRadius={'8px'}
-              _selected={{ bg: 'bright_purple', color: 'black' }}
-              onClick={() => {}}
-            >
-              Withdraw
-            </Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel
-              width={'100%'}
-              padding={'20px 16px'}
-              borderBottomLeftRadius={'8px'}
-            >
-              <Deposit
-                strategy={strategy}
-                buttonText="Deposit"
-                callsInfo={strategy.depositMethods}
-              />
-              {strategy.settings.alerts !== undefined && (
-                <VStack mt={'20px'}>
-                  {strategy.settings.alerts
-                    .filter((a) => a.tab === 'deposit' || a.tab === 'all')
-                    .map((alert, index) => (
-                      <Alert
-                        status={alert.type}
-                        fontSize={'12px'}
-                        color={'light_grey'}
-                        borderRadius={'10px'}
-                        bg="color2_50p"
-                        padding={'10px'}
-                        key={index}
-                      >
-                        <AlertIcon />
-                        {alert.text}
-                      </Alert>
-                    ))}
-                </VStack>
-              )}
-            </TabPanel>
-            <TabPanel
-              width={'100%'}
-              padding={'20px 16px'}
-              borderBottomRightRadius={'8px'}
-            >
-              <Deposit
-                strategy={strategy}
-                buttonText="Redeem"
-                callsInfo={strategy.withdrawMethods}
-              />
-              {strategy.settings.alerts !== undefined && (
-                <VStack mt={'20px'}>
-                  {strategy.settings.alerts
-                    .filter((a) => a.tab === 'withdraw' || a.tab === 'all')
-                    .map((alert, index) => (
-                      <Alert
-                        status={alert.type}
-                        fontSize={'12px'}
-                        color={'light_grey'}
-                        borderRadius={'10px'}
-                        bg="color2_50p"
-                        padding={'10px'}
-                        key={index}
-                      >
-                        <AlertIcon />
-                        {alert.text}
-                      </Alert>
-                    ))}
-                </VStack>
-              )}
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        {!strategy ||
+          (strategy.isSingleTokenDepositView && (
+            <TokenDeposit strategy={strategy} isDualToken={false} />
+          ))}
+        {strategy && !strategy.isSingleTokenDepositView && (
+          <TokenDeposit strategy={strategy} isDualToken={true} />
+        )}
       </Flex>
     </Flex>
   );
@@ -510,7 +430,6 @@ function FAQ() {
 const Strategy = ({ params }: StrategyParams) => {
   const address = useAtomValue(addressAtom);
   const strategies = useAtomValue(strategiesAtom);
-  const transactions = useAtomValue(transactionsAtom);
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -576,9 +495,8 @@ const Strategy = ({ params }: StrategyParams) => {
 
   const strategy: StrategyInfo<any> | undefined = useMemo(() => {
     const id = params.strategyId;
-
     return strategies.find((s) => s.id === id);
-  }, [params.strategyId, strategies]);
+  }, [params.strategyId, strategies.map((id) => id).toString()]);
 
   const strategyAddress = useMemo(() => {
     const holdingTokens = strategy?.holdingTokens;
@@ -595,18 +513,17 @@ const Strategy = ({ params }: StrategyParams) => {
     setBalQueryEnable(true);
   }, []);
 
-  const balData = useAtomValue(strategy?.balanceAtom || DUMMY_BAL_ATOM);
+  const balData = useAtomValue(strategy?.balanceSummaryAtom || DUMMY_BAL_ATOM);
+  const individualBalances = useAtomValue(
+    strategy?.balancesAtom || atom([returnEmptyBal()]),
+  );
 
   // fetch tx history
   const txHistoryAtom = useMemo(
-    () =>
-      TxHistoryAtom(
-        strategyAddress,
-        address!,
-        strategy?.balanceAtom || DUMMY_BAL_ATOM,
-      ),
-    [address, strategyAddress, balData],
+    () => TxHistoryAtom(strategyAddress, address!),
+    [address, strategyAddress],
   );
+
   const txHistoryResult = useAtomValue(txHistoryAtom);
   const txHistory = useMemo(() => {
     if (txHistoryResult.data) {
@@ -625,7 +542,7 @@ const Strategy = ({ params }: StrategyParams) => {
       txHistoryResult.isLoading,
     );
     return txHistoryResult.data || { findManyInvestment_flows: [] };
-  }, [txHistoryResult.data]);
+  }, [JSON.stringify(txHistoryResult.data)]);
 
   // compute profit
   // profit doesnt change quickly in real time, but total deposit amount can change
@@ -676,6 +593,14 @@ const Strategy = ({ params }: StrategyParams) => {
     setIsMounted(true);
   }, []);
 
+  const strategiesInfo = useAtomValue(STRKFarmBaseAPYsAtom);
+  const strategyCached = useMemo(() => {
+    if (!strategiesInfo || !strategiesInfo.data) return null;
+    const strategiesList: STRKFarmStrategyAPIResult[] =
+      strategiesInfo.data.strategies;
+    return strategiesList.find((s: any) => s.id === params.strategyId);
+  }, [strategiesInfo, params.strategyId]);
+
   if (!isMounted) return null;
 
   return (
@@ -711,11 +636,30 @@ const Strategy = ({ params }: StrategyParams) => {
             <Flex flexDirection={'column'} gap={'16px'}>
               <Flex justifyContent={'space-between'}>
                 <Flex gap={'16px'} alignItems={'center'}>
-                  <Avatar
-                    src={strategy?.holdingTokens[0].logo}
-                    width={'64px'}
-                    height={'64px'}
-                  />
+                  <AvatarGroup size={'md'} spacing={'-20px'} mr={'5px'}>
+                    {strategy &&
+                      strategy.metadata.depositTokens.length > 0 &&
+                      strategy.metadata.depositTokens.map((token: any) => {
+                        return (
+                          <Avatar
+                            key={token.address}
+                            marginRight={'5px'}
+                            src={token.logo}
+                            width={'64px'}
+                            height={'64px'}
+                          />
+                        );
+                      })}
+                    {strategy &&
+                      strategy.metadata.depositTokens.length == 0 && (
+                        <Avatar
+                          marginRight={'5px'}
+                          src={strategy?.holdingTokens[0].logo}
+                          width={'64px'}
+                          height={'64px'}
+                        />
+                      )}
+                  </AvatarGroup>
                   <Text fontSize={'32px'} fontWeight={'600'} color="white">
                     {strategy ? strategy.name : 'Strategy Not found'}
                   </Text>
@@ -774,17 +718,49 @@ const Strategy = ({ params }: StrategyParams) => {
 
                     {(balData.isLoading ||
                       balData.isPending ||
-                      !balData.data?.tokenInfo) && (
+                      (!balData.data?.tokenInfo && !balData.isError)) && (
                       <Text color="text" fontSize={'18px'} fontWeight={'700'}>
                         {address ? <Spinner size="sm" /> : 'Connect wallet'}
                       </Text>
                     )}
 
-                    {balData.isError && (
-                      <Text color="text" fontSize={'18px'} fontWeight={'700'}>
-                        Your Holdings: Error
-                      </Text>
-                    )}
+                    {balData.isError &&
+                      !balData.isLoading &&
+                      !balData.isPending && (
+                        <Text color="text" fontSize={'18px'} fontWeight={'700'}>
+                          Error
+                        </Text>
+                      )}
+
+                    {/* Show individual holdings is more tokens */}
+                    {individualBalances.length > 1 &&
+                      balData.data?.amount.compare('0', 'gt') && (
+                        <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
+                          <HStack
+                            className="flex"
+                            gap={2}
+                            fontSize={'12px'}
+                            color="light_grey"
+                            marginTop={'5px'}
+                            borderTop={
+                              '1px solid var(--chakra-colors-highlight)'
+                            }
+                            paddingTop={'5px'}
+                          >
+                            <p>Detailed Split:</p>
+                            {individualBalances.map((bx, index) => {
+                              return (
+                                <Text key={index}>
+                                  {bx?.amount.toEtherToFixedDecimals(
+                                    bx.tokenInfo?.displayDecimals || 2,
+                                  )}{' '}
+                                  {bx?.tokenInfo?.name}
+                                </Text>
+                              );
+                            })}
+                          </HStack>
+                        </Tooltip>
+                      )}
 
                     {address &&
                       balData.data &&

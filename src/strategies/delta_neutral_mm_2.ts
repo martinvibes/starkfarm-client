@@ -1,11 +1,21 @@
 import { TokenName } from '@/constants';
 import { DeltaNeutralMM } from './delta_neutral_mm';
-import { IStrategySettings, StrategyLiveStatus, TokenInfo } from './IStrategy';
+import {
+  AmountsInfo,
+  IStrategySettings,
+  StrategyLiveStatus,
+  TokenInfo,
+} from './IStrategy';
 import { nostraLending } from '@/store/nostralending.store';
 import { zkLend } from '@/store/zklend.store';
-import MyNumber from '@/utils/MyNumber';
-import { getPrice, getTokenInfoFromName } from '@/utils';
+import {
+  convertToV2TokenInfo,
+  getPrice,
+  getTokenInfoFromName,
+  ZeroAmountsInfo,
+} from '@/utils';
 import { getERC20Balance } from '@/store/balance.atoms';
+import { Web3Number } from '@strkfarm/sdk';
 
 export class DeltaNeutralMM2 extends DeltaNeutralMM {
   constructor(
@@ -32,13 +42,8 @@ export class DeltaNeutralMM2 extends DeltaNeutralMM {
     );
   }
 
-  getTVL = async () => {
-    if (!this.isLive())
-      return {
-        amount: MyNumber.fromEther('0', this.token.decimals),
-        usdValue: 0,
-        tokenInfo: this.token,
-      };
+  getTVL = async (): Promise<AmountsInfo> => {
+    if (!this.isLive()) return ZeroAmountsInfo([this.token]);
 
     try {
       const mainTokenName = this.token.name;
@@ -50,19 +55,21 @@ export class DeltaNeutralMM2 extends DeltaNeutralMM {
       const discountFactor = this.stepAmountFactors[4];
       const amount = bal.amount.operate('div', 1 + discountFactor);
       console.log('getTVL1', amount.toString());
-      const price = await getPrice(this.token);
+      const price = await getPrice(this.token, 'dnmm2');
+      const usdValue = Number(amount.toEtherStr()) * price;
       return {
-        amount,
-        usdValue: Number(amount.toEtherStr()) * price,
-        tokenInfo: this.token,
+        usdValue,
+        amounts: [
+          {
+            amount: Web3Number.fromWei(amount.toString(), amount.decimals),
+            usdValue,
+            tokenInfo: convertToV2TokenInfo(this.token),
+          },
+        ],
       };
     } catch (error) {
       console.error('Error fetching TVL:', error);
-      return {
-        amount: MyNumber.fromEther('0', this.token.decimals),
-        usdValue: 0,
-        tokenInfo: this.token,
-      };
+      return ZeroAmountsInfo([this.token]);
     }
   };
 }

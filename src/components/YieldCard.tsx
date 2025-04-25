@@ -26,6 +26,7 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
+import { ContractAddr } from '@strkfarm/sdk';
 import { useAtomValue } from 'jotai';
 import mixpanel from 'mixpanel-browser';
 import { useMemo } from 'react';
@@ -63,9 +64,9 @@ export function StrategyInfo(props: YieldCardProps) {
   return (
     <Box>
       <HStack spacing={2}>
-        <AvatarGroup size="xs" max={2} marginRight={'10px'}>
-          {pool.pool.logos.map((logo) => (
-            <Avatar key={logo} src={logo} />
+        <AvatarGroup size="xs" max={3} marginRight={'10px'}>
+          {pool.pool.logos.map((logo, index) => (
+            <Avatar key={index} src={logo} />
           ))}
         </AvatarGroup>
         <Box>
@@ -195,25 +196,30 @@ function StrategyAPY(props: YieldCardProps) {
         <Text float={'left'}>
           {getAPRWithToolTip(pool)}
 
-          {/* {pool.additional && pool.additional.leverage && (
-            <Tooltip label="Shows the increased capital efficiency of investments compared to direct deposit in popular lending protocols">
-              <Box width={'100%'}>
-                <Box float={'right'} display={'flex'} fontSize={'13px'}>
-                  <Text color="#FCC01E" textAlign={'right'}>
-                    ⚡
-                  </Text>
-                  <Text
-                    width="100%"
-                    color="cyan"
-                    textAlign={'right'}
-                    fontWeight={600}
-                  >
-                    {pool.additional.leverage.toFixed(1)}X
-                  </Text>
+          {pool.aprSplits.length &&
+            pool.aprSplits.some((a) => a.title == 'Rewards APY') && (
+              <Tooltip
+                label="Boosted rewards from STRKFarm"
+                bg="gray.300"
+                color="black"
+              >
+                <Box width={'100%'}>
+                  <Box float={'right'} display={'flex'} fontSize={'13px'}>
+                    <Text color="#FCC01E" textAlign={'right'}>
+                      ⚡
+                    </Text>
+                    <Text
+                      width="100%"
+                      color="cyan"
+                      textAlign={'right'}
+                      fontWeight={600}
+                    >
+                      Boosted
+                    </Text>
+                  </Box>
                 </Box>
-              </Box>
-            </Tooltip>
-          )} */}
+              </Tooltip>
+            )}
         </Text>
       )}
     </Box>
@@ -225,23 +231,27 @@ export function getStrategyWiseHoldingsInfo(
   id: string,
 ) {
   const amount = userData?.strategyWise.find((item) => item.id === id);
+  const defaultTokenInfo = {
+    name: 'N/A',
+    symbol: 'N/A',
+    address: ContractAddr.from('0x0'),
+    decimals: 0,
+    logo: '',
+    displayDecimals: 2,
+  };
   if (!amount) {
     return {
       usdValue: 0,
       amount: 0,
-      tokenInfo: {
-        symbol: '',
-        decimals: 0,
-        displayDecimals: 0,
-        logo: '',
-        name: '',
-      },
+      tokenInfo: defaultTokenInfo,
     };
   }
   return {
     usdValue: amount.usdValue,
-    amount: Number(amount.amount),
-    tokenInfo: amount.tokenInfo,
+    amount: amount.holdings.length ? Number(amount.holdings[0].amount) : 0,
+    tokenInfo: amount.holdings.length
+      ? amount.holdings[0].tokenInfo
+      : defaultTokenInfo,
   };
 }
 

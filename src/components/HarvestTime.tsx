@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import {
   Box,
   Flex,
-  Link,
   Spinner,
+  Link,
   Stat,
   StatLabel,
   StatNumber,
@@ -94,11 +94,55 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
     return strategyInfo.leverage || 0;
   }, [strategyInfo]);
 
+  const defaultAPYTooltip =
+    'Current APY including any fees. Net returns subject to change based on market conditions.';
   return (
     <Flex width={'100%'} flexDirection={'column'}>
-      <Flex width={'100%'} justifyContent={'space-between'}>
+      <Flex width={'100%'} justifyContent="space-between">
         <Flex gap={'8px'}>
-          <Tooltip label="Current APY including any fees. Net returns subject to change based on market conditions.">
+          <Tooltip
+            label={
+              <Box fontSize={'13px'}>
+                <Text>
+                  {strategy.metadata.apyMethodology || defaultAPYTooltip}
+                </Text>
+                {strategyInfo && (
+                  <Box
+                    marginTop={'10px'}
+                    justifyContent={'space-between'}
+                    display={'flex'}
+                  >
+                    <Box>
+                      <Text>Strategy APY:</Text>
+                      <Text fontSize={'12px'} opacity={0.7}>
+                        Including fees and Defi spring rewards
+                      </Text>
+                    </Box>
+                    <Text fontWeight={'bold'}>
+                      {(strategyInfo.apySplit.baseApy * 100).toFixed(2)}%
+                    </Text>
+                  </Box>
+                )}
+                {strategyInfo && strategyInfo.apySplit.rewardsApy > 0 && (
+                  <Box
+                    marginTop={'10px'}
+                    justifyContent={'space-between'}
+                    display={'flex'}
+                  >
+                    <Box>
+                      <Text>Rewards APY:</Text>
+                      <Text fontSize={'12px'} opacity={0.7}>
+                        Incentives by STRKFarm
+                      </Text>
+                    </Box>
+                    <Text fontWeight={'bold'}>
+                      {(strategyInfo.apySplit.rewardsApy * 100).toFixed(2)}%
+                    </Text>
+                  </Box>
+                )}
+              </Box>
+            }
+          >
             <Stat
               display={'flex'}
               flexDirection={'column'}
@@ -128,7 +172,7 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
             </Stat>
           </Tooltip>
 
-          <Tooltip label="This shows how much higher your yield is compared to zKLend">
+          <Tooltip label="Boosted rewards from STRKFarm">
             <Tag
               alignSelf={'flex-end'}
               bg="bg_3"

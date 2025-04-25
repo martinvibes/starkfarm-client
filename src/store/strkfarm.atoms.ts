@@ -19,7 +19,16 @@ export interface STRKFarmStrategyAPIResult {
   name: string;
   id: string;
   apy: number;
-  depositToken: string[];
+  apySplit: {
+    baseApy: number;
+    rewardsApy: number;
+  };
+  depositToken: {
+    name: string;
+    address: string;
+    symbol: string;
+    decimals: number;
+  }[];
   leverage: number;
   contract: { name: string; address: string }[];
   tvlUsd: number;
@@ -28,7 +37,7 @@ export interface STRKFarmStrategyAPIResult {
     value: string;
   };
   riskFactor: number;
-  logo: string;
+  logos: string[];
   isAudited: boolean;
   auditUrl?: string;
   actions: {
@@ -63,20 +72,32 @@ export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
       const isStable = poolName.includes('USDC') || poolName.includes('USDT');
       const categories: Category[] = getCategoriesFromName(poolName, isStable);
 
+      const rewardsApy: APRSplit[] = [];
+      if (rawPool.apySplit.rewardsApy > 0) {
+        rewardsApy.push({
+          apr: rawPool.apySplit.rewardsApy,
+          title: 'Rewards APY',
+          description: 'Incentives by STRKFarm',
+        });
+      }
+
       const poolInfo: PoolInfo = {
         pool: {
           id: rawPool.id,
           name: poolName,
-          logos: [rawPool.logo],
+          logos: [...rawPool.logos],
         },
         protocol: {
           name: this.name,
           link: `/strategy/${rawPool.id}`,
           logo: this.logo,
         },
-        apr: 0,
+        apr:
+          rewardsApy.length && rewardsApy[0].apr != 'Err'
+            ? rewardsApy[0].apr
+            : 0,
         tvl: rawPool.tvlUsd,
-        aprSplits: [],
+        aprSplits: [...rewardsApy],
         category: categories,
         type: PoolType.Derivatives,
         lending: {
@@ -94,6 +115,7 @@ export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
           is_promoted: poolName.includes('Stake'),
         },
       };
+      console.log('rawPool', poolName, poolInfo);
       return poolInfo;
     });
   }
@@ -106,10 +128,10 @@ export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
     if (data.isSuccess) {
       const item = aprData.find((doc) => doc.id === p.pool.id);
       if (item) {
-        baseAPY = item.apy;
+        baseAPY = item.apySplit.baseApy;
         splitApr = {
-          apr: baseAPY,
-          title: 'Net APY',
+          apr: item.apySplit.baseApy,
+          title: 'Strategy APY',
           description: 'Includes fees & Defi spring rewards',
         };
       }
