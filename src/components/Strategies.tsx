@@ -88,8 +88,12 @@ export default function Strategies() {
             <Th color="white">Strategy name</Th>
             <Th color="white">APY</Th>
             <Th color="white">Risk</Th>
-            <Th color="white">TVL</Th>
-            <Th color="white">MY BAL</Th>
+            <Th color="white" textAlign={'right'}>
+              TVL
+            </Th>
+            <Th color="white" textAlign={'right'}>
+              MY BAL
+            </Th>
           </Tr>
         </Thead>
         <Tbody>

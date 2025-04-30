@@ -14,7 +14,7 @@ import STRKFarmAtoms, {
 import '@xyflow/react/dist/style.css';
 import { IInvestmentFlow } from '@strkfarm/sdk';
 import { useAtomValue } from 'jotai';
-import { Spinner } from '@chakra-ui/react';
+import { Spinner, Box } from '@chakra-ui/react';
 // import ELK from 'elkjs/lib/elk.bundled.js';
 
 const boxStyle = {
@@ -260,7 +260,7 @@ function InternalFlowChart(props: FlowChartProps) {
 
   if (strategyCached && strategyCached.investmentFlows.length > 0)
     return (
-      <div style={{ width: '100%', height: '350px' }}>
+      <Box width={'100%'} height={'500px'}>
         <ReactFlow
           fitView
           nodes={nodes}
@@ -278,13 +278,13 @@ function InternalFlowChart(props: FlowChartProps) {
           // panOnDrag={false}
           proOptions={proOptions}
         />
-      </div>
+      </Box>
     );
 
   return (
-    <div>
+    <Box>
       <Spinner size={'sm'} />
-    </div>
+    </Box>
   );
 }
 

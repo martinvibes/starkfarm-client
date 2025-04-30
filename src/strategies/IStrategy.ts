@@ -190,10 +190,7 @@ export class IStrategyProps<T> {
   ];
 
   getSafetyFactorLine() {
-    let factorLevel = 'Low';
-    if (this.riskFactor > 2) factorLevel = 'Medium';
-    if (this.riskFactor >= 4) factorLevel = 'High';
-    return `Risk factor: ${this.riskFactor}/5 (${factorLevel} risk)`;
+    return `Risk factor: ${this.riskFactor}/5`;
   }
 
   depositMethods = async (

@@ -213,7 +213,6 @@ export default function Pools() {
                   <Text color="white">Pool name</Text>
                 </Th>
                 <Th
-                  textAlign={'left'}
                   borderRightWidth={'1px'}
                   borderColor={'slate_blue'}
                   fontSize={'14px'}
@@ -221,6 +220,7 @@ export default function Pools() {
                 >
                   <HeaderSorter
                     heading="APY"
+                    align="left"
                     mainColor="white"
                     inActiveColor="#d9d9f726"
                     onClick={handleSortChange('APR')}
@@ -228,7 +228,6 @@ export default function Pools() {
                   />
                 </Th>
                 <Th
-                  textAlign={'left'}
                   borderRightWidth={'1px'}
                   borderColor={'slate_blue'}
                   fontSize={'14px'}
@@ -236,6 +235,7 @@ export default function Pools() {
                 >
                   <HeaderSorter
                     heading="Risk"
+                    align="left"
                     mainColor="white"
                     inActiveColor="#d9d9f726"
                     onClick={handleSortChange('RISK')}
@@ -251,19 +251,17 @@ export default function Pools() {
                 >
                   <HeaderSorter
                     heading="TVL"
+                    align="right"
                     mainColor="white"
                     inActiveColor="#d9d9f726"
                     onClick={handleSortChange('TVL')}
                     active={tvlStatus}
                   />
                 </Th>
-                <Th
-                  textAlign={'left'}
-                  color="white"
-                  fontSize={'14px'}
-                  fontWeight={'600'}
-                >
-                  <Text color="white">MY BAL</Text>
+                <Th color="white" fontSize={'14px'} fontWeight={'600'}>
+                  <Text color="white" textAlign={'right'}>
+                    MY BAL
+                  </Text>
                 </Th>
               </Tr>
             </Thead>

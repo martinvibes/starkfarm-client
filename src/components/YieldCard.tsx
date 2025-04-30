@@ -270,10 +270,9 @@ export function StrategyTVL(props: YieldCardProps) {
       display={'flex'}
       flexDirection={'column'}
       justifyContent={'center'}
-      alignItems={'flex-start'}
     >
       {isPoolLive && (
-        <Text fontSize={'14px'} fontWeight={'600'} float={'left'}>
+        <Text fontSize={'14px'} fontWeight={'600'} textAlign={'right'}>
           ${getDisplayCurrencyAmount(pool.tvl || 0, 0)}
         </Text>
       )}
@@ -301,14 +300,38 @@ export function StrategyBalance(props: YieldCardProps) {
       display={'flex'}
       flexDirection={'column'}
       justifyContent={'center'}
-      alignItems={'flex-start'}
     >
       {!isPoolLive && <Text>-</Text>}
       {address && isPoolLive && pool.protocol.name === 'STRKFarm' && (
         <Tooltip label="Your deposits in this STRKFarm strategy">
-          <Text fontSize={'14px'} fontWeight={'600'}>
-            ${getDisplayCurrencyAmount(holdingsInfo.usdValue || 0, 0)}
-          </Text>
+          <>
+            <Text fontSize={'14px'} fontWeight={'600'} textAlign={'right'}>
+              ${getDisplayCurrencyAmount(holdingsInfo.usdValue, 0)}
+            </Text>
+            {holdingsInfo.amount != 0 && (
+              <Flex
+                justifyContent={'flex-end'}
+                marginTop={'-5px'}
+                width={'100%'}
+                opacity={0.5}
+              >
+                {/* <Avatar size={'2xs'} src={holdingsInfo.tokenInfo.logo} mr={'2px'}/> */}
+                <Text textAlign={'right'} fontSize={'11px'}>
+                  {getDisplayCurrencyAmount(
+                    holdingsInfo.amount,
+                    holdingsInfo.tokenInfo.displayDecimals,
+                  ).toLocaleString()}
+                </Text>
+                <Image
+                  width={'10px'}
+                  src={holdingsInfo.tokenInfo.logo}
+                  ml={'4px'}
+                  mr={'1px'}
+                  filter={'grayscale(1)'}
+                />
+              </Flex>
+            )}
+          </>
         </Tooltip>
       )}
     </Box>
@@ -560,6 +583,7 @@ export function YieldStrategyCard(props: {
 
 export function HeaderSorter(props: {
   heading: string;
+  align: 'left' | 'right';
   mainColor: string;
   inActiveColor: string;
   onClick: (order: 'asc' | 'desc') => void;
@@ -581,7 +605,7 @@ export function HeaderSorter(props: {
       onClick={() => {
         props.onClick(order);
       }}
-      float={'left'}
+      float={props.align}
       padding={0}
     >
       <Text color={props.mainColor}>{props.heading.toUpperCase()}</Text>

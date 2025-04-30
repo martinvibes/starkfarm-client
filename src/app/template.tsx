@@ -56,8 +56,13 @@ const theme = extendTheme({
     bg_3: '#090910',
     grey_text: '#B6B6B6',
     text: '#F8F8FF',
+
     yellow: '#EFDB72',
+    yellow_2: '#FFA500',
+
     red: '#e18787',
+    red_2: '#FF5F5F',
+
     dark_navy: '#181824',
     slate_blue: '#2D2D3D',
     silver_gray: '#8E8E8E',
@@ -145,7 +150,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         connectors={getConnectors(isMobile)}
       >
         <ChakraBaseProvider theme={theme}>
-          <Flex minHeight={'100vh'} bgColor={'bg'}>
+          <Flex minHeight={'100vh'} bgColor={'color_6'}>
             <React.Suspense>
               <Container width={'100%'} padding="0px">
                 <Navbar

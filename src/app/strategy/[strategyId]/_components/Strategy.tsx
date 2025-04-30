@@ -1,26 +1,15 @@
 'use client';
 
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Alert,
-  AlertIcon,
   Avatar,
   AvatarGroup,
-  Badge,
   Box,
   Button,
-  Center,
   Container,
   Flex,
   Image,
   HStack,
   Link,
-  ListItem,
-  OrderedList,
   Spinner,
   Tab,
   TabList,
@@ -30,7 +19,6 @@ import {
   TabIndicator,
   Text,
   Tooltip,
-  UnorderedList,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -48,384 +36,15 @@ import { TxHistoryAtom } from '@/store/transactions.atom';
 import { getTokenInfoFromAddr } from '@/utils';
 import MyNumber from '@/utils/MyNumber';
 import { StrategyParams } from '../page';
-import { getRiskExplaination } from '@strkfarm/sdk';
 import {
   STRKFarmBaseAPYsAtom,
   STRKFarmStrategyAPIResult,
 } from '@/store/strkfarm.atoms';
-import { TokenDeposit } from './TokenDeposit';
-
-function Manage({ strategy }: { strategy: StrategyInfo<any> }) {
-  return (
-    <Flex padding={'24px 0px'} gap={'24px'}>
-      <Flex
-        width={'50%'}
-        height={'280px'}
-        flexDirection={'column'}
-        gap={'16px'}
-        padding={'32px 16px'}
-        borderRadius={'8px'}
-        borderWidth={'1px'}
-        borderColor={'slate_blue'}
-      >
-        <Text fontSize={'24px'} fontWeight={'600'} color={'white'}>
-          How does it work?
-        </Text>
-        <UnorderedList
-          fontSize={'14px'}
-          fontWeight={'400'}
-          color={'border_light'}
-        >
-          <ListItem>
-            Deposit USDC to automatically loop funds between zkLend and Nostra.
-          </ListItem>
-          <ListItem>
-            Creates a delta-neutral position to maximize USDC yield.
-          </ListItem>
-          <ListItem>
-            Position is periodically adjusted to maintain a healthy health
-            factor
-          </ListItem>
-          <ListItem>
-            Receive an NFT as representation for your stake on STRKFarm.
-          </ListItem>
-          <ListItem>Withdraw anytime by redeeming your NFT for USDC.</ListItem>
-        </UnorderedList>
-
-        <Flex alignItems={'center'} gap={'8px'}>
-          <Text fontSize={'24px'} fontWeight={'600'} color={'white'}>
-            Risk
-          </Text>
-          {strategy.metadata.risk.riskFactor.map((r: any, i: number) => (
-            <Tooltip label={getRiskExplaination(r.type)} key={i}>
-              <Badge padding={'5px 10px'} borderRadius={'10px'} opacity={0.8}>
-                {r.type.valueOf()}
-              </Badge>
-            </Tooltip>
-          ))}
-        </Flex>
-      </Flex>
-
-      <Flex
-        width={'50%'}
-        borderRadius={'8px'}
-        borderWidth={'1px'}
-        borderColor={'slate_blue'}
-      >
-        {!strategy ||
-          (strategy.isSingleTokenDepositView && (
-            <TokenDeposit strategy={strategy} isDualToken={false} />
-          ))}
-        {strategy && !strategy.isSingleTokenDepositView && (
-          <TokenDeposit strategy={strategy} isDualToken={true} />
-        )}
-      </Flex>
-    </Flex>
-  );
-}
-
-function Risk({ strategy }: { strategy: StrategyInfo<any> }) {
-  return (
-    <Flex padding={'24px 0px'} gap={'24px'}>
-      <Flex
-        width={'623px'}
-        flexDirection={'column'}
-        gap={'16px'}
-        padding={'32px 16px'}
-      >
-        <OrderedList
-          fontSize={'14px'}
-          fontWeight={'400'}
-          color={'border_light'}
-          listStyleType="none"
-          css={{
-            '& li': {
-              position: 'relative',
-              paddingLeft: '2.5em',
-
-              '&::before': {
-                content: 'attr(data-number)',
-                position: 'absolute',
-                left: '10px',
-                top: '12px',
-                padding: '4px 8px',
-                color: 'black',
-                fontSize: '10px',
-                borderRadius: '50%',
-                backgroundColor: 'white',
-                width: '20px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              },
-            },
-          }}
-          display={'flex'}
-          flexDirection={'column'}
-          gap={'32px'}
-        >
-          {strategy.risks.map((r, index) => (
-            <ListItem
-              color="border_light"
-              key={r}
-              width={'fit-content'}
-              fontSize={'14px'}
-              fontWeight={'500'}
-              alignItems={'justify'}
-              padding={'10px'}
-              borderRadius={'8px'}
-              borderWidth={'1px'}
-              borderColor={'slate_blue'}
-              data-number={index + 1}
-            >
-              {r}
-            </ListItem>
-          ))}
-        </OrderedList>
-      </Flex>
-    </Flex>
-  );
-}
-
-function Details({ strategy }: { strategy: StrategyInfo<any> }) {
-  return (
-    <Flex flexDirection={'column'} padding={'24px 0px'} gap={'24px'}>
-      <Flex flexDirection={'column'} gap={'8px'}>
-        <Text fontSize={'24px'} color={'white'} fontWeight={'600'}>
-          Behind the scenes
-        </Text>
-        <Text fontSize={'14px'} color={'border_light'}>
-          Actions done automatically by the strategy (smart-contract) with an
-          investment of $1000
-        </Text>
-      </Flex>
-
-      <Flex width={'623px'} gap={'16px'} padding={'32px 16px'}>
-        {strategy.actions.map((action, index) => (
-          <Box
-            className="text-cell"
-            display={{ base: 'block', md: 'flex' }}
-            key={index}
-            width={'100%'}
-            color="light_grey"
-            fontSize={'14px'}
-          >
-            <Text width={{ base: '100%', md: '50%' }} padding={'5px 10px'}>
-              {action.name}
-            </Text>
-            <Text width={{ base: '100%', md: '30%' }} padding={'5px 10px'}>
-              <Avatar
-                size="2xs"
-                bg={'black'}
-                src={action.pool.pool.logos[0]}
-                marginRight={'2px'}
-              />{' '}
-              {action.pool.pool.name} on
-              <Avatar
-                size="2xs"
-                bg={'black'}
-                src={action.pool.protocol.logo}
-                marginRight={'2px'}
-                marginLeft={'5px'}
-              />{' '}
-              {action.pool.protocol.name}
-            </Text>
-          </Box>
-        ))}
-        {strategy.actions.length == 0 && (
-          <Center width={'100%'} padding={'10px'}>
-            <Spinner size={'xs'} color="white" />
-          </Center>
-        )}
-      </Flex>
-    </Flex>
-  );
-}
-
-function FAQ() {
-  return (
-    <Flex flexDirection={'column'} padding={'24px 0px'} gap={'24px'}>
-      <Text fontSize={'24px'} color={'white'} fontWeight={'600'}>
-        Get to know about all your doubts
-      </Text>
-
-      <Flex>
-        <Flex flexDirection={'column'} width={'696px'} gap={'16px'}>
-          <Accordion
-            width={'100%'}
-            display={'flex'}
-            flexDirection={'column'}
-            gap={'16px'}
-          >
-            <AccordionItem
-              borderRadius={'8px'}
-              borderWidth={'1px'}
-              borderColor={'slate_blue'}
-            >
-              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Question asked basis zkLend
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </Text>
-              <AccordionPanel
-                pb={4}
-                fontSize={'14px'}
-                fontWeight={'400'}
-                lineHeight={'20px'}
-                color={'silver_gray'}
-              >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-
-            <AccordionItem
-              borderRadius={'8px'}
-              borderWidth={'1px'}
-              borderColor={'slate_blue'}
-            >
-              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Question asked basis zkLend
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </Text>
-              <AccordionPanel
-                pb={4}
-                fontSize={'14px'}
-                fontWeight={'400'}
-                lineHeight={'20px'}
-                color={'silver_gray'}
-              >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-
-            <AccordionItem
-              borderRadius={'8px'}
-              borderWidth={'1px'}
-              borderColor={'slate_blue'}
-            >
-              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Question asked basis zkLend
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </Text>
-              <AccordionPanel
-                pb={4}
-                fontSize={'14px'}
-                fontWeight={'400'}
-                lineHeight={'20px'}
-                color={'silver_gray'}
-              >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-
-            <AccordionItem
-              borderRadius={'8px'}
-              borderWidth={'1px'}
-              borderColor={'slate_blue'}
-            >
-              <Text fontSize={'14px'} fontWeight={'500'} color={'border_light'}>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Question asked basis zkLend
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </Text>
-              <AccordionPanel
-                pb={4}
-                fontSize={'14px'}
-                fontWeight={'400'}
-                lineHeight={'20px'}
-                color={'silver_gray'}
-              >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        </Flex>
-
-        <Flex
-          flexDirection={'column'}
-          alignItems={'center'}
-          alignSelf={'center'}
-          gap={'16px'}
-          marginLeft={'auto'}
-          marginRight={'auto'}
-        >
-          <Flex
-            flexDirection={'column'}
-            width={'415px'}
-            gap={'8px'}
-            padding={'10px'}
-            borderWidth={'1px'}
-            borderRadius={'8px'}
-            borderColor={'slate_blue'}
-          >
-            <Text
-              fontSize={'14px'}
-              fontWeight={'500'}
-              color={'border_light'}
-              textAlign={'center'}
-            >
-              For more queries reach out to us on Telegram
-            </Text>
-            <Text
-              fontSize={'14px'}
-              fontWeight={'400'}
-              color={'silver_gray'}
-              textAlign={'center'}
-            >
-              Our team will respond to you soon!
-            </Text>
-          </Flex>
-
-          <Link href="https://t.me/+HQ_eHaXmF-1lZDc1">
-            <Button
-              bg={'transparent'}
-              padding={'12px 20px'}
-              borderRadius={'100px'}
-              borderWidth={'1px'}
-              borderColor={'color_7'}
-              color={'color_7'}
-              fontSize={'14px'}
-              fontWeight={'700'}
-              _hover={{
-                bg: 'transparent',
-                color: 'color_7',
-              }}
-            >
-              Connect on Telegram
-            </Button>
-          </Link>
-        </Flex>
-      </Flex>
-    </Flex>
-  );
-}
+import { ManageTab } from './ManageTab';
+import { RiskTab } from './RiskTab';
+import { DetailsTab } from './DetailsTab';
+import { FAQTab } from './FAQTab';
+import { TransactionsTab } from './TransactionsTab';
 
 const Strategy = ({ params }: StrategyParams) => {
   const address = useAtomValue(addressAtom);
@@ -604,165 +223,187 @@ const Strategy = ({ params }: StrategyParams) => {
   if (!isMounted) return null;
 
   return (
-    <Container width={'100%'} margin={'0 auto'} padding={0}>
-      <Flex width={'100%'} flexDirection={'column'}>
-        <Flex
-          flexDirection={'column'}
-          bg={'bg_2'}
-          width={'100%'}
-          height={'484px'}
-          padding={'64px'}
-          gap={'64px'}
-        >
-          <Box>
-            <Link href="/?tab=strategies">
-              <Button
-                bg={'transparent'}
-                color={'white'}
-                borderWidth={'1px'}
-                borderColor={'border_light'}
-                leftIcon={<ArrowBackIcon />}
-                _hover={{
-                  bg: 'transparent',
-                  color: 'white',
-                }}
-              >
-                Back
-              </Button>
-            </Link>
-          </Box>
+    <Container
+      display={'flex'}
+      justifyContent={'center'}
+      width={'100%'}
+      // bg={'bg_2'}
+      margin={'0 auto'}
+      padding={0}
+    >
+      <Flex
+        width={'100%'}
+        flexDirection={'column'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <Flex bg={'bg_2'} width={'100%'} justifyContent={'center'}>
+          <Flex
+            width={'100%'}
+            maxWidth={'1152px'}
+            flexDirection={'column'}
+            height={'484px'}
+            paddingTop={'64px'}
+            gap={'64px'}
+          >
+            <Box>
+              <Link href="/?tab=strategies">
+                <Button
+                  bg={'transparent'}
+                  color={'white'}
+                  borderWidth={'1px'}
+                  borderColor={'border_light'}
+                  leftIcon={<ArrowBackIcon />}
+                  _hover={{
+                    bg: 'transparent',
+                    color: 'white',
+                  }}
+                >
+                  Back
+                </Button>
+              </Link>
+            </Box>
 
-          {strategy && (
-            <Flex flexDirection={'column'} gap={'16px'}>
-              <Flex justifyContent={'space-between'}>
-                <Flex gap={'16px'} alignItems={'center'}>
-                  <AvatarGroup size={'md'} spacing={'-20px'} mr={'5px'}>
-                    {strategy &&
-                      strategy.metadata.depositTokens.length > 0 &&
-                      strategy.metadata.depositTokens.map((token: any) => {
-                        return (
+            {strategy && (
+              <Flex flexDirection={'column'} gap={'16px'}>
+                <Flex justifyContent={'space-between'}>
+                  <Flex gap={'16px'} alignItems={'center'}>
+                    <AvatarGroup size={'md'} spacing={'-20px'} mr={'5px'}>
+                      {strategy &&
+                        strategy.metadata.depositTokens.length > 0 &&
+                        strategy.metadata.depositTokens.map((token: any) => {
+                          return (
+                            <Avatar
+                              key={token.address}
+                              marginRight={'5px'}
+                              src={token.logo}
+                              width={'64px'}
+                              height={'64px'}
+                            />
+                          );
+                        })}
+                      {strategy &&
+                        strategy.metadata.depositTokens.length == 0 && (
                           <Avatar
-                            key={token.address}
                             marginRight={'5px'}
-                            src={token.logo}
+                            src={strategy?.holdingTokens[0].logo}
                             width={'64px'}
                             height={'64px'}
                           />
-                        );
-                      })}
-                    {strategy &&
-                      strategy.metadata.depositTokens.length == 0 && (
-                        <Avatar
-                          marginRight={'5px'}
-                          src={strategy?.holdingTokens[0].logo}
-                          width={'64px'}
-                          height={'64px'}
-                        />
-                      )}
-                  </AvatarGroup>
-                  <Text fontSize={'32px'} fontWeight={'600'} color="white">
-                    {strategy ? strategy.name : 'Strategy Not found'}
-                  </Text>
-                  <Box
-                    display={'flex'}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                    bg={'light_green'}
-                    width={'24px'}
-                    height={'24px'}
-                    padding={'3px 5px'}
-                    borderRadius={'20px'}
-                  >
-                    <Image src={shield.src} alt="badge" />
-                  </Box>
-                </Flex>
-
-                <Flex gap={'16px'}>
-                  <Flex
-                    flexDirection={'column'}
-                    alignItems={'flex-end'}
-                    gap={'8px'}
-                    bg={'highlight'}
-                    borderWidth={'1px'}
-                    borderColor={'border_light_30p'}
-                    borderRadius={'6px'}
-                    width={'199px'}
-                    height={'76px'}
-                    padding={'16px'}
-                  >
-                    <Text
-                      color={'border_light'}
-                      fontSize={'14px'}
-                      fontWeight={'500'}
-                    >
-                      Your Holdings:
+                        )}
+                    </AvatarGroup>
+                    <Text fontSize={'32px'} fontWeight={'600'} color="white">
+                      {strategy ? strategy.name : 'Strategy Not found'}
                     </Text>
+                    <Box
+                      display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                      bg={'light_green'}
+                      width={'24px'}
+                      height={'24px'}
+                      padding={'3px 5px'}
+                      borderRadius={'20px'}
+                    >
+                      <Image src={shield.src} alt="badge" />
+                    </Box>
+                  </Flex>
 
-                    {!balData.isLoading &&
-                      !balData.isError &&
-                      !balData.isPending &&
-                      balData.data &&
-                      balData.data.tokenInfo && (
-                        <Text color="text" fontSize={'18px'} fontWeight={'700'}>
-                          {address
-                            ? Number(
-                                balData.data.amount.toEtherToFixedDecimals(
-                                  balData.data.tokenInfo?.displayDecimals || 2,
-                                ),
-                              ) === 0 || strategy?.isRetired()
-                              ? '-'
-                              : `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                            : 'Connect wallet'}
-                        </Text>
-                      )}
-
-                    {(balData.isLoading ||
-                      balData.isPending ||
-                      (!balData.data?.tokenInfo && !balData.isError)) && (
-                      <Text color="text" fontSize={'18px'} fontWeight={'700'}>
-                        {address ? <Spinner size="sm" /> : 'Connect wallet'}
+                  <Flex gap={'16px'}>
+                    <Flex
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      gap={'8px'}
+                      bg={'highlight'}
+                      borderWidth={'1px'}
+                      borderColor={'border_light_30p'}
+                      borderRadius={'6px'}
+                      width={'199px'}
+                      height={'76px'}
+                      padding={'16px'}
+                    >
+                      <Text
+                        color={'border_light'}
+                        fontSize={'14px'}
+                        fontWeight={'500'}
+                      >
+                        Your Holdings:
                       </Text>
-                    )}
 
-                    {balData.isError &&
-                      !balData.isLoading &&
-                      !balData.isPending && (
+                      {!balData.isLoading &&
+                        !balData.isError &&
+                        !balData.isPending &&
+                        balData.data &&
+                        balData.data.tokenInfo && (
+                          <Text
+                            color="text"
+                            fontSize={'18px'}
+                            fontWeight={'700'}
+                          >
+                            {address
+                              ? Number(
+                                  balData.data.amount.toEtherToFixedDecimals(
+                                    balData.data.tokenInfo?.displayDecimals ||
+                                      2,
+                                  ),
+                                ) === 0 || strategy?.isRetired()
+                                ? '-'
+                                : `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
+                              : 'Connect wallet'}
+                          </Text>
+                        )}
+
+                      {(balData.isLoading ||
+                        balData.isPending ||
+                        (!balData.data?.tokenInfo && !balData.isError)) && (
                         <Text color="text" fontSize={'18px'} fontWeight={'700'}>
-                          Error
+                          {address ? <Spinner size="sm" /> : 'Connect wallet'}
                         </Text>
                       )}
 
-                    {/* Show individual holdings is more tokens */}
-                    {individualBalances.length > 1 &&
-                      balData.data?.amount.compare('0', 'gt') && (
-                        <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
-                          <HStack
-                            className="flex"
-                            gap={2}
-                            fontSize={'12px'}
-                            color="light_grey"
-                            marginTop={'5px'}
-                            borderTop={
-                              '1px solid var(--chakra-colors-highlight)'
-                            }
-                            paddingTop={'5px'}
+                      {balData.isError &&
+                        !balData.isLoading &&
+                        !balData.isPending && (
+                          <Text
+                            color="text"
+                            fontSize={'18px'}
+                            fontWeight={'700'}
                           >
-                            <p>Detailed Split:</p>
-                            {individualBalances.map((bx, index) => {
-                              return (
-                                <Text key={index}>
-                                  {bx?.amount.toEtherToFixedDecimals(
-                                    bx.tokenInfo?.displayDecimals || 2,
-                                  )}{' '}
-                                  {bx?.tokenInfo?.name}
-                                </Text>
-                              );
-                            })}
-                          </HStack>
-                        </Tooltip>
-                      )}
+                            Error
+                          </Text>
+                        )}
 
-                    {address &&
+                      {/* Show individual holdings is more tokens */}
+                      {individualBalances.length > 1 &&
+                        balData.data?.amount.compare('0', 'gt') && (
+                          <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
+                            <HStack
+                              className="flex"
+                              gap={2}
+                              fontSize={'12px'}
+                              color="light_grey"
+                              marginTop={'5px'}
+                              borderTop={
+                                '1px solid var(--chakra-colors-highlight)'
+                              }
+                              paddingTop={'5px'}
+                            >
+                              <p>Detailed Split:</p>
+                              {individualBalances.map((bx, index) => {
+                                return (
+                                  <Text key={index}>
+                                    {bx?.amount.toEtherToFixedDecimals(
+                                      bx.tokenInfo?.displayDecimals || 2,
+                                    )}{' '}
+                                    {bx?.tokenInfo?.name}
+                                  </Text>
+                                );
+                              })}
+                            </HStack>
+                          </Tooltip>
+                        )}
+
+                      {/* {address &&
                       balData.data &&
                       strategy.id === 'xstrk_sensei' &&
                       profit < 0 &&
@@ -790,129 +431,136 @@ const Strategy = ({ params }: StrategyParams) => {
                             Learn more
                           </a>
                         </Alert>
-                      )}
-                  </Flex>
+                      )} */}
+                    </Flex>
 
-                  <Flex
-                    flexDirection={'column'}
-                    alignItems={'flex-end'}
-                    gap={'8px'}
-                    bg={'highlight'}
-                    borderWidth={'1px'}
-                    borderColor={'border_light_30p'}
-                    borderRadius={'6px'}
-                    width={'199px'}
-                    height={'76px'}
-                    padding={'16px'}
-                  >
-                    <Text
-                      color={'border_light'}
-                      fontSize={'14px'}
-                      fontWeight={'500'}
+                    <Flex
+                      flexDirection={'column'}
+                      alignItems={'flex-end'}
+                      gap={'8px'}
+                      bg={'highlight'}
+                      borderWidth={'1px'}
+                      borderColor={'border_light_30p'}
+                      borderRadius={'6px'}
+                      width={'199px'}
+                      height={'76px'}
+                      padding={'16px'}
                     >
-                      Net earnings
-                    </Text>
+                      <Text
+                        color={'border_light'}
+                        fontSize={'14px'}
+                        fontWeight={'500'}
+                      >
+                        Net earnings
+                      </Text>
 
-                    {!balData.isLoading &&
-                      !balData.isError &&
-                      !balData.isPending &&
-                      balData.data &&
-                      balData.data.tokenInfo && (
-                        <Tooltip
-                          label={!strategy?.isRetired() && 'Life time earnings'}
-                        >
-                          <Text
-                            color={
-                              profit > 0 ? 'cyan' : profit < 0 ? 'red' : 'text'
+                      {!balData.isLoading &&
+                        !balData.isError &&
+                        !balData.isPending &&
+                        balData.data &&
+                        balData.data.tokenInfo && (
+                          <Tooltip
+                            label={
+                              !strategy?.isRetired() && 'Life time earnings'
                             }
-                            fontSize={'18px'}
-                            fontWeight={'700'}
                           >
-                            {address && profit !== 0 && !strategy?.isRetired()
-                              ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                              : '-'}
-                          </Text>
-                        </Tooltip>
-                      )}
+                            <Text
+                              color={
+                                profit > 0
+                                  ? 'cyan'
+                                  : profit < 0
+                                    ? 'red'
+                                    : 'text'
+                              }
+                              fontSize={'18px'}
+                              fontWeight={'700'}
+                            >
+                              {address && profit !== 0 && !strategy?.isRetired()
+                                ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
+                                : '-'}
+                            </Text>
+                          </Tooltip>
+                        )}
+                    </Flex>
+                  </Flex>
+                </Flex>
+
+                <Flex>
+                  <Flex width={'100%'}>
+                    {!strategy?.isRetired() && (
+                      <HarvestTime strategy={strategy} balData={balData} />
+                    )}
                   </Flex>
                 </Flex>
               </Flex>
+            )}
 
-              <Flex>
-                <Flex width={'100%'}>
-                  {!strategy?.isRetired() && (
-                    <HarvestTime strategy={strategy} balData={balData} />
-                  )}
-                </Flex>
-              </Flex>
-            </Flex>
-          )}
-
-          <Tabs
-            position="relative"
-            variant="unstyled"
-            width={'100%'}
-            index={tabIndex}
-            onChange={handleTabsChange}
-          >
-            <TabList>
-              <Tab
-                color={'silver_gray'}
-                _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                onClick={() => {
-                  mixpanel.track('Manage clicked');
-                }}
-              >
-                Manage
-              </Tab>
-              <Tab
-                color={'silver_gray'}
-                _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                onClick={() => {
-                  mixpanel.track('Risk clicked');
-                }}
-              >
-                Risk
-              </Tab>
-              <Tab
-                color={'silver_gray'}
-                _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                onClick={() => {
-                  mixpanel.track('Details clicked');
-                }}
-              >
-                Details
-              </Tab>
-              <Tab
-                color={'silver_gray'}
-                _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                onClick={() => {
-                  mixpanel.track('FAQs clicked');
-                }}
-              >
-                FAQs
-              </Tab>
-              <Tab
-                color={'silver_gray'}
-                _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                onClick={() => {
-                  mixpanel.track('Transactions clicked');
-                }}
-              >
-                Transactions
-              </Tab>
-            </TabList>
-            <TabIndicator
-              mt="-1.5px"
-              height="3px"
-              bg="light_green"
-              color="color1"
-              borderRadius="1px"
-            />
-          </Tabs>
+            <Tabs
+              position="relative"
+              variant="unstyled"
+              width={'100%'}
+              index={tabIndex}
+              onChange={handleTabsChange}
+            >
+              <TabList>
+                <Tab
+                  color={'silver_gray'}
+                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                  onClick={() => {
+                    mixpanel.track('Manage clicked');
+                  }}
+                >
+                  Manage
+                </Tab>
+                <Tab
+                  color={'silver_gray'}
+                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                  onClick={() => {
+                    mixpanel.track('Risk clicked');
+                  }}
+                >
+                  Risk
+                </Tab>
+                <Tab
+                  color={'silver_gray'}
+                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                  onClick={() => {
+                    mixpanel.track('Details clicked');
+                  }}
+                >
+                  Details
+                </Tab>
+                <Tab
+                  color={'silver_gray'}
+                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                  onClick={() => {
+                    mixpanel.track('FAQs clicked');
+                  }}
+                >
+                  FAQs
+                </Tab>
+                <Tab
+                  color={'silver_gray'}
+                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                  onClick={() => {
+                    mixpanel.track('Transactions clicked');
+                  }}
+                >
+                  Transactions
+                </Tab>
+              </TabList>
+              <TabIndicator
+                mt="-1.5px"
+                height="3px"
+                bg="light_green"
+                color="color1"
+                borderRadius="1px"
+              />
+            </Tabs>
+          </Flex>
         </Flex>
 
-        <Flex paddingLeft={'64px'} paddingRight={'64px'}>
+        <Flex width={'100%'} maxWidth={'1152px'}>
           <Tabs
             position="relative"
             variant="unstyled"
@@ -922,19 +570,25 @@ const Strategy = ({ params }: StrategyParams) => {
           >
             <TabPanels>
               <TabPanel width={'100%'} padding={0}>
-                {strategy && <Manage strategy={strategy} />}
+                {strategy && <ManageTab strategy={strategy} />}
               </TabPanel>
 
               <TabPanel width={'100%'} padding={0}>
-                {strategy && <Risk strategy={strategy} />}
+                {strategy && <RiskTab strategy={strategy} />}
               </TabPanel>
 
               <TabPanel width={'100%'} padding={0}>
-                {strategy && <Details strategy={strategy} />}
+                {strategyCached && <DetailsTab strategy={strategyCached} />}
               </TabPanel>
 
               <TabPanel width={'100%'} padding={0}>
-                <FAQ />
+                {strategy && <FAQTab strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && (
+                  <TransactionsTab strategy={strategy} txHistory={txHistory} />
+                )}
               </TabPanel>
             </TabPanels>
           </Tabs>

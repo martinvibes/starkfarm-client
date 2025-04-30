@@ -71,9 +71,9 @@ export default function Home() {
 
   function handleTabsChange(index: number) {
     if (index === 1) {
-      setRoute('strategies');
-    } else {
       setRoute('pools');
+    } else {
+      setRoute('strategies');
     }
   }
 
@@ -84,7 +84,7 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       const tab = searchParams.get('tab');
-      if (tab === 'pools') {
+      if (tab === 'strategies') {
         setTabIndex(0);
       } else {
         setTabIndex(1);
@@ -93,7 +93,7 @@ export default function Home() {
   }, [searchParams]);
 
   return (
-    <Container width={'90%'} margin={'0 auto'}>
+    <Container maxWidth={'1152px'} margin={'0 auto'}>
       <Box padding={'15px 30px'} borderRadius="10px" margin={'20px 0px 10px'}>
         <Text
           color={'light_green'}
@@ -116,66 +116,6 @@ export default function Home() {
         </Text>
       </Box>
 
-      {/* <Box className="embla" ref={emblaRef} margin={0} width={'100%'}>
-        <Box className="embla__container" cursor={'pointer'}>
-          {banner_images.map((banner, index) => (
-            <Box
-              className="embla__slide"
-              position="relative"
-              height={'auto'}
-              key={index}
-              padding={'10px'}
-            >
-              <Link href={banner.link} isExternal>
-                <ChakraImage
-                  src={
-                    (!isMobile && size.width > 450) || size.width == 0
-                      ? banner.desktop
-                      : banner.mobile
-                  }
-                  height={'auto'}
-                  boxShadow={'none'}
-                  width="100%"
-                  alt="Banner"
-                  style={{ objectFit: 'cover', borderRadius: '10px' }}
-                />
-              </Link>
-            </Box>
-          ))}
-        </Box>
-      </Box> */}
-
-      {/* <Box display="grid" justifyContent="center" gap="1.2rem" mb="1.5rem">
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="flex-end"
-          alignItems="center"
-          marginRight="calc((2.6rem - 1.4rem) / 2 * -1)"
-          gap=".5rem"
-        >
-          {scrollSnaps.map((_, index) => (
-            <Box
-              key={index}
-              onClick={() => onDotButtonClick(index)}
-              width="0.8rem"
-              height="0.8rem"
-              borderRadius="50%"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              cursor="pointer"
-              backgroundColor={index === selectedIndex ? '#4D59E8' : 'black'}
-              padding="0"
-              margin="0"
-              border="1px solid #373A5D"
-              textDecoration="none"
-              appearance="none"
-            />
-          ))}
-        </Box>
-      </Box> */}
-
       <TVL />
 
       <Tabs
@@ -191,19 +131,19 @@ export default function Home() {
             color={'silver_gray'}
             _selected={{ color: 'light_green', fontWeight: 'bold' }}
             onClick={() => {
-              mixpanel.track('All pools clicked');
+              mixpanel.track('Strategies opened');
             }}
           >
-            Find yields
+            Strategies✨
           </Tab>
           <Tab
             color={'silver_gray'}
             _selected={{ color: 'light_green', fontWeight: 'bold' }}
             onClick={() => {
-              mixpanel.track('Strategies opened');
+              mixpanel.track('All pools clicked');
             }}
           >
-            Strategies✨
+            Find yields
           </Tab>
         </TabList>
         <TabIndicator
@@ -217,16 +157,6 @@ export default function Home() {
         <TabPanels>
           <TabPanel
             bg="highlight"
-            width={'100%'}
-            float={'left'}
-            borderWidth={'1px'}
-            borderColor={'slate_blue'}
-            borderRadius={'8px'}
-          >
-            <Pools />
-          </TabPanel>
-          <TabPanel
-            bg="highlight"
             float={'left'}
             width={'100%'}
             borderWidth={'1px'}
@@ -234,6 +164,16 @@ export default function Home() {
             borderRadius={'8px'}
           >
             <Strategies />
+          </TabPanel>
+          <TabPanel
+            bg="highlight"
+            width={'100%'}
+            float={'left'}
+            borderWidth={'1px'}
+            borderColor={'slate_blue'}
+            borderRadius={'8px'}
+          >
+            <Pools />
           </TabPanel>
         </TabPanels>
       </Tabs>

@@ -78,22 +78,25 @@ async function getTxHistory(
   }
 }
 
-export const newTxsAtom = atom<TransactionInfo[]>([]);
-
 export const TxHistoryAtom = (contract: string, owner: string) =>
   atomWithQuery((get) => ({
     // balData just to trigger a refetch
-    queryKey: ['tx_history', contract, owner, JSON.stringify(get(newTxsAtom))],
+    queryKey: [
+      'tx_history',
+      contract,
+      owner,
+      JSON.stringify(get(transactionsAtom)),
+    ],
     queryFn: async ({ queryKey }: any): Promise<TxHistory> => {
       const [, { contract, owner }] = queryKey;
       const res = await getTxHistory(contract, owner);
 
       console.log('TxHistoryAtom res', res, contract, owner, queryKey);
-      // add new txs from local cache
-      const newTxs = get(newTxsAtom);
-      console.log('TxHistoryAtom newTxs', newTxs);
+      // add txs from local storage
+      const storedTxs: TransactionInfo[] = await get(transactionsAtom);
+      console.log('TxHistoryAtom storedTxs', storedTxs);
       const allTxs = res.findManyInvestment_flows.concat(
-        newTxs.map((tx) => {
+        storedTxs.map((tx: TransactionInfo) => {
           return {
             amount: tx.info.amount.toString(),
             timestamp: Math.round(tx.createdAt.getTime() / 1000),
@@ -180,18 +183,6 @@ async function waitForTransaction(
   tx.status = 'success';
   txs.push(tx);
   set(transactionsAtom, txs);
-
-  let newTxs = get(newTxsAtom);
-  console.log('waitForTransaction newTxs', newTxs);
-  const txExists = newTxs.find(
-    (t) => t.txHash.toLowerCase() === tx.txHash.toLowerCase(),
-  );
-  console.log('waitForTransaction txExists', txExists);
-  if (!txExists) {
-    newTxs = [...newTxs, tx];
-    console.log('waitForTransaction newTxs2', newTxs);
-    set(newTxsAtom, newTxs);
-  }
 }
 
 // Somehow waitForTransaction is giving delayed confirmation
