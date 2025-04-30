@@ -84,10 +84,10 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       const tab = searchParams.get('tab');
-      if (tab === 'strategies') {
-        setTabIndex(0);
-      } else {
+      if (tab === 'pools') {
         setTabIndex(1);
+      } else {
+        setTabIndex(0);
       }
     })();
   }, [searchParams]);
@@ -126,7 +126,7 @@ export default function Home() {
         onChange={handleTabsChange}
         marginTop={'10px'}
       >
-        <TabList>
+        <TabList paddingLeft={'16px'}>
           <Tab
             color={'silver_gray'}
             _selected={{ color: 'light_green', fontWeight: 'bold' }}
