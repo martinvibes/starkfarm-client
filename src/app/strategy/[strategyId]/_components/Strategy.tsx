@@ -136,6 +136,7 @@ const Strategy = ({ params }: StrategyParams) => {
   const individualBalances = useAtomValue(
     strategy?.balancesAtom || atom([returnEmptyBal()]),
   );
+  console.log('balData', balData);
 
   // fetch tx history
   const txHistoryAtom = useMemo(
