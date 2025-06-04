@@ -232,7 +232,7 @@ export function getStrategies() {
       v.name,
       v.description as string,
       v,
-      StrategyLiveStatus.HOT,
+      StrategyLiveStatus.ACTIVE,
       {
         maxTVL: 0,
         isAudited: v.auditUrl ? true : false,
