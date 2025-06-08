@@ -2,6 +2,7 @@ import shield from '@/assets/shield.svg';
 import { addressAtom } from '@/store/claims.atoms';
 import { isPoolRetired, PoolInfo } from '@/store/pools';
 import { getPoolInfoFromStrategy, sortAtom } from '@/store/protocols';
+import { strategiesAtom } from '@/store/strategies.atoms';
 import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
 import { UserStats, userStatsAtom } from '@/store/utils.atoms';
 import { isLive, StrategyLiveStatus } from '@/strategies/IStrategy';
@@ -182,11 +183,46 @@ function getAPRWithToolTip(pool: PoolInfo) {
   );
 }
 
+function PointsMultiplier(props: {
+  points: { multiplier: number; logo: string; toolTip?: string }[];
+}) {
+  const { points } = props;
+  return (
+    <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
+      <Box padding={'2px 5px'} bg={'bg'} borderRadius={'15px'}>
+        {points.map((point, index) => (
+          <Box display={'flex'} justifyContent={'flex-end'} key={index}>
+            <Tooltip label={point.toolTip} fontSize={'13px'}>
+              <Box
+                display={'flex'}
+                gap={'5px'}
+                alignItems={'center'}
+                fontSize={'12px'}
+                textColor={'light_grey'}
+              >
+                <Text>{point.multiplier}x</Text>
+                <Text>Points</Text>
+                <Avatar src={point.logo} size="2xs" />
+              </Box>
+            </Tooltip>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
 function StrategyAPY(props: YieldCardProps) {
   const { pool } = props;
   const isRetired = useMemo(() => {
     return isPoolRetired(pool);
   }, [pool]);
+
+  const strategies = useAtomValue(strategiesAtom);
+
+  const strategy = useMemo(() => {
+    return strategies.find((s) => s.id === pool.pool.id);
+  }, [strategies, pool.pool.id]);
 
   return (
     <Box width={'100%'} marginBottom={'5px'}>
@@ -195,7 +231,7 @@ function StrategyAPY(props: YieldCardProps) {
           -
         </Text>
       ) : (
-        <>
+        <Box display={'flex'} flexDirection={'column'} gap={2}>
           {getAPRWithToolTip(pool)}
 
           {pool.aprSplits.length &&
@@ -222,7 +258,10 @@ function StrategyAPY(props: YieldCardProps) {
                 </Box>
               </Tooltip>
             )}
-        </>
+          {strategy != undefined && strategy.metadata.points != undefined && (
+            <PointsMultiplier points={strategy.metadata.points} />
+          )}
+        </Box>
       )}
     </Box>
   );
@@ -278,6 +317,7 @@ export function StrategyTVL(props: YieldCardProps) {
       flexDirection={'column'}
       justifyContent={'center'}
       alignItems={'flex-end'}
+      position={'relative'}
     >
       {isPoolLive && (
         <Text fontSize={'16px'}>
@@ -514,6 +554,7 @@ export default function YieldCard(props: YieldCardProps) {
   const isRetired = useMemo(() => {
     return isPoolRetired(pool);
   }, [pool]);
+
   return (
     <>
       <Tr

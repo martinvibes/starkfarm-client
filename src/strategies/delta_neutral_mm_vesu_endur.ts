@@ -48,6 +48,14 @@ export class DeltaNeutralMMVesuEndur extends DeltaNeutralMM {
       vesu,
     );
 
+    this.metadata.points = [
+      {
+        multiplier: 3,
+        toolTip:
+          'Earn ~3x Endur points on this leveraged strategy. Points can be found on endur.fi.',
+        logo: 'https://endur.fi/favicon.ico',
+      },
+    ];
     const risks = [this.risks[0], this.risks[2]];
     if (this.settings.alerts && this.settings.alerts.length > 0) {
       risks.push(
