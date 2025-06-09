@@ -267,7 +267,7 @@ export function getStrategies() {
     );
   });
 
-  const ekuboCLStrats = EkuboCLVaultStrategies.map((v) => {
+  const ekuboCLStrats = [EkuboCLVaultStrategies[0]].map((v) => {
     return new EkuboClStrategy(
       v.name,
       v.description as ReactNode,
