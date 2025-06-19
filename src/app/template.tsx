@@ -86,6 +86,10 @@ const theme = extendTheme({
 
     disabled_button: '#2A2A3D80',
     disabled_button_text: '#7D7D93',
+
+    dark_bg: '#111119',
+    purple_tint: '#CFCFEA',
+    lavender_gray: '#B4B1BD',
   },
   fontSizes: {
     large: '50px',
@@ -150,7 +154,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         connectors={getConnectors(isMobile)}
       >
         <ChakraBaseProvider theme={theme}>
-          <Flex minHeight={'100vh'} bgColor={'color_6'}>
+          <Flex minHeight={'100vh'} bgColor={'dark_bg'}>
             <React.Suspense>
               <Container width={'100%'} padding="0px">
                 <Navbar

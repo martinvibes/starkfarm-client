@@ -15,7 +15,6 @@ import {
   Container,
   Link,
   Tab,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
@@ -93,12 +92,20 @@ export default function Home() {
   }, [searchParams]);
 
   return (
-    <Container maxWidth={'1152px'} margin={'0 auto'}>
-      <Box padding={'15px 30px'} borderRadius="10px" margin={'20px 0px 10px'}>
+    <Container
+      maxWidth={'1152px'}
+      margin={'0 auto'}
+      padding={{ base: '15px 10px' }}
+    >
+      <Box
+        padding={{ base: '15px 15px' }}
+        borderRadius="10px"
+        margin={'20px 0px 10px'}
+      >
         <Text
           color={'light_green'}
-          fontSize={{ base: '28px', md: '35px' }}
-          lineHeight={'30px'}
+          fontSize={{ base: '32px', md: '35px' }}
+          lineHeight={{ base: '40px', md: '30px' }}
           marginBottom={'10px'}
           textAlign={'center'}
         >
@@ -108,7 +115,8 @@ export default function Home() {
         <Text
           color="white"
           textAlign={'center'}
-          fontSize={{ base: '16px', md: '18px' }}
+          fontSize={{ base: '20px', md: '18px' }}
+          lineHeight={{ base: '28px', md: '20px' }}
           marginBottom={'0px'}
         >
           Identify & Invest in the best $STRK rewarding pools and maximize your
@@ -126,10 +134,15 @@ export default function Home() {
         onChange={handleTabsChange}
         marginTop={'10px'}
       >
-        <TabList paddingLeft={'16px'}>
+        <TabList>
           <Tab
-            color={'silver_gray'}
-            _selected={{ color: 'light_green', fontWeight: 'bold' }}
+            width={'100%'}
+            bg="purple_60p"
+            color="lavender_gray"
+            fontSize={'14px'}
+            fontWeight={'700'}
+            borderTopLeftRadius={'8px'}
+            _selected={{ bg: 'bright_purple', color: 'black' }}
             onClick={() => {
               mixpanel.track('Strategies opened');
             }}
@@ -137,8 +150,13 @@ export default function Home() {
             Strategies✨
           </Tab>
           <Tab
-            color={'silver_gray'}
-            _selected={{ color: 'light_green', fontWeight: 'bold' }}
+            width={'100%'}
+            bg="purple_60p"
+            color="lavender_gray"
+            fontSize={'14px'}
+            fontWeight={'700'}
+            borderTopRightRadius={'8px'}
+            _selected={{ bg: 'bright_purple', color: 'black' }}
             onClick={() => {
               mixpanel.track('All pools clicked');
             }}
@@ -146,14 +164,6 @@ export default function Home() {
             Find yields
           </Tab>
         </TabList>
-        <TabIndicator
-          mt="-1.5px"
-          height="3px"
-          bg="light_green"
-          color="color1"
-          borderRadius="1px"
-          boxShadow={'0px 0px 8px 0px #3EE5C2'}
-        />
         <TabPanels>
           <TabPanel
             bg="highlight"
@@ -161,7 +171,10 @@ export default function Home() {
             width={'100%'}
             borderWidth={'1px'}
             borderColor={'slate_blue'}
-            borderRadius={'8px'}
+            borderTopLeftRadius={{ base: '0px', md: '8px' }}
+            borderTopRightRadius={{ base: '0px', md: '8px' }}
+            borderBottomLeftRadius={{ base: '8px' }}
+            borderBottomRightRadius={{ base: '8px' }}
           >
             <Strategies />
           </TabPanel>
@@ -171,7 +184,10 @@ export default function Home() {
             float={'left'}
             borderWidth={'1px'}
             borderColor={'slate_blue'}
-            borderRadius={'8px'}
+            borderTopLeftRadius={{ base: '0px', md: '8px' }}
+            borderTopRightRadius={{ base: '0px', md: '8px' }}
+            borderBottomLeftRadius={{ base: '8px' }}
+            borderBottomRightRadius={{ base: '8px' }}
           >
             <Pools />
           </TabPanel>

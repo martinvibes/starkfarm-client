@@ -108,6 +108,7 @@ export default function Pools() {
         display={'flex'}
         flexDirection={'column'}
         gap={'16px'}
+        padding={{ base: '0px' }}
       >
         <ProtocolFilters />
         <Box width={'100%'} marginTop={'10px'}>
@@ -131,6 +132,7 @@ export default function Pools() {
                 align="right"
                 float={'right'}
                 padding={'0px'}
+                marginTop={{ base: '10px', lg: '0px' }}
               >
                 <PaginationPrevious
                   marginRight="4px"
@@ -190,8 +192,9 @@ export default function Pools() {
         >
           <Table
             variant="simple"
-            borderWidth={'1px'}
-            borderColor={'#2D2D3D'}
+            // border={{ base: 'none', lg: '1px solid #2D2D3D' }}
+            borderWidth={{ base: '0px', lg: '1px' }}
+            borderColor={{ base: 'none', lg: '#2D2D3D' }}
             sx={{
               borderRadius: '12px',
               overflow: 'hidden',
