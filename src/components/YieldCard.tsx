@@ -2,6 +2,7 @@ import shield from '@/assets/shield.svg';
 import { addressAtom } from '@/store/claims.atoms';
 import { isPoolRetired, PoolInfo } from '@/store/pools';
 import { getPoolInfoFromStrategy, sortAtom } from '@/store/protocols';
+import { strategiesAtom } from '@/store/strategies.atoms';
 import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
 import { UserStats, userStatsAtom } from '@/store/utils.atoms';
 import { isLive, StrategyLiveStatus } from '@/strategies/IStrategy';
@@ -35,11 +36,12 @@ export interface YieldCardProps {
   pool: PoolInfo;
   index: number;
   showProtocolName?: boolean;
+  showBalance?: boolean;
 }
 
 export function getStratCardBg(status: StrategyLiveStatus, index: number) {
   if (isLive(status)) {
-    return index % 2 === 0 ? 'dark_navy' : 'color2_50p';
+    return index % 2 === 0 ? 'mycard_dark' : 'mycard_dark';
   }
   if (status == StrategyLiveStatus.RETIRED) {
     return 'black';
@@ -49,7 +51,7 @@ export function getStratCardBg(status: StrategyLiveStatus, index: number) {
 
 function getStratCardBadgeBg(status: StrategyLiveStatus) {
   if (isLive(status)) {
-    return 'color_4';
+    return 'mycard_light_2x';
   } else if (status === StrategyLiveStatus.COMING_SOON) {
     return 'yellow';
   } else if (status === StrategyLiveStatus.RETIRED) {
@@ -73,7 +75,7 @@ export function StrategyInfo(props: YieldCardProps) {
           <HStack spacing={2}>
             <Heading
               marginTop={'2px'}
-              fontSize={'14px'}
+              fontSize={'1.2rem'}
               fontWeight={'600'}
               color={'text'}
             >
@@ -92,6 +94,7 @@ export function StrategyInfo(props: YieldCardProps) {
                       textTransform="capitalize"
                       fontWeight={500}
                       key={tag}
+                      color={'text_secondary'}
                     >
                       {tag}
                     </Badge>
@@ -106,12 +109,15 @@ export function StrategyInfo(props: YieldCardProps) {
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    backgroundColor={'rgba(0, 0, 0, 0.2)'}
                     borderRadius={'50%'}
-                    bg={'#61FCAE'}
+                    bg={'mycard_light_2x'}
                     padding={'3px 5px'}
                   >
-                    <Image src={shield.src} alt="badge" />
+                    <Image
+                      src={shield.src}
+                      alt="badge"
+                      filter={'brightness(0) invert(0.5);'}
+                    />
                   </Box>
                 </Link>
               </Tooltip>
@@ -121,10 +127,10 @@ export function StrategyInfo(props: YieldCardProps) {
             <HStack marginTop={'5px'} spacing={1}>
               <Avatar size={'2xs'} src={pool.protocol.logo} />
               <Heading
-                fontSize={'14px'}
+                fontSize={'12px'}
                 fontWeight={'400'}
                 marginTop={'2px'}
-                color={'light_grey'}
+                color={'text_secondary'}
               >
                 {pool.protocol.name}
               </Heading>
@@ -160,15 +166,15 @@ function getAPRWithToolTip(pool: PoolInfo) {
         marginRight={'0px'}
         marginLeft={'auto'}
         display={'flex'}
-        justifyContent={'flex-start'}
+        justifyContent={'flex-end'}
       >
         {pool.isLoading && <Spinner />}
         {!pool.isLoading && (
           <>
             <Text
               textAlign={'left'}
-              color="white"
-              fontSize={'14px'}
+              color="purple"
+              fontSize={'1rem'}
               fontWeight={'600'}
             >
               {(pool.apr * 100).toFixed(2)}%
@@ -180,11 +186,46 @@ function getAPRWithToolTip(pool: PoolInfo) {
   );
 }
 
+function PointsMultiplier(props: {
+  points: { multiplier: number; logo: string; toolTip?: string }[];
+}) {
+  const { points } = props;
+  return (
+    <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
+      <Box padding={'2px 5px'} bg={'bg'} borderRadius={'15px'}>
+        {points.map((point, index) => (
+          <Box display={'flex'} justifyContent={'flex-end'} key={index}>
+            <Tooltip label={point.toolTip} fontSize={'13px'}>
+              <Box
+                display={'flex'}
+                gap={'5px'}
+                alignItems={'center'}
+                fontSize={'12px'}
+                textColor={'light_grey'}
+              >
+                <Text>{point.multiplier}x</Text>
+                <Text>Points</Text>
+                <Avatar src={point.logo} size="2xs" />
+              </Box>
+            </Tooltip>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
 function StrategyAPY(props: YieldCardProps) {
   const { pool } = props;
   const isRetired = useMemo(() => {
     return isPoolRetired(pool);
   }, [pool]);
+
+  const strategies = useAtomValue(strategiesAtom);
+
+  const strategy = useMemo(() => {
+    return strategies.find((s) => s.id === pool.pool.id);
+  }, [strategies, pool.pool.id]);
 
   return (
     <Box width={'100%'}>
@@ -193,7 +234,7 @@ function StrategyAPY(props: YieldCardProps) {
           -
         </Text>
       ) : (
-        <Text float={'left'}>
+        <Box display={'flex'} flexDirection={'column'} gap={2}>
           {getAPRWithToolTip(pool)}
 
           {pool.aprSplits.length &&
@@ -220,7 +261,10 @@ function StrategyAPY(props: YieldCardProps) {
                 </Box>
               </Tooltip>
             )}
-        </Text>
+          {strategy != undefined && strategy.metadata.points != undefined && (
+            <PointsMultiplier points={strategy.metadata.points} />
+          )}
+        </Box>
       )}
     </Box>
   );
@@ -300,6 +344,8 @@ export function StrategyBalance(props: YieldCardProps) {
       display={'flex'}
       flexDirection={'column'}
       justifyContent={'center'}
+      alignItems={'flex-end'}
+      position={'relative'}
     >
       {!isPoolLive && <Text>-</Text>}
       {address && isPoolLive && pool.protocol.name === 'STRKFarm' && (
@@ -388,6 +434,7 @@ function GetRiskLevel(riskFactor: number) {
           flexDirection={'column'}
           alignSelf={{ base: 'left', md: 'center' }}
           justifyContent={'flex-start'}
+          width={'100%'}
         >
           <Box
             width={'100%'}
@@ -405,9 +452,7 @@ function GetRiskLevel(riskFactor: number) {
                   width="4px"
                   height="18px"
                   borderRadius="md"
-                  bg={
-                    index < count ? color : 'var(--chakra-colors-opacity_50p)'
-                  }
+                  bg={index < count ? color : 'mycard_light_2x'}
                 />
               ))}
             </Stack>
@@ -502,28 +547,38 @@ export function getLinkProps(pool: PoolInfo, showProtocolName?: boolean) {
 }
 export default function YieldCard(props: YieldCardProps) {
   const { pool, index } = props;
+  const address = useAtomValue(addressAtom);
+
+  const showBalance = useMemo(() => {
+    return props.showBalance && address != undefined;
+  }, [props.showBalance, address]);
 
   const isRetired = useMemo(() => {
     return isPoolRetired(pool);
   }, [pool]);
+
   return (
     <>
       <Tr
         color={'white'}
-        bg={index % 2 === 0 ? 'dark_navy' : 'color2_50p'}
-        borderBottom={'1px solid #2D2D3D !important'}
         display={{ base: 'none', md: 'table-row' }}
-        as={'a'}
-        {...getLinkProps(pool, props.showProtocolName)}
+        bg={'mycard_dark'}
+        _hover={{
+          bg: 'mycard_light',
+        }}
+        padding={'1.5rem'}
+        borderRadius={'lg'}
       >
-        <Td>
-          <StrategyInfo
-            pool={pool}
-            index={index}
-            showProtocolName={props.showProtocolName}
-          />
+        <Td width={'40%'} borderLeftRadius={'lg'}>
+          <a {...getLinkProps(pool, props.showProtocolName)}>
+            <StrategyInfo
+              pool={pool}
+              index={index}
+              showProtocolName={props.showProtocolName}
+            />
+          </a>
         </Td>
-        <Td>
+        <Td width={'15%'}>
           {isRetired ? (
             <Text ml="auto" w="fit-content" mr="2">
               -
@@ -532,20 +587,20 @@ export default function YieldCard(props: YieldCardProps) {
             <StrategyAPY pool={pool} index={index} />
           )}
         </Td>
-        <Td>
+        <Td width={'15%'}>
           {isRetired ? (
-            <Text ml="auto" w="fit-content" mr="2">
+            <Text ml="auto" w="100%" mr="2" textAlign={'center'}>
               -
             </Text>
           ) : pool.additional?.riskFactor ? (
-            <Text float={'left'}>
+            <Box width={'100%'}>
               {GetRiskLevel(pool.additional?.riskFactor)}
-            </Text>
+            </Box>
           ) : (
             '-'
           )}
         </Td>
-        <Td>
+        <Td width={'15%'} borderRightRadius={showBalance ? 'none' : 'lg'}>
           {isRetired ? (
             <Text ml="auto" w="fit-content" mr="2">
               -
@@ -554,15 +609,17 @@ export default function YieldCard(props: YieldCardProps) {
             <StrategyTVL pool={pool} index={index} />
           )}
         </Td>
-        <Td>
-          {isRetired ? (
-            <Text ml="auto" w="fit-content" mr="2">
-              -
-            </Text>
-          ) : (
-            <StrategyBalance pool={pool} index={index} />
-          )}
-        </Td>
+        {showBalance && (
+          <Td width={'15%'} borderRightRadius={'lg'}>
+            {isRetired ? (
+              <Text ml="auto" w="fit-content" mr="2">
+                -
+              </Text>
+            ) : (
+              <StrategyBalance pool={pool} index={index} />
+            )}
+          </Td>
+        )}
       </Tr>
       <StrategyMobileCard
         pool={pool}
@@ -578,7 +635,14 @@ export function YieldStrategyCard(props: {
   index: number;
 }) {
   const strat = getPoolInfoFromStrategy(props.strat);
-  return <YieldCard pool={strat} index={props.index} showProtocolName={true} />;
+  return (
+    <YieldCard
+      pool={strat}
+      index={props.index}
+      showProtocolName={true}
+      showBalance={true}
+    />
+  );
 }
 
 export function HeaderSorter(props: {

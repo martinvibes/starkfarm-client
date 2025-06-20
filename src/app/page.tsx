@@ -96,7 +96,7 @@ export default function Home() {
     <Container maxWidth={'1152px'} margin={'0 auto'}>
       <Box padding={'15px 30px'} borderRadius="10px" margin={'20px 0px 10px'}>
         <Text
-          color={'light_green'}
+          color={'text_primary'}
           fontSize={{ base: '28px', md: '35px' }}
           lineHeight={'30px'}
           marginBottom={'10px'}
@@ -106,13 +106,12 @@ export default function Home() {
           🚀
         </Text>
         <Text
-          color="white"
+          color="text_secondary"
           textAlign={'center'}
           fontSize={{ base: '16px', md: '18px' }}
           marginBottom={'0px'}
         >
-          Identify & Invest in the best $STRK rewarding pools and maximize your
-          rewards
+          Discover and invest in custom-built yield strategies.
         </Text>
       </Box>
 
@@ -125,11 +124,12 @@ export default function Home() {
         index={tabIndex}
         onChange={handleTabsChange}
         marginTop={'10px'}
+        padding={0}
       >
-        <TabList paddingLeft={'16px'}>
+        <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
           <Tab
-            color={'silver_gray'}
-            _selected={{ color: 'light_green', fontWeight: 'bold' }}
+            color={'text_secondary'}
+            _selected={{ color: 'purple', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('Strategies opened');
             }}
@@ -137,8 +137,8 @@ export default function Home() {
             Strategies✨
           </Tab>
           <Tab
-            color={'silver_gray'}
-            _selected={{ color: 'light_green', fontWeight: 'bold' }}
+            color={'text_secondary'}
+            _selected={{ color: 'purple', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('All pools clicked');
             }}
@@ -149,29 +149,31 @@ export default function Home() {
         <TabIndicator
           mt="-1.5px"
           height="3px"
-          bg="light_green"
+          bg="purple"
           color="color1"
           borderRadius="1px"
-          boxShadow={'0px 0px 8px 0px #3EE5C2'}
+          boxShadow={'0px 0px 8px 0px var(--chakra-colors-purple)'}
         />
         <TabPanels>
           <TabPanel
-            bg="highlight"
+            bg="color_3"
             float={'left'}
             width={'100%'}
-            borderWidth={'1px'}
-            borderColor={'slate_blue'}
+            // borderWidth={'1px'}
+            borderColor={'color_3'}
             borderRadius={'8px'}
+            padding={'1rem 0'}
           >
             <Strategies />
           </TabPanel>
           <TabPanel
-            bg="highlight"
+            bg="color_3"
             width={'100%'}
             float={'left'}
-            borderWidth={'1px'}
-            borderColor={'slate_blue'}
+            // borderWidth={'1px'}
+            borderColor={'color_3'}
             borderRadius={'8px'}
+            padding={'1rem 0'}
           >
             <Pools />
           </TabPanel>

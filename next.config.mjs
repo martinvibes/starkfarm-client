@@ -27,7 +27,7 @@ const nextConfig = {
       },
       {
         source: '/ekubo/:path*',
-        destination: 'https://mainnet-api.ekubo.org/:path*',
+        destination: 'https://app.strkfarm.xyz/ekubo/:path*',
       },
       {
         source: '/haiko/:path*',

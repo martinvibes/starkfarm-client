@@ -78,25 +78,22 @@ async function getTxHistory(
   }
 }
 
+export const newTxsAtom = atom<TransactionInfo[]>([]);
+
 export const TxHistoryAtom = (contract: string, owner: string) =>
   atomWithQuery((get) => ({
     // balData just to trigger a refetch
-    queryKey: [
-      'tx_history',
-      contract,
-      owner,
-      JSON.stringify(get(transactionsAtom)),
-    ],
+    queryKey: ['tx_history', contract, owner, JSON.stringify(get(newTxsAtom))],
     queryFn: async ({ queryKey }: any): Promise<TxHistory> => {
-      const [, { contract, owner }] = queryKey;
+      // const [, { contract, owner }] = queryKey;
       const res = await getTxHistory(contract, owner);
 
-      console.log('TxHistoryAtom res', res, contract, owner, queryKey);
-      // add txs from local storage
-      const storedTxs: TransactionInfo[] = await get(transactionsAtom);
-      console.log('TxHistoryAtom storedTxs', storedTxs);
+      console.log('TxHistoryAtom res', res, { contract, owner, queryKey });
+      // add new txs from local cache
+      const newTxs = get(newTxsAtom);
+      console.log('TxHistoryAtom newTxs', newTxs);
       const allTxs = res.findManyInvestment_flows.concat(
-        storedTxs.map((tx: TransactionInfo) => {
+        newTxs.map((tx) => {
           return {
             amount: tx.info.amount.toString(),
             timestamp: Math.round(tx.createdAt.getTime() / 1000),

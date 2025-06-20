@@ -40,7 +40,7 @@ const TVL: React.FC = () => {
   return (
     <Grid
       templateColumns={{ base: 'repeat(1, 1, 1fr)', md: 'repeat(3, 1fr)' }}
-      gap="6"
+      gap="2"
       width="100%"
     >
       <GridItem display="flex">
@@ -48,9 +48,9 @@ const TVL: React.FC = () => {
           width={'100%'}
           padding={'15px 30px'}
           color={'white'}
-          bg={'dark_navy'}
-          borderWidth={'1px'}
-          borderColor={'slate_blue'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
         >
           <Stat>
             <StatLabel>Total Value locked (TVL)</StatLabel>
@@ -73,9 +73,9 @@ const TVL: React.FC = () => {
           width={'100%'}
           padding={'15px 30px'}
           color={'white'}
-          bg={'dark_navy'}
-          borderWidth={'1px'}
-          borderColor={'slate_blue'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
         >
           <Stat>
             <StatLabel>Your holdings</StatLabel>
@@ -98,9 +98,9 @@ const TVL: React.FC = () => {
           width={'100%'}
           padding={'15px 30px'}
           color={'white'}
-          bg={'dark_navy'}
-          borderWidth={'1px'}
-          borderColor={'slate_blue'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
         >
           <Stat>
             <StatLabel fontWeight={'bold'}>

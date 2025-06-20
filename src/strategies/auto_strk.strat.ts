@@ -77,13 +77,14 @@ export class AutoTokenStrategy extends IStrategy<void> {
       ],
       protocols: [],
       maxTVL: new Web3Number('0', tokenInfo.decimals),
+      launchBlock: 0,
+      faqs: [],
       risk: {
         riskFactor: [],
         netRisk: 0,
         notARisks: [],
       },
       additionalInfo: undefined,
-      faqs: [],
     };
     super(
       `auto_token_${token.toLowerCase()}`,

@@ -11,14 +11,16 @@ import {
   HStack,
   Link,
   Spinner,
-  Tab,
-  TabList,
   TabPanels,
   TabPanel,
   Tabs,
-  TabIndicator,
   Text,
   Tooltip,
+  Wrap,
+  WrapItem,
+  Center,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -28,7 +30,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import shield from '@/assets/shield.svg';
 
-import HarvestTime from '@/components/HarvestTime';
 import { DUMMY_BAL_ATOM, returnEmptyBal } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
 import { strategiesAtom, StrategyInfo } from '@/store/strategies.atoms';
@@ -45,6 +46,109 @@ import { RiskTab } from './RiskTab';
 import { DetailsTab } from './DetailsTab';
 import { FAQTab } from './FAQTab';
 import { TransactionsTab } from './TransactionsTab';
+
+function HoldingsText({
+  strategy,
+  address,
+  balData,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  balData: any;
+}) {
+  if (strategy.settings.isInMaintenance)
+    return <span style={{ color: 'orange' }}>Maintenance Mode</span>;
+  if (!address) return 'Connect wallet';
+  if (balData.isLoading || !balData.data?.tokenInfo) {
+    return (
+      <>
+        <Spinner size="sm" marginTop={'5px'} />
+      </>
+    );
+  }
+  if (balData.isError) {
+    console.error('Balance data error:', balData.error);
+    return 'Error';
+  }
+  const value = Number(
+    balData.data.amount.toEtherToFixedDecimals(
+      balData.data.tokenInfo?.displayDecimals || 2,
+    ),
+  );
+  if (value === 0 || strategy?.isRetired()) return '-';
+  return `${balData.data.amount.toEtherToFixedDecimals(
+    balData.data.tokenInfo?.displayDecimals || 2,
+  )} ${balData.data.tokenInfo?.name}`;
+}
+
+function NetEarningsText({
+  strategy,
+  address,
+  profit,
+  balData,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  profit: number;
+  balData: any;
+}) {
+  if (
+    !address ||
+    profit === 0 ||
+    strategy?.isRetired() ||
+    strategy.settings.isInMaintenance
+  )
+    return '-';
+  return `${profit?.toFixed(
+    balData.data.tokenInfo?.displayDecimals || 2,
+  )} ${balData.data.tokenInfo?.name}`;
+}
+
+function HoldingsAndEarnings({
+  strategy,
+  address,
+  balData,
+  profit,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  balData: any;
+  profit: number;
+}) {
+  return (
+    <Flex width={'100%'} justifyContent={'space-between'}>
+      <Box>
+        <Text>
+          <b>Your Holdings </b>
+        </Text>
+        <Text color="cyan">
+          <HoldingsText
+            strategy={strategy}
+            address={address}
+            balData={balData}
+          />
+        </Text>
+      </Box>
+      {!strategy.settings.isTransactionHistDisabled && (
+        <Tooltip label={!strategy?.isRetired() && 'Life time earnings'}>
+          <Box>
+            <Text textAlign={'right'} fontWeight={'none'}>
+              <b>Net earnings</b>
+            </Text>
+            <Text textAlign={'right'} color={profit >= 0 ? 'cyan' : 'red'}>
+              <NetEarningsText
+                strategy={strategy}
+                address={address}
+                profit={profit}
+                balData={balData}
+              />
+            </Text>
+          </Box>
+        </Tooltip>
+      )}
+    </Flex>
+  );
+}
 
 const Strategy = ({ params }: StrategyParams) => {
   const address = useAtomValue(addressAtom);
@@ -138,7 +242,6 @@ const Strategy = ({ params }: StrategyParams) => {
   );
   console.log('balData', balData);
 
-  // fetch tx history
   const txHistoryAtom = useMemo(
     () => TxHistoryAtom(strategyAddress, address!),
     [address, strategyAddress],
@@ -164,10 +267,6 @@ const Strategy = ({ params }: StrategyParams) => {
     return txHistoryResult.data || { findManyInvestment_flows: [] };
   }, [JSON.stringify(txHistoryResult.data)]);
 
-  // compute profit
-  // profit doesnt change quickly in real time, but total deposit amount can change
-  // and it can impact the profit calc as txHistory may not be updated at the same time as balData
-  // So, we compute profit once only
   const [profit, setProfit] = useState(0);
   const computeProfit = useCallback(() => {
     if (!txHistory.findManyInvestment_flows.length) return 0;
@@ -223,12 +322,20 @@ const Strategy = ({ params }: StrategyParams) => {
 
   if (!isMounted) return null;
 
+  function getUniqueById(items: { id: string; logo: string }[]) {
+    const uniqueItems = new Map<string, { id: string; logo: string }>();
+    items.forEach((item) => {
+      if (!uniqueItems.has(item.id)) {
+        uniqueItems.set(item.id, item);
+      }
+    });
+    return Array.from(uniqueItems.values());
+  }
   return (
     <Container
       display={'flex'}
       justifyContent={'center'}
       width={'100%'}
-      // bg={'bg_2'}
       margin={'0 auto'}
       padding={0}
     >
@@ -308,256 +415,122 @@ const Strategy = ({ params }: StrategyParams) => {
                     >
                       <Image src={shield.src} alt="badge" />
                     </Box>
+                    <Wrap as="div">
+                      {getUniqueById(
+                        strategy.actions.map((p) => ({
+                          id: p.pool.protocol.name,
+                          logo: p.pool.protocol.logo,
+                        })),
+                      ).map((p) => (
+                        <WrapItem as="div" marginRight={'10px'} key={p.id}>
+                          <Center as="div">
+                            <Avatar
+                              size="2xs"
+                              bg={'black'}
+                              src={p.logo}
+                              marginRight={'2px'}
+                            />
+                            <Text marginTop={'2px'}>{p.id}</Text>
+                          </Center>
+                        </WrapItem>
+                      ))}
+                    </Wrap>
                   </Flex>
+                </Flex>
+                <Box
+                  padding={'10px'}
+                  borderRadius={'10px'}
+                  bg={'bg'}
+                  marginTop={'20px'}
+                >
+                  <HoldingsAndEarnings
+                    strategy={strategy}
+                    address={address}
+                    balData={balData}
+                    profit={profit}
+                  />
 
-                  <Flex gap={'16px'}>
-                    <Flex
-                      flexDirection={'column'}
-                      alignItems={'flex-end'}
-                      gap={'8px'}
-                      bg={'highlight'}
-                      borderWidth={'1px'}
-                      borderColor={'border_light_30p'}
-                      borderRadius={'6px'}
-                      width={'199px'}
-                      height={'76px'}
-                      padding={'16px'}
-                    >
-                      <Text
-                        color={'border_light'}
-                        fontSize={'14px'}
-                        fontWeight={'500'}
-                      >
-                        Your Holdings:
-                      </Text>
-
-                      {!balData.isLoading &&
-                        !balData.isError &&
-                        !balData.isPending &&
-                        balData.data &&
-                        balData.data.tokenInfo && (
-                          <Text
-                            color="text"
-                            fontSize={'18px'}
-                            fontWeight={'700'}
-                          >
-                            {address
-                              ? Number(
-                                  balData.data.amount.toEtherToFixedDecimals(
-                                    balData.data.tokenInfo?.displayDecimals ||
-                                      2,
-                                  ),
-                                ) === 0 || strategy?.isRetired()
-                                ? '-'
-                                : `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                              : 'Connect wallet'}
-                          </Text>
-                        )}
-
-                      {(balData.isLoading ||
-                        balData.isPending ||
-                        (!balData.data?.tokenInfo && !balData.isError)) && (
-                        <Text color="text" fontSize={'18px'} fontWeight={'700'}>
-                          {address ? <Spinner size="sm" /> : 'Connect wallet'}
-                        </Text>
-                      )}
-
-                      {balData.isError &&
-                        !balData.isLoading &&
-                        !balData.isPending && (
-                          <Text
-                            color="text"
-                            fontSize={'18px'}
-                            fontWeight={'700'}
-                          >
-                            Error
-                          </Text>
-                        )}
-
-                      {/* Show individual holdings is more tokens */}
-                      {individualBalances.length > 1 &&
-                        balData.data?.amount.compare('0', 'gt') && (
-                          <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
-                            <HStack
-                              className="flex"
-                              gap={2}
-                              fontSize={'12px'}
-                              color="light_grey"
-                              marginTop={'5px'}
-                              borderTop={
-                                '1px solid var(--chakra-colors-highlight)'
-                              }
-                              paddingTop={'5px'}
-                            >
-                              <p>Detailed Split:</p>
-                              {individualBalances.map((bx, index) => {
-                                return (
-                                  <Text key={index}>
-                                    {bx?.amount.toEtherToFixedDecimals(
-                                      bx.tokenInfo?.displayDecimals || 2,
-                                    )}{' '}
-                                    {bx?.tokenInfo?.name}
-                                  </Text>
-                                );
-                              })}
-                            </HStack>
-                          </Tooltip>
-                        )}
-
-                      {/* {address &&
-                      balData.data &&
-                      strategy.id === 'xstrk_sensei' &&
-                      profit < 0 &&
-                      profit /
-                        Number(balData.data.amount.toEtherToFixedDecimals(6)) <
-                        -0.01 && (
-                        <Alert
-                          status={'info'}
+                  {individualBalances.length > 1 &&
+                    balData.data?.amount.compare('0', 'gt') && (
+                      <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
+                        <HStack
+                          className="flex"
+                          gap={2}
                           fontSize={'12px'}
-                          color={'light_grey'}
-                          borderRadius={'10px'}
-                          bg="color2_50p"
-                          padding={'10px'}
+                          color="light_grey"
+                          marginTop={'5px'}
+                          borderTop={'1px solid var(--chakra-colors-highlight)'}
+                          paddingTop={'5px'}
                         >
-                          <AlertIcon />
-                          Why did my holdings drop?{' '}
-                          <a
-                            href="https://docs.strkfarm.com/p/faq#q.-why-did-my-holdings-decrease-in-the-xstrk-sensei-strategy"
-                            style={{
-                              marginLeft: '5px',
-                              textDecoration: 'underline',
-                            }}
-                            target="_blank"
-                          >
-                            Learn more
-                          </a>
-                        </Alert>
-                      )} */}
-                    </Flex>
-
-                    <Flex
-                      flexDirection={'column'}
-                      alignItems={'flex-end'}
-                      gap={'8px'}
-                      bg={'highlight'}
-                      borderWidth={'1px'}
-                      borderColor={'border_light_30p'}
-                      borderRadius={'6px'}
-                      width={'199px'}
-                      height={'76px'}
-                      padding={'16px'}
-                    >
-                      <Text
-                        color={'border_light'}
-                        fontSize={'14px'}
-                        fontWeight={'500'}
-                      >
-                        Net earnings
-                      </Text>
-
-                      {!balData.isLoading &&
-                        !balData.isError &&
-                        !balData.isPending &&
-                        balData.data &&
-                        balData.data.tokenInfo && (
-                          <Tooltip
-                            label={
-                              !strategy?.isRetired() && 'Life time earnings'
-                            }
-                          >
-                            <Text
-                              color={
-                                profit > 0
-                                  ? 'cyan'
-                                  : profit < 0
-                                    ? 'red'
-                                    : 'text'
-                              }
-                              fontSize={'18px'}
-                              fontWeight={'700'}
-                            >
-                              {address && profit !== 0 && !strategy?.isRetired()
-                                ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                                : '-'}
-                            </Text>
-                          </Tooltip>
-                        )}
-                    </Flex>
-                  </Flex>
-                </Flex>
-
-                <Flex>
-                  <Flex width={'100%'}>
-                    {!strategy?.isRetired() && (
-                      <HarvestTime strategy={strategy} balData={balData} />
+                          <p>Detailed Split:</p>
+                          {individualBalances.map((bx, index) => {
+                            return (
+                              <Text key={index}>
+                                {bx?.amount.toEtherToFixedDecimals(
+                                  bx.tokenInfo?.displayDecimals || 2,
+                                )}{' '}
+                                {bx?.tokenInfo?.name}
+                              </Text>
+                            );
+                          })}
+                        </HStack>
+                      </Tooltip>
                     )}
-                  </Flex>
-                </Flex>
+
+                  {address &&
+                    balData.data &&
+                    strategy.id == 'xstrk_sensei' &&
+                    profit < 0 &&
+                    profit /
+                      Number(balData.data.amount.toEtherToFixedDecimals(6)) <
+                      -0.01 && (
+                      <Alert
+                        status={'info'}
+                        fontSize={'12px'}
+                        color={'light_grey'}
+                        borderRadius={'10px'}
+                        bg="color2_50p"
+                        padding={'10px'}
+                        marginTop={'10px'}
+                      >
+                        <AlertIcon />
+                        Why did my holdings drop?{' '}
+                        <a
+                          href="https://docs.strkfarm.com/p/faq#q.-why-did-my-holdings-decrease-in-the-xstrk-sensei-strategy"
+                          style={{
+                            marginLeft: '5px',
+                            textDecoration: 'underline',
+                          }}
+                          target="_blank"
+                        >
+                          Learn more
+                        </a>
+                      </Alert>
+                    )}
+                </Box>
+                {strategy?.isRetired() && (
+                  <Alert
+                    fontSize={'14px'}
+                    color={'light_grey'}
+                    borderRadius={'10px'}
+                    bg="color2_50p"
+                    paddingY={'10px'}
+                    px={'14px'}
+                    mt={'5'}
+                  >
+                    <AlertIcon />
+
+                    <Text>
+                      This strategy is retired due to zkLend exploit. You can
+                      recover your partial funds from{' '}
+                      <Link href="/recovery" color={'white'}>
+                        here.
+                      </Link>
+                    </Text>
+                  </Alert>
+                )}
               </Flex>
             )}
-
-            <Tabs
-              position="relative"
-              variant="unstyled"
-              width={'100%'}
-              index={tabIndex}
-              onChange={handleTabsChange}
-            >
-              <TabList>
-                <Tab
-                  color={'silver_gray'}
-                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Manage clicked');
-                  }}
-                >
-                  Manage
-                </Tab>
-                <Tab
-                  color={'silver_gray'}
-                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Risk clicked');
-                  }}
-                >
-                  Risk
-                </Tab>
-                <Tab
-                  color={'silver_gray'}
-                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Details clicked');
-                  }}
-                >
-                  Details
-                </Tab>
-                <Tab
-                  color={'silver_gray'}
-                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('FAQs clicked');
-                  }}
-                >
-                  FAQs
-                </Tab>
-                <Tab
-                  color={'silver_gray'}
-                  _selected={{ color: 'light_green', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Transactions clicked');
-                  }}
-                >
-                  Transactions
-                </Tab>
-              </TabList>
-              <TabIndicator
-                mt="-1.5px"
-                height="3px"
-                bg="light_green"
-                color="color1"
-                borderRadius="1px"
-              />
-            </Tabs>
           </Flex>
         </Flex>
 

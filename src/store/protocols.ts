@@ -3,9 +3,6 @@ import { atom } from 'jotai';
 import CarmineAtoms, { carmine } from './carmine.store';
 import EkuboAtoms, { ekubo } from './ekobu.store';
 import EndurAtoms, { endur } from './endur.store';
-import HaikoAtoms, { haiko } from './haiko.store';
-import HashstackAtoms, { hashstack } from './hashstack.store';
-import MySwapAtoms, { mySwap } from './myswap.store';
 import NostraDegenAtoms, { nostraDegen } from './nostradegen.store';
 import NostraDexAtoms, { nostraDex } from './nostradex.store';
 import NostraLendingAtoms, { nostraLending } from './nostralending.store';
@@ -39,21 +36,11 @@ export const getProtocols = () => [
   //   class: jedi,
   //   atoms: JediAtoms,
   // },
-  {
-    name: mySwap.name,
-    class: mySwap,
-    atoms: MySwapAtoms,
-  },
   // {
   //   name: tenkswap.name,
   //   class: tenkswap,
   //   atoms: TenkSwapAtoms,
   // },
-  {
-    name: haiko.name,
-    class: haiko,
-    atoms: HaikoAtoms,
-  },
   {
     name: nostraDex.name,
     class: nostraDex,
@@ -88,11 +75,6 @@ export const getProtocols = () => [
     name: nostraLending.name,
     class: nostraLending,
     atoms: NostraLendingAtoms,
-  },
-  {
-    name: hashstack.name,
-    class: hashstack,
-    atoms: HashstackAtoms,
   },
   {
     name: vesu.name,

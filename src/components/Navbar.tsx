@@ -43,7 +43,6 @@ import {
   standariseAddress,
   truncate,
 } from '@/utils';
-import fulllogo from '@public/fulllogo.png';
 import {
   InjectedConnector,
   useAccount,
@@ -269,12 +268,12 @@ export default function Navbar(props: NavbarProps) {
       width={'100%'}
       padding={0}
       position={'sticky'}
-      bg="black"
+      bg="mybg"
       zIndex={999}
       top="0"
     >
       <TncModal />
-      <Center bg="bg" color="gray" padding={0}>
+      {/* <Center bg="bg" color="gray" padding={0}>
         <Text
           fontSize="12px"
           textAlign={'center'}
@@ -299,7 +298,7 @@ export default function Navbar(props: NavbarProps) {
             </Link>
           </b>
         </Text>
-      </Center>
+      </Center> */}
       <Box
         width={'100%'}
         maxWidth="1400px"
@@ -308,11 +307,14 @@ export default function Navbar(props: NavbarProps) {
       >
         <Flex width={'100%'}>
           <Link href="/" margin="auto auto auto 0" textAlign={'left'}>
-            <Image
+            {/* <Image
               src={fulllogo.src}
               alt="logo"
               height={{ base: '35px', md: '50px' }}
-            />
+            /> */}
+            <Text fontSize={'30px'} color={'purple'} fontWeight={'bold'}>
+              Troves
+            </Text>
           </Link>
           {/* <Link href={'/claims'} isExternal>
             <Button
@@ -342,12 +344,12 @@ export default function Navbar(props: NavbarProps) {
           <Link href="/" margin="0 10px 0 0">
             <Button
               bg="transparent"
-              color="color2"
+              color="text_secondary"
               variant="outline"
               border="none"
               px="10px"
               _hover={{
-                bg: 'color2_50p',
+                color: 'text_primary',
               }}
               display={{ base: 'none !important', lg: 'flex !important' }}
               onClick={() => {
@@ -378,11 +380,11 @@ export default function Navbar(props: NavbarProps) {
           <Link href="/community" margin="0 10px 0 0">
             <Button
               bg="transparent"
-              color="color2"
+              color="text_secondary"
               variant="outline"
               border="none"
               _hover={{
-                bg: 'color2_50p',
+                color: 'text_primary',
               }}
               px="10px"
               display={{ base: 'none !important', lg: 'flex !important' }}
@@ -422,7 +424,7 @@ export default function Navbar(props: NavbarProps) {
               <Button
                 margin="0 0 0 auto"
                 borderColor="purple"
-                color="white"
+                color="purple"
                 variant="outline"
                 leftIcon={
                   <Avatar
@@ -537,18 +539,18 @@ export default function Navbar(props: NavbarProps) {
           <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
             <DrawerOverlay />
             <DrawerContent background="bg">
-              <DrawerHeader color="color1_light">Menu</DrawerHeader>
+              <DrawerHeader color="text_secondary">Menu</DrawerHeader>
               <DrawerBody>
                 <Flex direction="column">
-                  <Link href="/" color="color1_light" onClick={onClose}>
+                  <Link href="/" color="text_secondary" onClick={onClose}>
                     Home
                   </Link>
-                  {/* <Link href="/raffle" color="color1_light" onClick={onClose}>
+                  {/* <Link href="/raffle" color="text_secondary" onClick={onClose}>
                     🕹 {'  '}Raffle
                   </Link> */}
                   <Link
                     href="/community"
-                    color="color1_light"
+                    color="text_secondary"
                     onClick={() => {
                       onClose();
                       mixpanel.track('community_program_click');
