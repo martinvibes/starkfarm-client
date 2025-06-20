@@ -1,6 +1,8 @@
 import { usePagination } from '@ajna/pagination';
 import {
-  Box,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
   Container,
   Link,
   Skeleton,
@@ -15,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useAtomValue } from 'jotai';
 import React, { useMemo } from 'react';
+import { Accordion } from '@chakra-ui/react';
 
 import CONSTANTS from '@/constants';
 import { filteredPools } from '@/store/protocols';
@@ -25,6 +28,7 @@ import {
 
 import { YieldStrategyCard } from './YieldCard';
 import { addressAtom } from '@/store/claims.atoms';
+import { QuestionIcon } from '@chakra-ui/icons';
 
 export default function Strategies() {
   const strkFarmPoolsRes = useAtomValue(STRKFarmBaseAPYsAtom);
@@ -57,7 +61,30 @@ export default function Strategies() {
       flexDirection={'column'}
       gap={'16px'}
     >
-      <Box bg={'mycard'} padding={'1.5rem'} borderRadius={'lg'}>
+      <Accordion
+        allowToggle={true}
+        bg={'mycard_dark'}
+        padding={'0.5rem'}
+        borderRadius={'lg'}
+      >
+        <AccordionItem border={'none'}>
+          <AccordionButton>
+            <Text color="text_secondary" fontSize={'15px'} fontWeight={'600'}>
+              <QuestionIcon marginTop={'-2px'} /> What are strategies?
+            </Text>
+            {/* <AccordionIcon color={'text_primary'} /> */}
+          </AccordionButton>
+          <AccordionPanel>
+            <Text color="text_secondary" fontSize={'15px'} fontWeight={'400'}>
+              Strategies are structured investment plans that combine multiple
+              liquidity pools or protocols to optimize returns. They automate
+              the process of maximizing yield by intelligently allocating assets
+              across opportunities.
+            </Text>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+      {/* <Box bg={'mycard'} padding={'1.5rem'} borderRadius={'lg'}>
         <Text color="text_primary" fontSize={'18px'} fontWeight={'600'}>
           <b>What are strategies?</b>
         </Text>
@@ -67,7 +94,7 @@ export default function Strategies() {
           process of maximizing yield by intelligently allocating assets across
           opportunities.
         </Text>
-      </Box>
+      </Box> */}
 
       <VStack gap={2}>
         <Table

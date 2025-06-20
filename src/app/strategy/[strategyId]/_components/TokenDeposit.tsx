@@ -32,12 +32,12 @@ export function TokenDeposit(props: TokenDepositProps) {
       <TabList borderRadius={'8px'}>
         <Tab
           width={'100%'}
-          bg="purple_60p"
-          color="color_5"
+          bg="mycard"
+          color="text_secondary"
           fontSize={'14px'}
           fontWeight={'700'}
           borderTopLeftRadius={'8px'}
-          _selected={{ bg: 'bright_purple', color: 'black' }}
+          _selected={{ bg: 'purple', color: 'black' }}
           onClick={() => {
             // mixpanel.track('All pools clicked')
           }}
@@ -46,12 +46,12 @@ export function TokenDeposit(props: TokenDepositProps) {
         </Tab>
         <Tab
           width={'100%'}
-          bg="purple_60p"
-          color="color_5"
+          bg="mycard"
+          color="text_secondary"
           fontSize={'14px'}
           fontWeight={'700'}
           borderTopRightRadius={'8px'}
-          _selected={{ bg: 'bright_purple', color: 'black' }}
+          _selected={{ bg: 'purple', color: 'black' }}
           onClick={() => {
             // mixpanel.track('Strategies opened')
           }}

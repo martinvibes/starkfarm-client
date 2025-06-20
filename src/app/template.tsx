@@ -41,7 +41,7 @@ const theme = extendTheme({
     purple_gray: '#DFDFEC',
 
     mybg: 'black', // dark blue
-    bg_2: '#1B1724',
+    bg_2: '#111113',
     bg_3: '#090910',
 
     mycard: '#19191b',

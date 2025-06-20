@@ -15,7 +15,7 @@ import {
   Button,
   HStack,
 } from '@chakra-ui/react';
-import { CloseIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   ALL_FILTER,
   filterAtoms,
@@ -108,8 +108,8 @@ export function ProtocolFilters() {
     <Box
       width={'100%'}
       display={'flex'}
-      gap={{ base: '20px' }}
-      flexDirection={{ base: 'column' }}
+      gap={{ base: '10px' }}
+      flexDirection={{ base: 'row' }}
       justifyContent={'space-between'}
     >
       <Grid
@@ -190,159 +190,146 @@ export function ProtocolFilters() {
           })}
       </Grid>
 
-      <Box
-        display={{ base: 'flex' }}
-        width={'100%'}
-        justifyContent={'space-between'}
-        gap={{ base: '10px' }}
-      >
-        {/* Mobile dropdown for protocol filters */}
-        <Menu>
-          <MenuButton
-            as={Button}
-            rightIcon={<ChevronDownIcon />}
-            display={{ base: 'flex', md: 'none' }}
-            width={{ base: '100%' }}
-            bg="transparent"
-            color="white"
-            borderWidth="1px"
-            borderColor="slate_blue"
-            borderRadius="md"
-            padding="12px"
-            fontSize="14px"
-            fontWeight="normal"
-            size="lg"
-            _hover={{
-              bg: 'purple_hover_2',
-              '& > *': {
-                color: 'black',
-              },
-            }}
-          >
-            <HStack spacing={2}>
-              <Text>Protocols</Text>
-              <Text
-                bg="purple"
-                color="white"
-                padding="4px"
-                borderRadius="4px"
-                fontSize="10px"
-              >
-                {getSelectedProtocolsCount()}
-              </Text>
-            </HStack>
-          </MenuButton>
-          <MenuList bg="bg" borderColor="slate_blue">
-            {filters.protocols.map((p) => (
-              <MenuItem
-                key={p.name}
-                bg="transparent"
-                color="white"
-                _hover={{
-                  bg: 'purple_hover_2',
-                  color: 'black',
-                }}
-                onClick={() => {
-                  const selectedProtocols = protocolsFilter.includes(ALL_FILTER)
-                    ? []
-                    : protocolsFilter;
-
-                  let updatedProtocols = [];
-                  if (selectedProtocols.includes(p.name)) {
-                    updatedProtocols = selectedProtocols.filter(
-                      (x) => x !== p.name,
-                    );
-                  } else {
-                    updatedProtocols = [...selectedProtocols, p.name];
-                  }
-                  if (updatedProtocols.length === filters.protocols.length) {
-                    updatedProtocols = [ALL_FILTER];
-                  }
-                  mixpanel.track('Protocol Filter', {
-                    protocol: p.name,
-                    selected:
-                      updatedProtocols.includes(p.name) ||
-                      updatedProtocols.includes(ALL_FILTER),
-                    updatedProtocols: JSON.stringify(updatedProtocols),
-                  });
-                  updateFilters('protocols', updatedProtocols);
-                }}
-              >
-                <HStack spacing={3}>
-                  <Avatar
-                    src={`${p.logo}`}
-                    border="1px solid var(--chakra-colors-bg)"
-                    size="sm"
-                    name={p.name}
-                    filter={
-                      isProtocolSelected(p.name)
-                        ? 'none'
-                        : 'grayscale(100%) sepia(20%) hue-rotate(210deg) brightness(1.2) invert(0.2)'
-                    }
-                  />
-                  <Text>{p.name}</Text>
-                  {/* {isProtocolSelected(p.name) && (
-                  <Text color="purple" fontSize="12px">
-                    ✓
-                  </Text>
-                )} */}
-                </HStack>
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>
-
-        {/* Clear all or select all button */}
-        <Tag
-          display={'flex'}
+      {/* Mobile dropdown for protocol filters */}
+      <Menu>
+        <MenuButton
           width={{ base: '100%' }}
-          gap={'10px'}
-          size="lg"
-          borderWidth={'1px'}
+          as={Button}
+          rightIcon={<ChevronDownIcon />}
+          display={{ base: 'flex', md: 'none' }}
+          bg="mycard_light"
+          color="white"
           borderRadius="md"
-          borderColor={'slate_blue'}
-          padding={'12px'}
-          fontSize={'14px'}
-          fontWeight={'normal'}
-          bg={'transparent'}
-          color={'white'}
-          marginRight={'5px'}
-          as="button"
-          marginTop={'1px'}
-          aria-label={atleastOneProtocolSelected() ? 'Clear all' : 'Select all'}
+          padding="12px"
+          fontSize="14px"
+          fontWeight="normal"
+          size="lg"
           _hover={{
-            bg: 'purple_hover_2',
+            bg: 'mycard_light_2x',
             '& > *': {
               color: 'black',
             },
           }}
-          onClick={() => {
-            updateFilters(
-              'protocols',
-              atleastOneProtocolSelected() ? [] : [ALL_FILTER],
-            );
-            mixpanel.track('Clear/Select all protocols', {
-              atleastOneProtocolSelected: atleastOneProtocolSelected(),
-            });
-          }}
         >
-          <Text
-            bg={'purple'}
-            color={'white'}
-            padding={'4px'}
-            borderRadius={'4px'}
-            fontSize={'10px'}
-          >
-            {getSelectedProtocolsCount()}
-          </Text>
-          <Text>
-            {atleastOneProtocolSelected() ? 'Clear filters' : 'Select all'}
-          </Text>
-        </Tag>
-      </Box>
+          <HStack spacing={2}>
+            <Text>Protocols</Text>
+            <Text
+              bg="purple"
+              color="white"
+              padding="4px"
+              borderRadius="4px"
+              fontSize="10px"
+            >
+              {getSelectedProtocolsCount()}
+            </Text>
+          </HStack>
+        </MenuButton>
+        <MenuList bg="mycard_light" borderColor="mycard">
+          {filters.protocols.map((p) => (
+            <MenuItem
+              key={p.name}
+              bg={isProtocolSelected(p.name) ? 'purple' : 'mycard_light'}
+              color={isProtocolSelected(p.name) ? 'black' : 'text_primary'}
+              _hover={{
+                bg: 'mycard_light_2x',
+              }}
+              onClick={() => {
+                const selectedProtocols = protocolsFilter.includes(ALL_FILTER)
+                  ? []
+                  : protocolsFilter;
+
+                let updatedProtocols = [];
+                if (selectedProtocols.includes(p.name)) {
+                  updatedProtocols = selectedProtocols.filter(
+                    (x) => x !== p.name,
+                  );
+                } else {
+                  updatedProtocols = [...selectedProtocols, p.name];
+                }
+                if (updatedProtocols.length === filters.protocols.length) {
+                  updatedProtocols = [ALL_FILTER];
+                }
+                mixpanel.track('Protocol Filter', {
+                  protocol: p.name,
+                  selected:
+                    updatedProtocols.includes(p.name) ||
+                    updatedProtocols.includes(ALL_FILTER),
+                  updatedProtocols: JSON.stringify(updatedProtocols),
+                });
+                updateFilters('protocols', updatedProtocols);
+              }}
+            >
+              <HStack spacing={3}>
+                <Avatar
+                  src={`${p.logo}`}
+                  border="1px solid var(--chakra-colors-bg)"
+                  size="sm"
+                  name={p.name}
+                  filter={
+                    isProtocolSelected(p.name)
+                      ? 'none'
+                      : 'grayscale(100%) sepia(20%) hue-rotate(210deg) brightness(1.2) invert(0.2)'
+                  }
+                />
+                <Text>{p.name}</Text>
+                {/* {isProtocolSelected(p.name) && (
+                <Text color="purple" fontSize="12px">
+                  ✓
+                </Text>
+              )} */}
+              </HStack>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
+
+      {/* Clear all or select all button */}
+      <Tag
+        display={'flex'}
+        width={{ base: '100%', md: 'auto' }}
+        gap={'10px'}
+        size="lg"
+        borderRadius="md"
+        padding={'12px'}
+        fontSize={'14px'}
+        fontWeight={'normal'}
+        bg={'mycard_light'}
+        color={'white'}
+        as="button"
+        marginTop={'1px'}
+        aria-label={atleastOneProtocolSelected() ? 'Clear all' : 'Select all'}
+        _hover={{
+          bg: 'mycard_light_2x',
+          '& > *': {
+            color: 'white',
+          },
+        }}
+        onClick={() => {
+          updateFilters(
+            'protocols',
+            atleastOneProtocolSelected() ? [] : [ALL_FILTER],
+          );
+          mixpanel.track('Clear/Select all protocols', {
+            atleastOneProtocolSelected: atleastOneProtocolSelected(),
+          });
+        }}
+      >
+        <Text
+          bg={'purple'}
+          color={'white'}
+          padding={'4px'}
+          borderRadius={'4px'}
+          fontSize={'10px'}
+        >
+          {getSelectedProtocolsCount()}
+        </Text>
+        <Text>
+          {atleastOneProtocolSelected() ? 'Clear filters' : 'Select all'}
+        </Text>
+      </Tag>
 
       {/* Selected protocols list for mobile */}
-      <HStack
+      {/* <HStack
         spacing={1}
         display={{ base: 'flex', md: 'none' }}
         overflowX="auto"
@@ -362,7 +349,7 @@ export function ProtocolFilters() {
             border="1px solid var(--chakra-colors-bg)"
           />
         ))}
-      </HStack>
+      </HStack> */}
     </Box>
   );
 }
@@ -565,19 +552,18 @@ export function CategoryFilters() {
       >
         <Menu>
           <MenuButton
+            width={'100%'}
             as={Button}
             rightIcon={<ChevronDownIcon />}
-            bg="transparent"
+            bg="mycard_light"
             color="white"
-            borderWidth="1px"
-            borderColor="slate_blue"
             borderRadius="md"
             padding="12px"
             size="lg"
             fontSize="14px"
             fontWeight="normal"
             _hover={{
-              bg: 'purple_hover_2',
+              bg: 'mycard_light_2x',
               '& > *': {
                 color: 'black',
               },
@@ -585,69 +571,34 @@ export function CategoryFilters() {
           >
             <Text>Categories</Text>
           </MenuButton>
-          <MenuList bg="bg" borderColor="slate_blue">
+          <MenuList bg="mycard_light" borderColor="mycard">
+            {[Category.Stable, Category.STRK, Category.ETH].map((category) => (
+              <MenuItem
+                key={category.valueOf()}
+                bg="mycard_light"
+                color="white"
+                _hover={{
+                  bg: 'mycard_light_2x',
+                }}
+                onClick={() => updateCategory(category)}
+              >
+                <HStack spacing={3}>
+                  <Text>{category.valueOf().split(' ')[0]}</Text>
+                  {categoriesFilter.includes(category.valueOf()) && (
+                    <Text color="purple" fontSize="12px">
+                      ✓
+                    </Text>
+                  )}
+                </HStack>
+              </MenuItem>
+            ))}
             <MenuItem
-              bg="transparent"
+              bg="mycard_light"
               color="white"
               _hover={{
-                bg: 'purple_hover_2',
+                bg: 'mycard_light_2x',
                 color: 'black',
               }}
-              onClick={() => updateCategory(Category.Stable)}
-            >
-              <HStack spacing={3}>
-                <Text>{Category.Stable.valueOf().split(' ')[0]}</Text>
-                {categoriesFilter.includes(Category.Stable.valueOf()) && (
-                  <Text color="purple" fontSize="12px">
-                    ✓
-                  </Text>
-                )}
-              </HStack>
-            </MenuItem>
-            <MenuItem
-              bg="transparent"
-              color="white"
-              _hover={{
-                bg: 'purple_hover_2',
-                color: 'black',
-              }}
-              onClick={() => updateCategory(Category.STRK)}
-            >
-              <HStack spacing={3}>
-                <Text>{Category.STRK.valueOf().split(' ')[0]}</Text>
-                {categoriesFilter.includes(Category.STRK.valueOf()) && (
-                  <Text color="purple" fontSize="12px">
-                    ✓
-                  </Text>
-                )}
-              </HStack>
-            </MenuItem>
-            <MenuItem
-              bg="transparent"
-              color="white"
-              _hover={{
-                bg: 'purple_hover_2',
-                color: 'black',
-              }}
-              onClick={() => updateCategory(Category.ETH)}
-            >
-              <HStack spacing={3}>
-                <Text>{Category.ETH.valueOf().split(' ')[0]}</Text>
-                {categoriesFilter.includes(Category.ETH.valueOf()) && (
-                  <Text color="purple" fontSize="12px">
-                    ✓
-                  </Text>
-                )}
-              </HStack>
-            </MenuItem>
-            <MenuItem
-              bg="transparent"
-              color="white"
-              _hover={{
-                bg: 'purple_hover_2',
-                color: 'black',
-              }}
-              onClick={() => updateRiskLevel(['1', '2'])}
             >
               <HStack spacing={3}>
                 <Text>Low risk</Text>
@@ -663,19 +614,18 @@ export function CategoryFilters() {
 
         <Menu>
           <MenuButton
+            width={'100%'}
             as={Button}
             rightIcon={<ChevronDownIcon />}
-            bg="transparent"
+            bg="mycard_light"
             color="white"
-            borderWidth="1px"
-            borderColor="slate_blue"
             borderRadius="md"
             padding="12px"
             size="lg"
             fontSize="14px"
             fontWeight="normal"
             _hover={{
-              bg: 'purple_hover_2',
+              bg: 'mycard_light_2x',
               '& > *': {
                 color: 'black',
               },
@@ -683,13 +633,12 @@ export function CategoryFilters() {
           >
             <Text>Pool Types</Text>
           </MenuButton>
-          <MenuList bg="bg" borderColor="slate_blue">
+          <MenuList bg="mycard_light" borderColor="mycard">
             <MenuItem
-              bg="transparent"
+              bg="mycard_light"
               color="white"
               _hover={{
-                bg: 'purple_hover_2',
-                color: 'black',
+                bg: 'mycard_light_2x',
               }}
               onClick={() =>
                 updatePoolType([PoolType.DEXV2, PoolType.DEXV3], 'DEX')
@@ -706,11 +655,10 @@ export function CategoryFilters() {
               </HStack>
             </MenuItem>
             <MenuItem
-              bg="transparent"
+              bg="mycard_light"
               color="white"
               _hover={{
-                bg: 'purple_hover_2',
-                color: 'black',
+                bg: 'mycard_light_2x',
               }}
               onClick={() => updatePoolType([PoolType.Lending], 'Lending')}
             >
@@ -724,11 +672,10 @@ export function CategoryFilters() {
               </HStack>
             </MenuItem>
             <MenuItem
-              bg="transparent"
+              bg="mycard_light"
               color="white"
               _hover={{
-                bg: 'purple_hover_2',
-                color: 'black',
+                bg: 'mycard_light_2x',
               }}
               onClick={() =>
                 updatePoolType([PoolType.Derivatives], 'Derivatives')
@@ -746,7 +693,7 @@ export function CategoryFilters() {
           </MenuList>
         </Menu>
 
-        <Tag
+        {/* <Tag
           size="md"
           bg="transparent"
           color={'white'}
@@ -773,7 +720,7 @@ export function CategoryFilters() {
               <Text>Reset</Text> <CloseIcon fontSize={'10px'} />
             </HStack>
           </TagLabel>
-        </Tag>
+        </Tag> */}
       </Box>
     </Box>
   );

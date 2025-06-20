@@ -117,11 +117,12 @@ export function RiskTab(props: RiskTabProps) {
           }}
           display={'flex'}
           flexDirection={'column'}
-          gap={'32px'}
+          gap={'16px'}
         >
           {strategy.risks.map((r, index) => (
             <ListItem
-              color="border_light"
+              color="text_secondary"
+              bg={'mycard'}
               key={r}
               width={'fit-content'}
               fontSize={'14px'}
@@ -129,8 +130,6 @@ export function RiskTab(props: RiskTabProps) {
               alignItems={'justify'}
               padding={'10px'}
               borderRadius={'8px'}
-              borderWidth={'1px'}
-              borderColor={'slate_blue'}
               data-number={index + 1}
             >
               {r}
@@ -139,13 +138,13 @@ export function RiskTab(props: RiskTabProps) {
                   padding={'4px 8px'}
                   borderRadius={'4px'}
                   bg={
-                    strategy.riskFactor === 0
+                    strategy.riskFactor <= 1
                       ? 'light_green_2'
-                      : strategy.riskFactor < 2.5
+                      : strategy.riskFactor < 3
                         ? 'yellow_2'
                         : 'red_2'
                   }
-                  color={'color_6'}
+                  color={'black'}
                   fontSize={'10px'}
                   fontWeight={'500'}
                   textTransform={'none'}

@@ -51,7 +51,7 @@ export function TransactionsTab(props: TransactionsTabProps) {
         </Text>
         {!strategy.settings.isTransactionHistDisabled && (
           <Text fontSize="14px" color="border_light" mb={2}>
-            There may be delays fetching data. If your transaction isn&apos;t
+            There may be delays in fetching data. If your transaction isn&apos;t
             found, try again later.
           </Text>
         )}
@@ -174,35 +174,30 @@ export function TransactionsTab(props: TransactionsTabProps) {
                 <>
                   <TableContainer width={'100%'}>
                     <Table
-                      variant="unstyled"
-                      borderWidth={'1px'}
-                      borderColor={'#2D2D3D'}
+                      variant="simple"
                       sx={{
-                        borderRadius: '12px',
                         overflow: 'hidden',
                         'border-collapse': 'separate',
-                        'border-spacing': '0px',
+                        'border-spacing': '0px 5px',
                       }}
                     >
                       <Thead
                         display={{ base: 'none', md: 'table-header-group' }}
-                        bg={'color_3'}
+                        bg={'mycard_light'}
                       >
                         <Tr>
                           <Th
                             width={'50px'}
                             color={'white'}
-                            borderColor={'slate_blue'}
                             fontSize={'14px'}
                             fontWeight={'600'}
                             textTransform={'capitalize'}
+                            borderTopLeftRadius={'lg'}
                           >
                             #
                           </Th>
                           <Th
                             color={'white'}
-                            borderRightWidth={'1px'}
-                            borderColor={'slate_blue'}
                             fontSize={'14px'}
                             fontWeight={'600'}
                             textTransform={'capitalize'}
@@ -211,8 +206,6 @@ export function TransactionsTab(props: TransactionsTabProps) {
                           </Th>
                           <Th
                             color={'white'}
-                            borderRightWidth={'1px'}
-                            borderColor={'slate_blue'}
                             fontSize={'14px'}
                             fontWeight={'600'}
                             textTransform={'capitalize'}
@@ -221,8 +214,6 @@ export function TransactionsTab(props: TransactionsTabProps) {
                           </Th>
                           <Th
                             color={'white'}
-                            borderRightWidth={'1px'}
-                            borderColor={'slate_blue'}
                             fontSize={'14px'}
                             fontWeight={'600'}
                             textTransform={'capitalize'}
@@ -231,11 +222,10 @@ export function TransactionsTab(props: TransactionsTabProps) {
                           </Th>
                           <Th
                             color={'white'}
-                            borderRightWidth={'1px'}
-                            borderColor={'slate_blue'}
                             fontSize={'14px'}
                             fontWeight={'600'}
                             textTransform={'capitalize'}
+                            borderTopRightRadius={'lg'}
                           >
                             Time
                           </Th>
@@ -247,15 +237,11 @@ export function TransactionsTab(props: TransactionsTabProps) {
                           const decimals = token?.decimals;
 
                           return (
-                            <Tr
-                              key={index}
-                              border={'none'}
-                              borderBottom={'1px solid #000000'}
-                            >
-                              <Td color={'text'} fontSize={'14px'}>
+                            <Tr key={index} border={'none'} bg={'mycard_dark'}>
+                              <Td color={'text_secondary'} fontSize={'14px'}>
                                 {index + 1}.
                               </Td>
-                              <Td color={'text'} fontSize={'14px'}>
+                              <Td color={'text_secondary'} fontSize={'14px'}>
                                 {Number(
                                   new MyNumber(
                                     tx.amount,
@@ -266,7 +252,7 @@ export function TransactionsTab(props: TransactionsTabProps) {
                                 ).toLocaleString()}{' '}
                                 {token?.name}
                               </Td>
-                              <Td color={'text'} fontSize={'14px'}>
+                              <Td color={'text_secondary'} fontSize={'14px'}>
                                 <Flex alignItems={'center'} gap={'8px'}>
                                   {tx.type === 'deposit' ? (
                                     <Box
@@ -299,11 +285,11 @@ export function TransactionsTab(props: TransactionsTabProps) {
                                   {capitalize(tx.type)}
                                 </Flex>
                               </Td>
-                              <Td color={'text'} fontSize={'14px'}>
+                              <Td color={'text_secondary'} fontSize={'14px'}>
                                 <Text
                                   width={'100%'}
                                   fontWeight={'600'}
-                                  color={'border_light'}
+                                  color={'text_secondary'}
                                 >
                                   <Link
                                     href={`https://starkscan.co/tx/${tx.txHash}`}
@@ -314,7 +300,7 @@ export function TransactionsTab(props: TransactionsTabProps) {
                                   </Link>
                                 </Text>
                               </Td>
-                              <Td color={'silver_gray'} fontSize={'14px'}>
+                              <Td color={'text_secondary'} fontSize={'14px'}>
                                 <Text width={'100%'}>
                                   {timeAgo(new Date(tx.timestamp * 1000))}
                                 </Text>

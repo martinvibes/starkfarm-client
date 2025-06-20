@@ -74,16 +74,17 @@ export function standariseAddress(address: string | bigint) {
 }
 
 export const MyMenuListProps: MenuListProps = {
-  bg: 'highlight',
-  color: 'white',
-  borderColor: 'bg',
+  bg: 'mycard_light_2x',
+  color: 'text_primary',
+  borderColor: 'mycard',
+  boxShadow: '0px 0px 3px var(--chakra-colors-mycard_light_2x)',
   padding: 0,
 };
 
 export const MyMenuItemProps: MenuItemProps = {
-  bg: 'highlight',
+  bg: 'mycard_light_2x',
   _hover: {
-    bg: 'bg',
+    bg: 'mycard_light',
   },
 };
 

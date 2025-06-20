@@ -215,14 +215,14 @@ export default function TxButton(props: TxButtonProps) {
       <Box width={'100%'} textAlign={'center'}>
         <Button
           color={'black'}
-          bg="bright_purple"
+          bg="purple"
           variant={'ghost'}
           width={'100%'}
           _active={{
-            bg: 'var(--chakra-colors-color2)',
+            bg: 'var(--chakra-colors-bright_purple)',
           }}
           _hover={{
-            bg: 'var(--chakra-colors-color2)',
+            bg: 'var(--chakra-colors-bright_purple)',
           }}
           _disabled={{
             bg: 'disabled_button',

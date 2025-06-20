@@ -23,6 +23,7 @@ import {
   MenuItem,
   Link,
   HStack,
+  Flex,
 } from '@chakra-ui/react';
 import { useAccount } from '@starknet-react/core';
 import { useAtom, useAtomValue, Atom, useSetAtom } from 'jotai';
@@ -304,7 +305,7 @@ const AmountInput = forwardRef(
 
       return (
         <Box textAlign={'right'}>
-          <Text color={'silver_gray'}>Wallet balance </Text>
+          <Text color={'text_secondary'}>Wallet balance </Text>
           <LoadingWrap
             isLoading={isLoading}
             isError={balData.isError}
@@ -321,28 +322,30 @@ const AmountInput = forwardRef(
             }}
           >
             {props.strategy.settings.isInMaintenance ? (
-              '-'
+              <Text color={'text_secondary'}>-</Text>
             ) : (
-              <>
+              <Flex width={'100%'} align={'flex-end'} justify={'flex-end'}>
                 <Tooltip label={balance.toEtherStr()}>
-                  <b style={{ marginLeft: '5px' }}>
+                  <Text
+                    style={{ marginLeft: '5px' }}
+                    color="text_primary"
+                    fontWeight={'600'}
+                  >
                     {balance.toEtherToFixedDecimals(4)}
-                  </b>
+                  </Text>
                 </Tooltip>
                 <Button
                   size={'sm'}
                   marginLeft={'5px'}
-                  color="color2"
-                  bg="highlight"
+                  color="text_secondary"
                   padding="0"
+                  bg="transparent"
                   maxHeight={'25px'}
                   _hover={{
-                    bg: 'highlight',
-                    color: 'color_50p',
+                    color: 'text_primary',
                   }}
                   _active={{
-                    bg: 'highlight',
-                    color: 'color_50p',
+                    color: 'text_primary',
                   }}
                   onClick={handleMaxClick}
                   isDisabled={isLoading || balData.isError}
@@ -350,7 +353,7 @@ const AmountInput = forwardRef(
                 >
                   [Max]
                 </Button>
-              </>
+              </Flex>
             )}
           </LoadingWrap>
         </Box>
@@ -480,16 +483,17 @@ const AmountInput = forwardRef(
                 height={'100%'}
                 rightIcon={<ChevronDownIcon width={'20px'} height={'20px'} />}
                 width={'200px'}
-                bg={'transparent'}
-                borderColor={'slate_blue'}
-                borderWidth={'1px'}
-                color="border_light"
+                bg={'mycard_light'}
+                color="text_primary"
                 fontSize={'16px'}
                 fontWeight={'500'}
                 padding={'10px 16px'}
                 textAlign={'left'}
                 _hover={{
-                  bg: 'transparent',
+                  bg: 'mycard_light_2x',
+                }}
+                _active={{
+                  bg: 'mycard_light_2x',
                 }}
               >
                 <HStack>
@@ -548,10 +552,8 @@ const AmountInput = forwardRef(
           min={0}
           max={parseFloat(maxAmount.toEtherStr())}
           color={'white'}
-          bg={'transparent'}
-          borderRadius={'10px'}
-          borderColor={'slate_blue'}
-          borderWidth={'1px'}
+          bg={'mycard_light'}
+          borderRadius={'lg'}
           onChange={(valueStr) => {
             const newAmount =
               valueStr && Number(valueStr) > 0
@@ -578,7 +580,7 @@ const AmountInput = forwardRef(
         >
           <NumberInputField
             border={'0px'}
-            borderRadius={'10px'}
+            borderRadius={'lg'}
             placeholder="Amount"
             paddingRight="60px"
             color={'white'}

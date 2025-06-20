@@ -112,14 +112,19 @@ export default function Pools() {
       >
         <Box padding={'1rem 1.5rem'} bg={'mycard_dark'} borderRadius={'lg'}>
           <ProtocolFilters />
-          <Box width={'100%'} marginTop={'10px'}>
-            <Box width={{ base: '100%', md: '70%' }} float={'left'}>
+          <Box width={'100%'}>
+            <Box
+              width={{ base: '100%', md: '70%' }}
+              float={'left'}
+              marginTop={'10px'}
+            >
               <CategoryFilters />
             </Box>
             <Container
               float={'left'}
               padding="0px"
               width={{ base: '100%', md: '30%' }}
+              marginTop={'10px'}
             >
               <Pagination
                 pagesCount={pagesCount}

@@ -372,11 +372,17 @@ function InternalDeposit(props: DepositProps) {
         />
       </Center>
 
-      <Flex justifyContent={'space-between'} marginTop={'30px'}>
-        <Text fontSize={'14px'} fontWeight={'400'} color="silver_gray">
-          Fees
+      <Flex
+        justifyContent={'space-between'}
+        marginTop={'30px'}
+        bg={'mycard'}
+        borderRadius={'lg'}
+        padding={'8px'}
+      >
+        <Text fontSize={'14px'} fontWeight={'400'} color="text_secondary">
+          Fees:
         </Text>
-        <Text fontSize={'14px'} color="border_light">
+        <Text fontSize={'14px'} color="text_secondary">
           No additional fees by STRKFarm
         </Text>
       </Flex>

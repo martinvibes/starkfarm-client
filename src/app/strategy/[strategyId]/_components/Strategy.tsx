@@ -2,7 +2,6 @@
 
 import {
   Avatar,
-  AvatarGroup,
   Box,
   Button,
   Container,
@@ -24,6 +23,7 @@ import {
   TabList,
   Tab,
   TabIndicator,
+  VStack,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -51,6 +51,8 @@ import { FAQTab } from './FAQTab';
 import { TransactionsTab } from './TransactionsTab';
 import MobileHarvestTime from '@/components/MobileHarvestTime';
 import HarvestTime from '@/components/HarvestTime';
+import { StrategyInfoComponent } from './StrategyInfo';
+import { APYInfo } from '@/components/APYInfo';
 
 function HoldingsText({
   strategy,
@@ -121,12 +123,12 @@ function HoldingsAndEarnings({
   profit: number;
 }) {
   return (
-    <Flex width={'100%'} justifyContent={'space-between'}>
-      <Box>
-        <Text>
+    <Flex width={'100%'} justifyContent={'space-between'} gap={2}>
+      <Box padding={'16px'} bg="mycard" width={'100%'} borderRadius={'lg'}>
+        <Text color={'text_secondary'}>
           <b>Your Holdings </b>
         </Text>
-        <Text color="cyan">
+        <Text color="purple">
           <HoldingsText
             strategy={strategy}
             address={address}
@@ -136,11 +138,18 @@ function HoldingsAndEarnings({
       </Box>
       {!strategy.settings.isTransactionHistDisabled && (
         <Tooltip label={!strategy?.isRetired() && 'Life time earnings'}>
-          <Box>
-            <Text textAlign={'right'} fontWeight={'none'}>
+          <Box padding={'16px'} bg="mycard" width={'100%'} borderRadius={'lg'}>
+            <Text
+              textAlign={'right'}
+              fontWeight={'none'}
+              color={'text_secondary'}
+            >
               <b>Net earnings</b>
             </Text>
-            <Text textAlign={'right'} color={profit >= 0 ? 'cyan' : 'red'}>
+            <Text
+              textAlign={'right'}
+              color={profit >= 0 ? 'light_green_2' : 'red'}
+            >
               <NetEarningsText
                 strategy={strategy}
                 address={address}
@@ -352,22 +361,19 @@ const Strategy = ({ params }: StrategyParams) => {
           alignItems={'center'}
           justifyContent={'center'}
         >
-          <Flex bg={'bg_2'} width={'100%'} justifyContent={'center'}>
+          <Flex bg={'mybg'} width={'100%'} justifyContent={'center'}>
             <Flex
               width={'100%'}
               maxWidth={'1152px'}
               flexDirection={'column'}
-              height={'484px'}
-              paddingTop={'64px'}
-              gap={'64px'}
+              paddingTop={'32px'}
+              gap={'48px'}
             >
               <Box>
                 <Link href="/?tab=strategies">
                   <Button
-                    bg={'transparent'}
-                    color={'white'}
-                    borderWidth={'1px'}
-                    borderColor={'border_light'}
+                    bg={'mycard_light'}
+                    color={'text_primary'}
                     leftIcon={<ArrowBackIcon />}
                     _hover={{
                       bg: 'transparent',
@@ -378,245 +384,37 @@ const Strategy = ({ params }: StrategyParams) => {
                   </Button>
                 </Link>
               </Box>
-
-              {strategy && (
-                <Flex flexDirection={'column'} gap={'16px'}>
-                  <Flex justifyContent={'space-between'}>
-                    <Flex gap={'16px'} alignItems={'center'}>
-                      <AvatarGroup size={'md'} spacing={'-20px'} mr={'5px'}>
-                        {strategy &&
-                          strategy.metadata.depositTokens.length > 0 &&
-                          strategy.metadata.depositTokens.map((token: any) => {
-                            return (
-                              <Avatar
-                                key={token.address}
-                                marginRight={'5px'}
-                                src={token.logo}
-                                width={'64px'}
-                                height={'64px'}
-                              />
-                            );
-                          })}
-                        {strategy &&
-                          strategy.metadata.depositTokens.length == 0 && (
-                            <Avatar
-                              marginRight={'5px'}
-                              src={strategy?.holdingTokens[0].logo}
-                              width={'64px'}
-                              height={'64px'}
-                            />
-                          )}
-                      </AvatarGroup>
-                      <Text fontSize={'32px'} fontWeight={'600'} color="white">
-                        {strategy ? strategy.name : 'Strategy Not found'}
-                      </Text>
+              <HStack justifyContent={'space-between'} width={'100%'}>
+                {strategy && (
+                  <VStack gap={6}>
+                    <StrategyInfoComponent strategy={strategy} />
+                    {!strategy?.isRetired() && strategyCached && (
                       <Box
-                        display={'flex'}
-                        alignItems={'center'}
-                        justifyContent={'center'}
-                        bg={'light_green'}
-                        width={'24px'}
-                        height={'24px'}
-                        padding={'3px 5px'}
-                        borderRadius={'20px'}
+                        alignItems={'flex-start'}
+                        justifyItems={'flex-start'}
+                        width={'100%'}
                       >
-                        <Image src={shield.src} alt="badge" />
+                        <APYInfo
+                          strategy={strategy}
+                          strategyAPIResult={strategyCached}
+                        />
                       </Box>
-                    </Flex>
+                    )}
+                  </VStack>
+                )}
 
-                    <Flex gap={'16px'}>
-                      <Flex
-                        flexDirection={'column'}
-                        alignItems={'flex-end'}
-                        gap={'8px'}
-                        bg={'highlight'}
-                        borderWidth={'1px'}
-                        borderColor={'border_light_30p'}
-                        borderRadius={'6px'}
-                        width={'199px'}
-                        height={'76px'}
-                        padding={'16px'}
-                      >
-                        <Text
-                          color={'border_light'}
-                          fontSize={'14px'}
-                          fontWeight={'500'}
-                        >
-                          Your Holdings:
-                        </Text>
-
-                        {!balData.isLoading &&
-                          !balData.isError &&
-                          !balData.isPending &&
-                          balData.data &&
-                          balData.data.tokenInfo && (
-                            <Text
-                              color="text"
-                              fontSize={'18px'}
-                              fontWeight={'700'}
-                            >
-                              {address
-                                ? Number(
-                                    balData.data.amount.toEtherToFixedDecimals(
-                                      balData.data.tokenInfo?.displayDecimals ||
-                                        2,
-                                    ),
-                                  ) === 0 || strategy?.isRetired()
-                                  ? '-'
-                                  : `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                                : 'Connect wallet'}
-                            </Text>
-                          )}
-
-                        {(balData.isLoading ||
-                          balData.isPending ||
-                          (!balData.data?.tokenInfo && !balData.isError)) && (
-                          <Text
-                            color="text"
-                            fontSize={'18px'}
-                            fontWeight={'700'}
-                          >
-                            {address ? <Spinner size="sm" /> : 'Connect wallet'}
-                          </Text>
-                        )}
-
-                        {balData.isError &&
-                          !balData.isLoading &&
-                          !balData.isPending && (
-                            <Text
-                              color="text"
-                              fontSize={'18px'}
-                              fontWeight={'700'}
-                            >
-                              Error
-                            </Text>
-                          )}
-
-                        {/* Show individual holdings is more tokens */}
-                        {individualBalances.length > 1 &&
-                          balData.data?.amount.compare('0', 'gt') && (
-                            <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
-                              <HStack
-                                className="flex"
-                                gap={2}
-                                fontSize={'12px'}
-                                color="light_grey"
-                                marginTop={'5px'}
-                                borderTop={
-                                  '1px solid var(--chakra-colors-highlight)'
-                                }
-                                paddingTop={'5px'}
-                              >
-                                <p>Detailed Split:</p>
-                                {individualBalances.map((bx, index) => {
-                                  return (
-                                    <Text key={index}>
-                                      {bx?.amount.toEtherToFixedDecimals(
-                                        bx.tokenInfo?.displayDecimals || 2,
-                                      )}{' '}
-                                      {bx?.tokenInfo?.name}
-                                    </Text>
-                                  );
-                                })}
-                              </HStack>
-                            </Tooltip>
-                          )}
-
-                        {/* {address &&
-                        balData.data &&
-                        strategy.id === 'xstrk_sensei' &&
-                        profit < 0 &&
-                        profit /
-                          Number(balData.data.amount.toEtherToFixedDecimals(6)) <
-                          -0.01 && (
-                          <Alert
-                            status={'info'}
-                            fontSize={'12px'}
-                            color={'light_grey'}
-                            borderRadius={'10px'}
-                            bg="color2_50p"
-                            padding={'10px'}
-                          >
-                            <AlertIcon />
-                            Why did my holdings drop?{' '}
-                            <a
-                              href="https://docs.strkfarm.com/p/faq#q.-why-did-my-holdings-decrease-in-the-xstrk-sensei-strategy"
-                              style={{
-                                marginLeft: '5px',
-                                textDecoration: 'underline',
-                              }}
-                              target="_blank"
-                            >
-                              Learn more
-                            </a>
-                          </Alert>
-                        )} */}
-                      </Flex>
-
-                      <Flex
-                        flexDirection={'column'}
-                        alignItems={'flex-end'}
-                        gap={'8px'}
-                        bg={'highlight'}
-                        borderWidth={'1px'}
-                        borderColor={'border_light_30p'}
-                        borderRadius={'6px'}
-                        width={'199px'}
-                        height={'76px'}
-                        padding={'16px'}
-                      >
-                        <Text
-                          color={'border_light'}
-                          fontSize={'14px'}
-                          fontWeight={'500'}
-                        >
-                          Net earnings
-                        </Text>
-
-                        {!balData.isLoading &&
-                          !balData.isError &&
-                          !balData.isPending &&
-                          balData.data &&
-                          balData.data.tokenInfo && (
-                            <Tooltip
-                              label={
-                                !strategy?.isRetired() && 'Life time earnings'
-                              }
-                            >
-                              <Text
-                                color={
-                                  profit > 0
-                                    ? 'cyan'
-                                    : profit < 0
-                                      ? 'red'
-                                      : 'text'
-                                }
-                                fontSize={'18px'}
-                                fontWeight={'700'}
-                              >
-                                {address &&
-                                profit !== 0 &&
-                                !strategy?.isRetired() &&
-                                balData.data &&
-                                balData.data.tokenInfo
-                                  ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                                  : '-'}
-                              </Text>
-                            </Tooltip>
-                          )}
-                      </Flex>
-                    </Flex>
-                  </Flex>
-
-                  <Flex>
-                    <Flex width={'100%'}>
-                      {!strategy?.isRetired() && (
-                        <HarvestTime strategy={strategy} balData={balData} />
-                      )}
-                    </Flex>
-                  </Flex>
-                </Flex>
-              )}
+                {strategy && (
+                  <VStack gap={6}>
+                    <HoldingsAndEarnings
+                      strategy={strategy}
+                      address={address}
+                      balData={balData}
+                      profit={profit}
+                    />
+                    <HarvestTime strategy={strategy} balData={balData} />
+                  </VStack>
+                )}
+              </HStack>
 
               <Tabs
                 position="relative"
@@ -625,10 +423,10 @@ const Strategy = ({ params }: StrategyParams) => {
                 index={tabIndex}
                 onChange={handleTabsChange}
               >
-                <TabList>
+                <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
                   <Tab
-                    color={'silver_gray'}
-                    _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                    color={'text_secondary'}
+                    _selected={{ color: 'purple', fontWeight: 'bold' }}
                     onClick={() => {
                       mixpanel.track('Manage clicked');
                     }}
@@ -636,17 +434,17 @@ const Strategy = ({ params }: StrategyParams) => {
                     Manage
                   </Tab>
                   <Tab
-                    color={'silver_gray'}
-                    _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                    color={'text_secondary'}
+                    _selected={{ color: 'purple', fontWeight: 'bold' }}
                     onClick={() => {
                       mixpanel.track('Risk clicked');
                     }}
                   >
-                    Risk
+                    Risks
                   </Tab>
                   <Tab
-                    color={'silver_gray'}
-                    _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                    color={'text_secondary'}
+                    _selected={{ color: 'purple', fontWeight: 'bold' }}
                     onClick={() => {
                       mixpanel.track('Details clicked');
                     }}
@@ -654,8 +452,8 @@ const Strategy = ({ params }: StrategyParams) => {
                     Details
                   </Tab>
                   <Tab
-                    color={'silver_gray'}
-                    _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                    color={'text_secondary'}
+                    _selected={{ color: 'purple', fontWeight: 'bold' }}
                     onClick={() => {
                       mixpanel.track('FAQs clicked');
                     }}
@@ -663,8 +461,8 @@ const Strategy = ({ params }: StrategyParams) => {
                     FAQs
                   </Tab>
                   <Tab
-                    color={'silver_gray'}
-                    _selected={{ color: 'light_green', fontWeight: 'bold' }}
+                    color={'text_secondary'}
+                    _selected={{ color: 'purple', fontWeight: 'bold' }}
                     onClick={() => {
                       mixpanel.track('Transactions clicked');
                     }}
@@ -675,49 +473,38 @@ const Strategy = ({ params }: StrategyParams) => {
                 <TabIndicator
                   mt="-1.5px"
                   height="3px"
-                  bg="light_green"
+                  bg="purple"
                   color="color1"
                   borderRadius="1px"
                 />
+                <TabPanels>
+                  <TabPanel width={'100%'} padding={0}>
+                    {strategy && <ManageTab strategy={strategy} />}
+                  </TabPanel>
+
+                  <TabPanel width={'100%'} padding={0}>
+                    {strategy && <RiskTab strategy={strategy} />}
+                  </TabPanel>
+
+                  <TabPanel width={'100%'} padding={0}>
+                    {strategyCached && <DetailsTab strategy={strategyCached} />}
+                  </TabPanel>
+
+                  <TabPanel width={'100%'} padding={0}>
+                    {strategy && <FAQTab strategy={strategy} />}
+                  </TabPanel>
+
+                  <TabPanel width={'100%'} padding={0}>
+                    {strategy && (
+                      <TransactionsTab
+                        strategy={strategy}
+                        txHistory={txHistory}
+                      />
+                    )}
+                  </TabPanel>
+                </TabPanels>
               </Tabs>
             </Flex>
-          </Flex>
-
-          <Flex width={'100%'} maxWidth={'1152px'}>
-            <Tabs
-              position="relative"
-              variant="unstyled"
-              width={'100%'}
-              index={tabIndex}
-              onChange={handleTabsChange}
-            >
-              <TabPanels>
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && <ManageTab strategy={strategy} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && <RiskTab strategy={strategy} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategyCached && <DetailsTab strategy={strategyCached} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && <FAQTab strategy={strategy} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && (
-                    <TransactionsTab
-                      strategy={strategy}
-                      txHistory={txHistory}
-                    />
-                  )}
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
           </Flex>
         </Flex>
       </Container>
@@ -795,9 +582,7 @@ const Strategy = ({ params }: StrategyParams) => {
                 display="flex"
                 alignItems="center"
                 padding="8px"
-                borderRadius="8px"
-                borderColor="#2D2D3D"
-                borderWidth="1px"
+                borderRadius="md"
               >
                 <Text
                   color="border_light"
@@ -847,7 +632,7 @@ const Strategy = ({ params }: StrategyParams) => {
           <Flex width="100%" gap={3} mb={3}>
             <Box
               flex="1"
-              bg="#1A1A27"
+              bg="mycard"
               padding="16px"
               textAlign="center"
               display="flex"
@@ -855,9 +640,7 @@ const Strategy = ({ params }: StrategyParams) => {
               gap="4px"
               alignItems="center"
               justifyContent="center"
-              borderWidth="1px"
-              borderColor="#CFCFEA4D"
-              borderRadius="12px"
+              borderRadius="md"
             >
               <Text color="#CFCFEA" fontSize="14px">
                 Your holdings:

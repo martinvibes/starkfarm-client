@@ -99,13 +99,13 @@ export default function Home() {
       padding={{ base: '15px 10px' }}
     >
       <Box
-        padding={{ base: '15px 15px' }}
+        padding={{ base: '0px 15px 15px' }}
         borderRadius="10px"
-        margin={'20px 0px 10px'}
+        margin={{ base: '0', md: '20px 0px 10px' }}
       >
         <Text
           color={'text_primary'}
-          fontSize={{ base: '32px', md: '35px' }}
+          fontSize={{ base: '25px', md: '35px' }}
           lineHeight={{ base: '40px', md: '30px' }}
           marginBottom={'10px'}
           textAlign={'center'}
@@ -116,9 +116,10 @@ export default function Home() {
         <Text
           color="text_secondary"
           textAlign={'center'}
-          fontSize={{ base: '20px', md: '18px' }}
+          fontSize={{ base: '16px', md: '18px' }}
           lineHeight={{ base: '28px', md: '20px' }}
-          marginBottom={'0px'}
+          margin={{ base: '0 auto', md: '0' }}
+          maxWidth={{ base: '80%', md: '100%' }}
         >
           Discover and invest in custom-built yield strategies.
         </Text>
