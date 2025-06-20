@@ -20,6 +20,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  TabIndicator,
   Text,
 } from '@chakra-ui/react';
 import { useAccount } from '@starknet-react/core';
@@ -106,7 +107,7 @@ export default function Home() {
         <Text
           color={'text_primary'}
           fontSize={{ base: '25px', md: '35px' }}
-          lineHeight={{ base: '40px', md: '30px' }}
+          lineHeight={{ base: '30px', md: '30px' }}
           marginBottom={'10px'}
           textAlign={'center'}
         >
