@@ -15,7 +15,6 @@ import {
   Container,
   Link,
   Tab,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
