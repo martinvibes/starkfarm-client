@@ -116,8 +116,8 @@ export default function Home() {
         <Text
           color="text_secondary"
           textAlign={'center'}
-          fontSize={{ base: '16px', md: '18px' }}
-          lineHeight={{ base: '28px', md: '20px' }}
+          fontSize={{ base: '15px', md: '18px' }}
+          lineHeight={{ base: '20px', md: '20px' }}
           margin={{ base: '0 auto', md: '0' }}
           maxWidth={{ base: '80%', md: '100%' }}
         >
@@ -192,7 +192,11 @@ export default function Home() {
       {/* <hr style={{width: '100%', borderColor: '#5f5f5f', float: 'left', margin: '20px 0'}}/> */}
       <Center padding="10px 0" width={'100%'} float={'left'}>
         <Link href={CONSTANTS.COMMUNITY_TG} isExternal>
-          <ChakraImage src={tg.src} width="20" margin="0 auto" />
+          <ChakraImage
+            src={tg.src}
+            width={{ base: '10', md: '20' }}
+            margin="0 auto"
+          />
         </Link>
       </Center>
       <Center width={'100%'} float="left">
@@ -202,7 +206,7 @@ export default function Home() {
           marginTop={'20px'}
           borderTop={'1px solid var(--chakra-colors-highlight)'}
           textAlign={'center'}
-          textColor={'color2'}
+          textColor={'purple'}
           padding="10px 0"
           fontSize={'13px'}
         >

@@ -4,7 +4,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Container,
-  Link,
   Skeleton,
   Stack,
   Table,
@@ -19,7 +18,6 @@ import { useAtomValue } from 'jotai';
 import React, { useMemo } from 'react';
 import { Accordion } from '@chakra-ui/react';
 
-import CONSTANTS from '@/constants';
 import { filteredPools } from '@/store/protocols';
 import {
   STRKFarmBaseAPYsAtom,
@@ -59,7 +57,7 @@ export default function Strategies() {
       marginTop={'0px'}
       display={'flex'}
       flexDirection={'column'}
-      gap={'16px'}
+      gap={'1rem'}
     >
       <Accordion
         allowToggle={true}
@@ -84,71 +82,65 @@ export default function Strategies() {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-      {/* <Box bg={'mycard'} padding={'1.5rem'} borderRadius={'lg'}>
-        <Text color="text_primary" fontSize={'18px'} fontWeight={'600'}>
-          <b>What are strategies?</b>
-        </Text>
-        <Text color="text_secondary" fontSize={'15px'} fontWeight={'400'}>
-          Strategies are structured investment plans that combine multiple
-          liquidity pools or protocols to optimize returns. They automate the
-          process of maximizing yield by intelligently allocating assets across
-          opportunities.
-        </Text>
-      </Box> */}
 
-      <VStack gap={2}>
-        <Table
-          variant="simple"
-          sx={{
-            overflow: 'hidden',
-            'border-collapse': 'separate',
-            'border-spacing': '0px 7px',
-          }}
-          gap={2}
-        >
-          <Thead
-            display={{ base: 'none', md: 'table-header-group' }}
-            bg={'mycard_light'}
-            borderTopRadius={'12px'}
+      {strkFarmPools.length > 0 && (
+        <VStack gap={2}>
+          <Table
+            variant="simple"
+            sx={{
+              overflow: 'hidden',
+              'border-collapse': 'separate',
+              'border-spacing': '0px 7px',
+            }}
+            gap={2}
           >
-            <Tr color={'white'}>
-              <Th color="white" borderLeftRadius={'lg'}>
-                Strategy name
-              </Th>
-              <Th color="white" textAlign={'right'}>
-                APY
-              </Th>
-              <Th color="white" textAlign={'center'}>
-                Risk
-              </Th>
-              <Th color="white" textAlign={'right'}>
-                TVL
-              </Th>
-              {address != undefined && (
-                <Th color="white" textAlign={'right'} borderRightRadius={'lg'}>
-                  MY BAL
+            <Thead
+              display={{ base: 'none', md: 'table-header-group' }}
+              bg={'mycard_light'}
+              borderTopRadius={'12px'}
+            >
+              <Tr color={'white'}>
+                <Th color="white" borderLeftRadius={'lg'}>
+                  Strategy name
                 </Th>
+                <Th color="white" textAlign={'right'}>
+                  APY
+                </Th>
+                <Th color="white" textAlign={'center'}>
+                  Risk
+                </Th>
+                <Th color="white" textAlign={'right'}>
+                  TVL
+                </Th>
+                {address != undefined && (
+                  <Th
+                    color="white"
+                    textAlign={'right'}
+                    borderRightRadius={'lg'}
+                  >
+                    MY BAL
+                  </Th>
+                )}
+              </Tr>
+            </Thead>
+            <Tbody>
+              {strkFarmPools.length > 0 && (
+                <>
+                  {strkFarmPools.map((pool, index) => {
+                    return (
+                      <YieldStrategyCard
+                        key={pool.id}
+                        strat={pool}
+                        index={index}
+                      />
+                    );
+                  })}
+                </>
               )}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {strkFarmPools.length > 0 && (
-              <>
-                {strkFarmPools.map((pool, index) => {
-                  return (
-                    <YieldStrategyCard
-                      key={pool.id}
-                      strat={pool}
-                      index={index}
-                    />
-                  );
-                })}
-              </>
-            )}
-          </Tbody>
-        </Table>
+            </Tbody>
+          </Table>
 
-        {/* <VStack gap={2} width={'100%'}>
+          {/* <VStack gap={2} width={'100%'}>
           {strkFarmPools.length > 0 && (
             <>
               {strkFarmPools.map((pool, index) => {
@@ -159,7 +151,9 @@ export default function Strategies() {
             </>
           )}
         </VStack> */}
-      </VStack>
+        </VStack>
+      )}
+
       {strkFarmPools.length === 0 && (
         <Stack>
           <Skeleton height="70px" />
@@ -168,19 +162,6 @@ export default function Strategies() {
           <Skeleton height="70px" />
         </Stack>
       )}
-      <Text
-        color="white"
-        textAlign={'center'}
-        width={'100%'}
-        margin="15px 0"
-        fontSize="18px"
-      >
-        More strategies coming soon. Join our{' '}
-        <Link textDecoration={'underline'} href={CONSTANTS.COMMUNITY_TG}>
-          Telegram channel
-        </Link>{' '}
-        to stay upto date.
-      </Text>
     </Container>
   );
 }

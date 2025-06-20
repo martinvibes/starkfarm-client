@@ -24,6 +24,7 @@ import {
   Text,
   Tooltip,
   Tr,
+  VStack,
 } from '@chakra-ui/react';
 import { ContractAddr } from '@strkfarm/sdk';
 import { useAtomValue } from 'jotai';
@@ -38,13 +39,14 @@ export interface YieldCardProps {
 }
 
 export function getStratCardBg(status: StrategyLiveStatus, index: number) {
-  if (isLive(status)) {
-    return index % 2 === 0 ? 'mycard_dark' : 'mycard_dark';
-  }
-  if (status == StrategyLiveStatus.RETIRED) {
-    return 'black';
-  }
-  return 'bg';
+  // if (isLive(status)) {
+  //   return index % 2 === 0 ? 'mycard_dark' : 'mycard_dark';
+  // }
+  // if (status == StrategyLiveStatus.RETIRED) {
+  //   return 'black';
+  // }
+  // return 'bg';
+  return 'mycard_dark';
 }
 
 function getStratCardBadgeBg(status: StrategyLiveStatus) {
@@ -61,80 +63,94 @@ function getStratCardBadgeBg(status: StrategyLiveStatus) {
 export function StrategyInfo(props: YieldCardProps) {
   const { pool } = props;
 
+  const tags = useMemo(() => {
+    if (!pool.additional || !pool.additional.tags) return [];
+    return pool.additional.tags.filter(
+      (tag) => tag != StrategyLiveStatus.ACTIVE,
+    );
+  }, [pool.additional]);
+
   return (
     <Box>
       <HStack spacing={2}>
-        <AvatarGroup size="xs" max={3} marginRight={'10px'}>
+        <AvatarGroup
+          size={{ base: 'sm', md: 'sm' }}
+          max={3}
+          marginRight={'10px'}
+        >
           {pool.pool.logos.map((logo, index) => (
             <Avatar key={index} src={logo} />
           ))}
         </AvatarGroup>
-        <Box>
-          <HStack spacing={2}>
-            <Heading
-              marginTop={'2px'}
-              fontSize={'1.2rem'}
-              fontWeight={'600'}
-              color={'text'}
-            >
-              {pool.pool.name}
-            </Heading>
-            {pool.additional &&
-              pool.additional.tags
-                .filter((tag) => tag != StrategyLiveStatus.ACTIVE)
-                .map((tag) => {
-                  return (
-                    <Badge
-                      ml="1"
-                      bg={getStratCardBadgeBg(tag)}
-                      fontFamily={'sans-serif'}
-                      padding="4px 8px"
-                      textTransform="capitalize"
-                      fontWeight={500}
-                      key={tag}
-                      color={'text_secondary'}
+        <VStack gap={1}>
+          <Stack direction={{ base: 'column', md: 'row' }} spacing={2}>
+            <Flex gap={2}>
+              <Heading
+                marginTop={'2px'}
+                fontSize={'1.2rem'}
+                fontWeight={'600'}
+                color={isPoolRetired(pool) ? 'grey' : 'text_primary'}
+              >
+                {pool.pool.name}
+              </Heading>
+              {pool.additional && pool.additional.auditUrl && (
+                <Tooltip label="Audited smart contract. Click to view the audit report.">
+                  <Link href={pool.additional.auditUrl} target="_blank">
+                    <Box
+                      width={'24px'}
+                      height={'24px'}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      borderRadius={'50%'}
+                      bg={'mycard_light_2x'}
+                      padding={'3px 5px'}
                     >
-                      {tag}
-                    </Badge>
-                  );
-                })}
-            {pool.additional && pool.additional.auditUrl && (
-              <Tooltip label="Audited smart contract. Click to view the audit report.">
-                <Link href={pool.additional.auditUrl} target="_blank">
-                  <Box
-                    width={'24px'}
-                    height={'24px'}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    borderRadius={'50%'}
-                    bg={'mycard_light_2x'}
-                    padding={'3px 5px'}
-                  >
-                    <Image
-                      src={shield.src}
-                      alt="badge"
-                      filter={'brightness(0) invert(0.5);'}
-                    />
-                  </Box>
-                </Link>
-              </Tooltip>
+                      <Image
+                        src={shield.src}
+                        alt="badge"
+                        filter={'brightness(0) invert(0.5);'}
+                      />
+                    </Box>
+                  </Link>
+                </Tooltip>
+              )}
+            </Flex>
+            {tags.length > 0 && (
+              <Box>
+                <Flex gap={2}>
+                  {tags.map((tag) => {
+                    return (
+                      <Badge
+                        bg={getStratCardBadgeBg(tag)}
+                        fontFamily={'sans-serif'}
+                        padding="4px 8px"
+                        textTransform="capitalize"
+                        fontWeight={500}
+                        key={tag}
+                        color={'text_secondary'}
+                      >
+                        {tag}
+                      </Badge>
+                    );
+                  })}
+                </Flex>
+              </Box>
             )}
-          </HStack>
+          </Stack>
           {props.showProtocolName && (
-            <HStack marginTop={'5px'} spacing={1}>
+            <HStack marginTop={'5px'} spacing={1} width={'100%'}>
               <Avatar size={'2xs'} src={pool.protocol.logo} />
               <Heading
-                fontSize={'12px'}
+                fontSize={'14px'}
                 fontWeight={'400'}
-                marginTop={'2px'}
                 color={'text_secondary'}
               >
                 {pool.protocol.name}
               </Heading>
             </HStack>
           )}
-        </Box>
+        </VStack>
       </HStack>
     </Box>
   );
@@ -463,119 +479,65 @@ function GetRiskLevel(riskFactor: number) {
 
 function StrategyMobileCard(props: YieldCardProps) {
   const { pool, index } = props;
-  const isNew = pool.additional?.tags?.includes(StrategyLiveStatus.NEW);
-  const hasAudit = !!pool.additional?.auditUrl;
   const riskLevel = pool.additional?.riskFactor || 0;
-  // Only show the main protocol
-  const protocol = pool.protocol;
+  const isRetired = useMemo(() => {
+    return isPoolRetired(pool);
+  }, [pool]);
 
   return (
-    <Box
-      display={{ base: 'flex', md: 'none' }}
-      flexDirection="column"
-      bg={getStratCardBg(
-        pool.additional?.tags?.[0] || StrategyLiveStatus.ACTIVE,
-        index,
-      )}
-      borderRadius="16px"
-      border="1px solid #232336"
-      padding="18px 18px 14px 18px"
-      marginY="10px"
-      width="100%"
-      position="relative"
-    >
-      {/* Top row: Avatars, name, shield, New badge */}
-      <Flex align="center" justify="space-between" width="100%">
-        <HStack spacing={2} align="center">
-          <AvatarGroup size="md" max={2}>
-            {pool.pool.logos.slice(0, 2).map((logo, i) => (
-              <Avatar key={i} src={logo} />
-            ))}
-          </AvatarGroup>
-          <Text fontWeight="bold" fontSize="18px" color="white">
-            {pool.pool.name}
-          </Text>
-          {hasAudit && (
-            <Box
-              width="24px"
-              height="24px"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              backgroundColor="#1AFCA0"
-              borderRadius="full"
-              ml={1}
-            >
-              <Image
-                src={shield.src}
-                alt="badge"
-                width={'16px'}
-                height={'16px'}
-              />
-            </Box>
-          )}
-        </HStack>
-        {isNew && (
-          <Box
-            bg="#4DB2FF"
-            color="black"
-            fontWeight="bold"
-            fontSize="14px"
-            px={3}
-            py={1}
-            borderRadius="8px"
-          >
-            New
-          </Box>
+    <Link {...getLinkProps(pool, props.showProtocolName)} width="100%">
+      <Box
+        display={{ base: 'flex', md: 'none' }}
+        flexDirection="column"
+        bg={getStratCardBg(
+          pool.additional?.tags?.[0] || StrategyLiveStatus.ACTIVE,
+          index,
         )}
-      </Flex>
+        filter={isRetired ? 'opacity(0.5)' : 'none'}
+        borderRadius="lg"
+        padding="18px 18px 14px 18px"
+        marginBottom={'10px'}
+        width="100%"
+        position="relative"
+      >
+        {/* Top row: Avatars, name, shield, New badge */}
+        <Flex align="center" justify="space-between" width="100%">
+          <StrategyInfo
+            pool={pool}
+            index={index}
+            showProtocolName={props.showProtocolName}
+          />
+        </Flex>
 
-      {/* Protocol row */}
-      <HStack spacing={3} mt={2} mb={1}>
-        <HStack spacing={1}>
-          <Avatar size="xs" src={protocol.logo} />
-          <Text color="#B3B3C6" fontSize="15px">
-            {protocol.name}
-          </Text>
-        </HStack>
-      </HStack>
-
-      {/* APY, TVL, Risk row */}
-      <Flex mt={3} width="100%" align="flex-end" justify="space-between">
-        <Box>
-          <Text color="#B3B3C6" fontWeight="600" fontSize="16px">
-            APY
-          </Text>
-          <Text color="white" fontWeight="bold" fontSize="20px" mt={1}>
-            {(pool.apr * 100).toFixed(2)}%
-          </Text>
-        </Box>
-        <Box>
-          <Text color="#B3B3C6" fontWeight="600" fontSize="16px">
-            TVL
-          </Text>
-          <Text color="white" fontWeight="bold" fontSize="20px" mt={1}>
-            {`$${getDisplayCurrencyAmount(pool.tvl, 0)}`}
-          </Text>
-        </Box>
-        <Box textAlign="right">
-          <Text color="#B3B3C6" fontWeight="600" fontSize="16px">
-            Risk
-          </Text>
-          <HStack mt={1} spacing={1} justify="flex-end">
-            {[...Array(5)].map((_, i) => (
-              <Box
-                key={i}
-                width="6px"
-                height="22px"
-                borderRadius="4px"
-                bg={i < riskLevel ? '#1AFCA0' : '#232336'}
-              />
-            ))}
-          </HStack>
-        </Box>
-      </Flex>
-    </Box>
+        {/* APY, TVL, Risk row */}
+        <Flex mt={3} width="100%" align="flex-end" justify="space-between">
+          <Box>
+            <Text color="text_secondary" fontWeight="600" fontSize="15px">
+              APY
+            </Text>
+            <Text color="text_primary" fontWeight="bold" fontSize="18px" mt={1}>
+              {(pool.apr * 100).toFixed(2)}%
+            </Text>
+          </Box>
+          <Box>
+            <Text color="text_secondary" fontWeight="600" fontSize="15px">
+              TVL
+            </Text>
+            <Text color="text_primary" fontWeight="bold" fontSize="18px" mt={1}>
+              {`$${getDisplayCurrencyAmount(pool.tvl, 0)}`}
+            </Text>
+          </Box>
+          <Box textAlign="right">
+            <Text color="text_secondary" fontWeight="600" fontSize="15px">
+              Risk
+            </Text>
+            <HStack mt={1} spacing={1} justify="flex-end">
+              {GetRiskLevel(pool.additional?.riskFactor)}
+            </HStack>
+          </Box>
+        </Flex>
+      </Box>
+    </Link>
   );
 }
 
@@ -612,7 +574,11 @@ export default function YieldCard(props: YieldCardProps) {
       <Tr
         color={'white'}
         display={{ base: 'none', md: 'table-row' }}
-        bg={'mycard_dark'}
+        bg={getStratCardBg(
+          pool.additional?.tags?.[0] || StrategyLiveStatus.ACTIVE,
+          index,
+        )}
+        filter={isRetired ? 'opacity(0.7)' : 'none'}
         _hover={{
           bg: 'mycard_light',
         }}

@@ -31,6 +31,71 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import YieldCard, { HeaderSorter } from './YieldCard';
 
+function MyPagination(props: {
+  pagesCount: number;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  pages: number[];
+}) {
+  const { pagesCount, currentPage, setCurrentPage, pages } = props;
+  return (
+    <Pagination
+      pagesCount={pagesCount}
+      currentPage={currentPage}
+      isDisabled={false}
+      onPageChange={(page) => {
+        setCurrentPage(page);
+      }}
+    >
+      <PaginationContainer align="right" float={'right'} padding={'0px'}>
+        <PaginationPrevious
+          marginRight="4px"
+          bg="mycard_light"
+          color="text_secondary"
+          _hover={{
+            bg: 'mycard_light_2x',
+          }}
+        >
+          <Text>{'<'}</Text>
+        </PaginationPrevious>
+        <PaginationPageGroup>
+          {pages.map((page: number) => (
+            <PaginationPage
+              key={`pagination_page_${page}`}
+              page={page}
+              padding={'0px 15px'}
+              isActive={page === currentPage}
+              background={
+                page === currentPage ? 'bright_purple' : 'mycard_light'
+              }
+              fontSize={'13px'}
+              color={page === currentPage ? 'black' : 'text_primary'}
+              _active={{
+                bg: 'purple',
+                color: 'black',
+              }}
+              _hover={{
+                bg: page === currentPage ? 'purple_hover_2' : 'mycard_light_2x',
+                color: page === currentPage ? 'black' : 'text_primary',
+              }}
+            />
+          ))}
+        </PaginationPageGroup>
+        <PaginationNext
+          marginLeft="4px"
+          bg="mycard_light"
+          color="purple_gray"
+          _hover={{
+            bg: 'mycard_light_2x',
+          }}
+        >
+          <Text>{'>'}</Text>
+        </PaginationNext>
+      </PaginationContainer>
+    </Pagination>
+  );
+}
+
 export default function Pools() {
   const allPools = useAtomValue(allPoolsAtomUnSorted);
   const _filteredPools = useAtomValue(filteredPools);
@@ -126,72 +191,12 @@ export default function Pools() {
               width={{ base: '100%', md: '30%' }}
               marginTop={'10px'}
             >
-              <Pagination
+              <MyPagination
                 pagesCount={pagesCount}
                 currentPage={currentPage}
-                isDisabled={false}
-                onPageChange={(page) => {
-                  setCurrentPage(page);
-                }}
-              >
-                <PaginationContainer
-                  align="right"
-                  float={'right'}
-                  padding={'0px'}
-                >
-                  <PaginationPrevious
-                    marginRight="4px"
-                    bg="mycard_light"
-                    color="text_secondary"
-                    _hover={{
-                      bg: 'mycard_light_2x',
-                      color: 'black',
-                    }}
-                  >
-                    <Text>{'<'}</Text>
-                  </PaginationPrevious>
-                  <PaginationPageGroup>
-                    {pages.map((page: number) => (
-                      <PaginationPage
-                        key={`pagination_page_${page}`}
-                        page={page}
-                        padding={'0px 15px'}
-                        isActive={page === currentPage}
-                        background={
-                          page === currentPage
-                            ? 'bright_purple'
-                            : 'mycard_light'
-                        }
-                        fontSize={'13px'}
-                        color={page === currentPage ? 'black' : 'text_primary'}
-                        _active={{
-                          bg: 'purple',
-                          color: 'black',
-                        }}
-                        _hover={{
-                          bg:
-                            page === currentPage
-                              ? 'purple_hover_2'
-                              : 'mycard_light_2x',
-                          color:
-                            page === currentPage ? 'black' : 'text_primary',
-                        }}
-                      />
-                    ))}
-                  </PaginationPageGroup>
-                  <PaginationNext
-                    marginLeft="4px"
-                    bg="mycard_light"
-                    color="purple_gray"
-                    _hover={{
-                      bg: 'mycard_light_2x',
-                      color: 'black',
-                    }}
-                  >
-                    <Text>{'>'}</Text>
-                  </PaginationNext>
-                </PaginationContainer>
-              </Pagination>
+                setCurrentPage={setCurrentPage}
+                pages={pages}
+              />
             </Container>
           </Box>
         </Box>
@@ -287,62 +292,12 @@ export default function Pools() {
         </Container>
       </Box>
 
-      <Pagination
+      <MyPagination
         pagesCount={pagesCount}
         currentPage={currentPage}
-        isDisabled={false}
-        onPageChange={(page) => {
-          setCurrentPage(page);
-        }}
-      >
-        <PaginationContainer align="right" float={'left'} marginTop={'10px'}>
-          <PaginationPrevious
-            marginRight="4px"
-            bg="highlight"
-            color="purple_gray"
-            _hover={{
-              bg: 'purple_hover_2',
-              color: 'black',
-            }}
-          >
-            <Text>{'<'}</Text>
-          </PaginationPrevious>
-          <PaginationPageGroup>
-            {pages.map((page: number) => (
-              <PaginationPage
-                key={`pagination_page_${page}`}
-                page={page}
-                padding={'0px 15px'}
-                isActive={page === currentPage}
-                background={
-                  page === currentPage ? 'bright_purple' : 'highlight'
-                }
-                fontSize={'13px'}
-                color={page === currentPage ? 'black' : 'silver_gray'}
-                _active={{
-                  bg: 'bright_purple',
-                  color: 'black',
-                }}
-                _hover={{
-                  bg: page === currentPage ? 'purple' : 'purple_hover_2',
-                  color: page === currentPage ? 'black' : 'black',
-                }}
-              />
-            ))}
-          </PaginationPageGroup>
-          <PaginationNext
-            marginLeft="4px"
-            bg="highlight"
-            color="purple_gray"
-            _hover={{
-              bg: 'purple_hover_2',
-              color: 'black',
-            }}
-          >
-            <Text>{'>'}</Text>
-          </PaginationNext>
-        </PaginationContainer>
-      </Pagination>
+        setCurrentPage={setCurrentPage}
+        pages={pages}
+      />
     </Box>
   );
 }

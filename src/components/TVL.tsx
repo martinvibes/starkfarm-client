@@ -2,6 +2,7 @@ import { addressAtom } from '@/store/claims.atoms';
 import { referralCodeAtom } from '@/store/referral.store';
 import { strategiesAtom } from '@/store/strategies.atoms';
 import { dAppStatsAtom, userStatsAtom } from '@/store/utils.atoms';
+import { MYSTYLES } from '@/style';
 import { copyReferralLink, getHosturl } from '@/utils';
 import { CopyIcon } from '@chakra-ui/icons';
 import {
@@ -53,10 +54,10 @@ const TVL: React.FC = () => {
           // borderColor={'color_3'}
         >
           <Stat>
-            <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
+            <StatLabel {...MYSTYLES.TEXT.H2Label}>
               Total Value locked (TVL)
             </StatLabel>
-            <StatNumber fontSize={{ base: '24px' }} color={'text'}>
+            <StatNumber {...MYSTYLES.TEXT.H1Label}>
               $
               {isPending ? (
                 <Spinner size="sm" color="white" marginLeft={'5px'} />
@@ -80,10 +81,8 @@ const TVL: React.FC = () => {
           // borderColor={'color_3'}
         >
           <Stat>
-            <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
-              Your holdings
-            </StatLabel>
-            <StatNumber fontSize={{ base: '24px' }} color={'text'}>
+            <StatLabel {...MYSTYLES.TEXT.H2Label}>Your holdings</StatLabel>
+            <StatNumber {...MYSTYLES.TEXT.H1Label}>
               $
               {userStatsPending ? (
                 <Spinner size="sm" color="white" marginLeft={'5px'} />
@@ -107,7 +106,7 @@ const TVL: React.FC = () => {
           // borderColor={'color_3'}
         >
           <Stat>
-            <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
+            <StatLabel {...MYSTYLES.TEXT.H2Label}>
               Your referral link{' '}
               <Tooltip label="Learn more">
                 {/* TODO: update the url */}
@@ -129,13 +128,13 @@ const TVL: React.FC = () => {
                   <Spinner size="sm" color="white" marginTop={'8px'} />
                 ) : (
                   <StatNumber
-                    fontSize={{ base: '20px' }}
                     textDecoration="underline"
                     fontWeight="600"
                     cursor={'pointer'}
                     onClick={() => {
                       copyReferralLink(referralCode);
                     }}
+                    {...MYSTYLES.TEXT.H1Label}
                   >
                     {referralCode}
                   </StatNumber>

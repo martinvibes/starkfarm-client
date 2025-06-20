@@ -483,16 +483,18 @@ export default function Navbar(props: NavbarProps) {
                       <Image
                         // src={getWalletIcon(connector?.id ?? '').src}
                         src={
+                          starkProfile?.profilePicture ||
                           connector?.id === 'argentMobile'
                             ? getWalletIcon(connector?.id ?? '').src
                             : (connector?.icon.toString() ??
-                              (starkProfile?.profilePicture ||
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s'))
+                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s')
                         }
                         alt="pfp"
-                        width={{ base: '20px', sm: '25px' }}
-                        height={{ base: '20px', sm: '25px' }}
+                        width={{ base: '20px', sm: '22px' }}
+                        height={{ base: '20px', sm: '22px' }}
                         rounded="full"
+                        background={'mybg'}
+                        padding={'3px'}
                       />{' '}
                       <Text as="h3" marginTop={'3px !important'}>
                         {starkProfile && starkProfile.name
