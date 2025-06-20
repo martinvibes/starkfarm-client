@@ -50,6 +50,7 @@ import { RiskTab } from './RiskTab';
 import { DetailsTab } from './DetailsTab';
 import { FAQTab } from './FAQTab';
 import { TransactionsTab } from './TransactionsTab';
+import MobileHarvestTime from '@/components/MobileHarvestTime';
 
 const Strategy = ({ params }: StrategyParams) => {
   const address = useAtomValue(addressAtom);
@@ -619,214 +620,183 @@ const Strategy = ({ params }: StrategyParams) => {
         display={{ base: 'flex', md: 'none' }}
         flexDirection="column"
         width="100%"
-        bg="bg_2"
-        px={3}
-        py={3}
       >
-        <Flex width="100%" justifyContent="center" mb={3}>
-          <Box
-            border="1px solid #39395A"
-            borderRadius="12px"
-            p="8px 24px"
-            bg="transparent"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="16px"
+          bg="#1B1724"
+          paddingTop="24px"
+          paddingLeft="8px"
+          paddingRight="8px"
+          paddingBottom="16px"
+        >
+          <Flex width="100%" justifyContent="center">
             <Button
               leftIcon={<ArrowBackIcon />}
               variant="ghost"
               color="white"
               fontWeight="bold"
               fontSize="18px"
+              padding="12px 16px"
+              borderWidth="1px"
+              borderColor="#CFCFEA"
+              borderRadius="12px"
               _hover={{ bg: 'transparent', color: 'white' }}
               onClick={() => router.push('/?tab=strategies')}
-              p={0}
-              m={0}
               height="auto"
-              minW={0}
             >
               Back
             </Button>
-          </Box>
-        </Flex>
+          </Flex>
 
-        <Box
-          borderRadius="12px"
-          p={4}
-          mb={3}
-          display="flex"
-          alignItems="center"
-          gap={3}
-        >
-          <Avatar
-            src={strategy?.holdingTokens[0]?.logo || ''}
-            size="xl"
-            borderWidth="2px"
-            borderColor="#232336"
-          />
-          <Text fontWeight="extrabold" fontSize="32px" color="white" flex={1}>
-            {strategy?.name}
-          </Text>
-          {strategy?.settings.isAudited && (
-            <Box
-              width="32px"
-              height="32px"
+          <Box
+            borderRadius="12px"
+            display="flex"
+            gap="16px"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Avatar src={strategy?.holdingTokens[0]?.logo || ''} size="lg" />
+            <Text fontWeight="600" fontSize="32px" color="white">
+              {strategy?.name}
+            </Text>
+            {strategy?.settings.isAudited && (
+              <Box
+                width="24px"
+                height="24px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                backgroundColor="#1AFCA0"
+                borderRadius="full"
+              >
+                <Image src={shield.src} alt="badge" />
+              </Box>
+            )}
+          </Box>
+
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap="8px"
+            alignItems="center"
+          >
+            <Flex align="center" gap="4px">
+              <Box
+                bg="#181824"
+                display="flex"
+                alignItems="center"
+                padding="8px"
+                borderRadius="8px"
+                borderColor="#2D2D3D"
+                borderWidth="1px"
+              >
+                <Text
+                  color="border_light"
+                  fontWeight="bold"
+                  fontSize="16px"
+                  mr={1}
+                >
+                  APY
+                </Text>
+                <Text color="light_green" fontWeight="bold" fontSize="22px">
+                  {strategyCached?.apySplit?.baseApy
+                    ? `${(strategyCached.apySplit.baseApy * 100).toFixed(2)}%`
+                    : '23.94%'}
+                </Text>
+              </Box>
+              <Box
+                bg="black"
+                color="white"
+                display="flex"
+                alignItems="center"
+                fontSize="14px"
+                fontWeight="500"
+                padding="4px 8px"
+                borderRadius="20px"
+              >
+                <span role="img" aria-label="fire">
+                  🔥
+                </span>
+                {`${strategyCached?.leverage?.toFixed(2)}x boosted`}
+              </Box>
+            </Flex>
+            <Link
+              href={strategy?.metadata.auditUrl || '#'}
+              color="#8E8E8E"
+              fontSize="14px"
               display="flex"
+              alignItems="center"
+              gap="4px"
+              isExternal
+              fontWeight="600"
+              justifyContent="center"
+            >
+              Contract details <ExternalLinkIcon />
+            </Link>
+          </Box>
+
+          <Flex width="100%" gap={3} mb={3}>
+            <Box
+              flex="1"
+              bg="#1A1A27"
+              padding="16px"
+              textAlign="center"
+              display="flex"
+              flexDirection="column"
+              gap="4px"
               alignItems="center"
               justifyContent="center"
-              backgroundColor="#1AFCA0"
-              borderRadius="full"
-              ml={1}
+              borderWidth="1px"
+              borderColor="#CFCFEA4D"
+              borderRadius="12px"
             >
-              <Image src={shield.src} alt="badge" />
+              <Text color="#CFCFEA" fontSize="14px">
+                Your holdings:
+              </Text>
+              <Text color="white" fontWeight="extrabold" fontSize="22px">
+                {address && balData && balData.data && balData.data.tokenInfo
+                  ? `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
+                  : '-'}
+              </Text>
             </Box>
-          )}
-        </Box>
-
-        <Box
-          border="1px solid #39395A"
-          borderRadius="12px"
-          p={3}
-          mb={3}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Flex gap={2} mb={2} align="center">
             <Box
-              bg="#232336"
-              borderRadius="8px"
-              px={3}
-              py={1}
+              flex="1"
+              bg="#1A1A27"
+              padding="16px"
+              textAlign="center"
               display="flex"
+              flexDirection="column"
+              gap="4px"
               alignItems="center"
-              gap={1}
+              justifyContent="center"
+              borderWidth="1px"
+              borderColor="#CFCFEA4D"
+              borderRadius="12px"
             >
+              <Text color="#CFCFEA" fontSize="14px">
+                Net earnings:
+              </Text>
               <Text
-                color="border_light"
-                fontWeight="bold"
-                fontSize="16px"
-                mr={1}
+                color={profit > 0 ? 'cyan' : profit < 0 ? 'red' : 'text'}
+                fontWeight="extrabold"
+                fontSize="22px"
               >
-                APY
+                {address &&
+                profit !== 0 &&
+                !strategy?.isRetired() &&
+                balData.data &&
+                balData.data.tokenInfo
+                  ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
+                  : '-'}
               </Text>
-              <Text color="light_green" fontWeight="bold" fontSize="22px">
-                {strategyCached?.apySplit?.baseApy
-                  ? `${(strategyCached.apySplit.baseApy * 100).toFixed(2)}%`
-                  : '23.94%'}
-              </Text>
-            </Box>
-            <Box
-              bg="black"
-              color="white"
-              borderRadius="8px"
-              px={3}
-              py={1}
-              display="flex"
-              alignItems="center"
-              gap={1}
-              fontSize="16px"
-              fontWeight="bold"
-            >
-              <span role="img" aria-label="fire">
-                🔥
-              </span>
-              {strategyCached?.leverage
-                ? `${strategyCached.leverage.toFixed(2)}x boosted`
-                : '1.96x boosted'}
             </Box>
           </Flex>
-          <Link
-            href={strategy?.metadata.auditUrl || '#'}
-            color="border_light"
-            fontSize="18px"
-            display="flex"
-            alignItems="center"
-            gap={1}
-            isExternal
-            fontWeight="bold"
-            justifyContent="center"
-          >
-            Contract details <ExternalLinkIcon />
-          </Link>
+
+          {strategy && <MobileHarvestTime strategy={strategy} />}
         </Box>
 
-        <Flex width="100%" gap={3} mb={3}>
-          <Box
-            flex={1}
-            border="1px solid #39395A"
-            borderRadius="12px"
-            p={3}
-            textAlign="center"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text color="border_light" fontSize="16px" mb={1}>
-              Your holdings:
-            </Text>
-            <Text color="white" fontWeight="extrabold" fontSize="22px">
-              {address && balData && balData.data && balData.data.tokenInfo
-                ? `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)}${balData.data.tokenInfo?.name}`
-                : '-'}
-            </Text>
-          </Box>
-          <Box
-            flex={1}
-            border="1px solid #39395A"
-            borderRadius="12px"
-            p={3}
-            textAlign="center"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text color="border_light" fontSize="16px" mb={1}>
-              Your earnings:
-            </Text>
-            <Text color="light_green" fontWeight="extrabold" fontSize="22px">
-              {address && profit !== 0 && balData.data && balData.data.tokenInfo
-                ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                : '-'}
-            </Text>
-          </Box>
-        </Flex>
-
-        {/* Next Harvest card with countdown only */}
-        {/* <Box
-          border="1px solid #39395A"
-          borderRadius="12px"
-          p={3}
-          mb={3}
-          textAlign="center"
-        >
-          <Text color="border_light" fontSize="16px" mb={2} fontWeight="bold">
-            Next Harvest in:
-          </Text>
-          <Box display="flex" justifyContent="center" gap={2}>
-            <HarvestTime strategy={strategy!} balData={balData} />
-          </Box>
-        </Box> */}
-
-        {/* Harvest stats card (only once, at the bottom) */}
-        <Box
-          border="1px solid #39395A"
-          borderRadius="12px"
-          p={3}
-          textAlign="center"
-        >
-          <Text color="border_light" fontSize="16px">
-            Total rewards harvested: <b>$50 0</b>
-          </Text>
-          <Text color="border_light" fontSize="16px">
-            Total number of times harvested: <b>48</b>
-          </Text>
-        </Box>
-
-        {/* <Box bg="dark_bg"> */}
         {/* Mobile vertical accordion for sections */}
         <Accordion
           index={accordionIndex}
@@ -945,7 +915,6 @@ const Strategy = ({ params }: StrategyParams) => {
           </AccordionItem>
         </Accordion>
       </Box>
-      {/* </Box> */}
     </>
   );
 };
