@@ -233,7 +233,7 @@ const Strategy = ({ params }: StrategyParams) => {
   return (
     <>
       <Container
-        display={{ base: 'none', md: 'flex' }}
+        display={{ base: 'none', lg: 'flex' }}
         justifyContent={'center'}
         width={'100%'}
         margin={'0 auto'}
@@ -617,7 +617,7 @@ const Strategy = ({ params }: StrategyParams) => {
 
       {/* MOBILE VIEW */}
       <Box
-        display={{ base: 'flex', md: 'none' }}
+        display={{ base: 'flex', lg: 'none' }}
         flexDirection="column"
         width="100%"
       >
@@ -797,123 +797,158 @@ const Strategy = ({ params }: StrategyParams) => {
           {strategy && <MobileHarvestTime strategy={strategy} />}
         </Box>
 
-        {/* Mobile vertical accordion for sections */}
-        <Accordion
-          index={accordionIndex}
-          onChange={(expandedIndex) => {
-            if (Array.isArray(expandedIndex)) {
-              setAccordionIndex(expandedIndex[0] ?? 0);
-            } else {
-              setAccordionIndex(expandedIndex);
-            }
-          }}
-          allowToggle
-          width="100%"
-          marginTop={'8px'}
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="16px"
+          padding="16px 8px"
         >
-          <AccordionItem border="none">
-            <AccordionButton
-              bg="dark_bg"
-              color="white"
-              padding={'16px 16px'}
-              _expanded={{ color: '#3EE5C2' }}
-              border="1px solid #2D2D3D"
-              borderRadius="8px"
-              mb={2}
-            >
-              <Text flex="1" textAlign="left" fontWeight="700" fontSize="14px">
-                Manage
-              </Text>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              {strategy && <ManageTab strategy={strategy} isMobile />}
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem border="none">
-            <AccordionButton
-              bg="dark_bg"
-              color="white"
-              padding={'10px 16px'}
-              _expanded={{ color: '#3EE5C2' }}
-              border="1px solid #2D2D3D"
-              borderRadius="8px"
-              mb={2}
-            >
-              <Text flex="1" textAlign="left" fontWeight="700" fontSize="14px">
-                Risk
-              </Text>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              {strategy && <RiskTab strategy={strategy} isMobile />}
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem border="none">
-            <AccordionButton
-              bg="dark_bg"
-              color="white"
-              padding={'10px 16px'}
-              _expanded={{ color: '#3EE5C2' }}
-              border="1px solid #2D2D3D"
-              borderRadius="8px"
-              mb={2}
-            >
-              <Text flex="1" textAlign="left" fontWeight="700" fontSize="14px">
-                Details
-              </Text>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              {strategyCached && (
-                <DetailsTab strategy={strategyCached} isMobile />
-              )}
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem border="none">
-            <AccordionButton
-              bg="dark_bg"
-              color="white"
-              padding={'16px 16px'}
-              _expanded={{ color: '#3EE5C2' }}
-              border="1px solid #2D2D3D"
-              borderRadius="8px"
-            >
-              <Text flex="1" textAlign="left" fontWeight="700" fontSize="14px">
-                FAQs
-              </Text>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              {strategy && <FAQTab strategy={strategy} isMobile />}
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem border="none">
-            <AccordionButton
-              bg="dark_bg"
-              color="white"
-              padding={'10px 16px'}
-              _expanded={{ color: '#3EE5C2' }}
-              border="1px solid #2D2D3D"
-              borderRadius="8px"
-              mb={2}
-            >
-              <Text flex="1" textAlign="left" fontWeight="700" fontSize="14px">
-                Transactions
-              </Text>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              {strategy && (
-                <TransactionsTab
-                  strategy={strategy}
-                  txHistory={txHistory}
-                  isMobile
-                />
-              )}
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+          <Accordion
+            index={accordionIndex}
+            defaultIndex={[0]}
+            onChange={(expandedIndex) => {
+              if (Array.isArray(expandedIndex)) {
+                setAccordionIndex(expandedIndex[0] ?? 0);
+              } else {
+                setAccordionIndex(expandedIndex);
+              }
+            }}
+            allowToggle
+            width="100%"
+            display="flex"
+            flexDirection="column"
+            gap="10px"
+          >
+            <AccordionItem border="none">
+              <AccordionButton
+                bg="dark_bg"
+                color="white"
+                padding={'16px 16px'}
+                _expanded={{ color: '#3EE5C2' }}
+                borderWidth="1px"
+                borderColor="#2D2D3D"
+                borderRadius="8px"
+              >
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontWeight="700"
+                  fontSize="14px"
+                >
+                  Manage
+                </Text>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel padding="0px">
+                {strategy && <ManageTab strategy={strategy} isMobile />}
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem border="none">
+              <AccordionButton
+                bg="dark_bg"
+                color="white"
+                padding={'16px 16px'}
+                _expanded={{ color: '#3EE5C2' }}
+                borderWidth="1px"
+                borderColor="#2D2D3D"
+                borderRadius="8px"
+              >
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontWeight="700"
+                  fontSize="14px"
+                >
+                  Risk
+                </Text>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel padding="0px">
+                {strategy && <RiskTab strategy={strategy} isMobile />}
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem border="none">
+              <AccordionButton
+                bg="dark_bg"
+                color="white"
+                padding={'16px 16px'}
+                _expanded={{ color: '#3EE5C2' }}
+                borderWidth="1px"
+                borderColor="#2D2D3D"
+                borderRadius="8px"
+              >
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontWeight="700"
+                  fontSize="14px"
+                >
+                  Details
+                </Text>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel padding="0px">
+                {strategyCached && (
+                  <DetailsTab strategy={strategyCached} isMobile />
+                )}
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem border="none">
+              <AccordionButton
+                bg="dark_bg"
+                color="white"
+                padding={'16px 16px'}
+                _expanded={{ color: '#3EE5C2' }}
+                borderWidth="1px"
+                borderColor="#2D2D3D"
+                borderRadius="8px"
+              >
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontWeight="700"
+                  fontSize="14px"
+                >
+                  FAQs
+                </Text>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel padding="0px">
+                {strategy && <FAQTab strategy={strategy} isMobile />}
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem border="none">
+              <AccordionButton
+                bg="dark_bg"
+                color="white"
+                padding={'16px 16px'}
+                _expanded={{ color: '#3EE5C2' }}
+                borderWidth="1px"
+                borderColor="#2D2D3D"
+                borderRadius="8px"
+              >
+                <Text
+                  flex="1"
+                  textAlign="left"
+                  fontWeight="700"
+                  fontSize="14px"
+                >
+                  Transactions
+                </Text>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel padding="0px">
+                {strategy && (
+                  <TransactionsTab
+                    strategy={strategy}
+                    txHistory={txHistory}
+                    isMobile
+                  />
+                )}
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </Box>
       </Box>
     </>
   );

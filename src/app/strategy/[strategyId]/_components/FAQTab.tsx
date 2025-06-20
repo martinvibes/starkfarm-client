@@ -22,58 +22,48 @@ export function FAQTab(props: FAQTabProps) {
 
   if (isMobile) {
     return (
-      <Flex flexDirection="column" gap="16px" width="100%">
+      <Flex flexDirection="column" gap="16px" width="100%" paddingTop="10px">
+        <Text fontSize="18px" color="white" fontWeight="600" mb={2}>
+          Get to know about all your doubts
+        </Text>
+        <Accordion width={'100%'} allowToggle>
+          {strategy.metadata.faqs && strategy.metadata.faqs.length > 0 ? (
+            strategy.metadata.faqs.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                borderRadius={'8px'}
+                borderWidth={'1px'}
+                borderColor={'slate_blue'}
+                mb={2}
+              >
+                <AccordionButton>
+                  <Box
+                    flex="1"
+                    textAlign="left"
+                    fontSize="14px"
+                    fontWeight="500"
+                    color="border_light"
+                  >
+                    {faq.question}
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+                <AccordionPanel pb={4} fontSize="14px" color="silver_gray">
+                  {faq.answer}
+                </AccordionPanel>
+              </AccordionItem>
+            ))
+          ) : (
+            <Text fontSize={'14px'} color={'silver_gray'}>
+              No FAQs at the moment
+            </Text>
+          )}
+        </Accordion>
+
         <Box
           width="100%"
           borderRadius="8px"
-          borderWidth="1px"
-          borderColor="slate_blue"
-          bg="bg_2"
-          p={4}
-        >
-          <Text fontSize="18px" color="white" fontWeight="600" mb={2}>
-            Get to know about all your doubts
-          </Text>
-          <Accordion width={'100%'} allowToggle>
-            {strategy.metadata.faqs && strategy.metadata.faqs.length > 0 ? (
-              strategy.metadata.faqs.map((faq, index) => (
-                <AccordionItem
-                  key={index}
-                  borderRadius={'8px'}
-                  borderWidth={'1px'}
-                  borderColor={'slate_blue'}
-                  mb={2}
-                >
-                  <AccordionButton>
-                    <Box
-                      flex="1"
-                      textAlign="left"
-                      fontSize="14px"
-                      fontWeight="500"
-                      color="border_light"
-                    >
-                      {faq.question}
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                  <AccordionPanel pb={4} fontSize="14px" color="silver_gray">
-                    {faq.answer}
-                  </AccordionPanel>
-                </AccordionItem>
-              ))
-            ) : (
-              <Text fontSize={'14px'} color={'silver_gray'}>
-                No FAQs at the moment
-              </Text>
-            )}
-          </Accordion>
-        </Box>
-        <Box
-          width="100%"
-          borderRadius="8px"
-          borderWidth="1px"
-          borderColor="slate_blue"
-          bg="bg_2"
+          bg="transparent"
           p={4}
           display="flex"
           flexDirection="column"

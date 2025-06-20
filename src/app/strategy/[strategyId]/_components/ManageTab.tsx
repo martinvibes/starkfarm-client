@@ -74,7 +74,7 @@ export function ManageTab(props: ManageTabProps) {
             </ListItem>
           </UnorderedList>
 
-          <Flex alignItems={'center'} gap={'8px'}>
+          <Flex alignItems={'center'} gap={'8px'} flexWrap={'wrap'}>
             <Text fontSize={'24px'} fontWeight={'600'} color={'white'}>
               Risk
             </Text>
