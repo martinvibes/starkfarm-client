@@ -90,7 +90,7 @@ export default function Strategies() {
             sx={{
               overflow: 'hidden',
               'border-collapse': 'separate',
-              'border-spacing': '0px 7px',
+              'border-spacing': '0px 3px',
             }}
             gap={2}
           >

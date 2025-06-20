@@ -7,7 +7,7 @@ export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
 
   return (
     <Flex gap={'16px'} alignItems={'center'}>
-      <AvatarGroup size={'md'} spacing={'-20px'} mr={'5px'}>
+      <AvatarGroup size={{ base: 'sm', md: 'md' }} mr={'5px'}>
         {strategy &&
           strategy.metadata.depositTokens.length > 0 &&
           strategy.metadata.depositTokens.map((token: any) => {
@@ -16,8 +16,6 @@ export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
                 key={token.address}
                 marginRight={'5px'}
                 src={token.logo}
-                width={'64px'}
-                height={'64px'}
               />
             );
           })}
@@ -30,7 +28,11 @@ export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
           />
         )}
       </AvatarGroup>
-      <Text fontSize={'32px'} fontWeight={'600'} color="white">
+      <Text
+        fontSize={{ base: '20px', md: '32px' }}
+        fontWeight={'600'}
+        color="white"
+      >
         {strategy ? strategy.name : 'Strategy Not found'}
       </Text>
       <Box

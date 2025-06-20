@@ -1,13 +1,10 @@
 'use client';
 
 import {
-  Avatar,
   Box,
   Button,
   Container,
   Flex,
-  Image,
-  HStack,
   Link,
   Spinner,
   TabPanels,
@@ -24,14 +21,13 @@ import {
   TabList,
   TabIndicator,
   VStack,
+  Stack,
 } from '@chakra-ui/react';
-import { ArrowBackIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import mixpanel from 'mixpanel-browser';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import shield from '@/assets/shield.svg';
 
 import { DUMMY_BAL_ATOM, returnEmptyBal } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
@@ -49,10 +45,10 @@ import { RiskTab } from './RiskTab';
 import { DetailsTab } from './DetailsTab';
 import { FAQTab } from './FAQTab';
 import { TransactionsTab } from './TransactionsTab';
-import MobileHarvestTime from '@/components/MobileHarvestTime';
 import HarvestTime from '@/components/HarvestTime';
 import { StrategyInfoComponent } from './StrategyInfo';
 import { APYInfo } from '@/components/APYInfo';
+import { isMobile } from 'react-device-detect';
 
 function HoldingsText({
   strategy,
@@ -348,496 +344,248 @@ const Strategy = ({ params }: StrategyParams) => {
   }
   return (
     <Container
-      display={{ base: 'none', md: 'flex' }}
+      display={{ base: 'block' }}
       justifyContent={'center'}
       width={'100%'}
       margin={'0 auto'}
-      padding={0}
+      padding={'10px'}
+      maxWidth={'1152px'}
     >
       <Flex
         width={'100%'}
         flexDirection={'column'}
-        alignItems={'center'}
-        justifyContent={'center'}
+        paddingTop={{ base: '10px', md: '32px' }}
+        gap={'48px'}
       >
-        <Flex bg={'mybg'} width={'100%'} justifyContent={'center'}>
-          <Flex
-            width={'100%'}
-            maxWidth={'1152px'}
-            flexDirection={'column'}
-            paddingTop={'32px'}
-            gap={'48px'}
-          >
-            <Box>
-              <Link href="/?tab=strategies">
-                <Button
-                  bg={'mycard_light'}
-                  color={'text_primary'}
-                  leftIcon={<ArrowBackIcon />}
-                  _hover={{
-                    bg: 'transparent',
-                    color: 'white',
-                  }}
-                >
-                  Back
-                </Button>
-              </Link>
-            </Box>
-            <HStack justifyContent={'space-between'} width={'100%'}>
-              {strategy && (
-                <VStack gap={6}>
-                  <StrategyInfoComponent strategy={strategy} />
-                  {!strategy?.isRetired() && strategyCached && (
-                    <Box
-                      alignItems={'flex-start'}
-                      justifyItems={'flex-start'}
-                      width={'100%'}
-                    >
-                      <APYInfo
-                        strategy={strategy}
-                        strategyAPIResult={strategyCached}
-                      />
-                    </Box>
-                  )}
-                </VStack>
-              )}
-
-              {strategy && (
-                <VStack gap={6}>
-                  <HoldingsAndEarnings
-                    strategy={strategy}
-                    address={address}
-                    balData={balData}
-                    profit={profit}
-                  />
-                  <HarvestTime strategy={strategy} balData={balData} />
-                </VStack>
-              )}
-            </HStack>
-
-            <Tabs
-              position="relative"
-              variant="unstyled"
-              width={'100%'}
-              index={tabIndex}
-              onChange={handleTabsChange}
-            >
-              <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
-                <Tab
-                  color={'text_secondary'}
-                  _selected={{ color: 'purple', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Manage clicked');
-                  }}
-                >
-                  Manage
-                </Tab>
-                <Tab
-                  color={'text_secondary'}
-                  _selected={{ color: 'purple', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Risk clicked');
-                  }}
-                >
-                  Risks
-                </Tab>
-                <Tab
-                  color={'text_secondary'}
-                  _selected={{ color: 'purple', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Details clicked');
-                  }}
-                >
-                  Details
-                </Tab>
-                <Tab
-                  color={'text_secondary'}
-                  _selected={{ color: 'purple', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('FAQs clicked');
-                  }}
-                >
-                  FAQs
-                </Tab>
-                <Tab
-                  color={'text_secondary'}
-                  _selected={{ color: 'purple', fontWeight: 'bold' }}
-                  onClick={() => {
-                    mixpanel.track('Transactions clicked');
-                  }}
-                >
-                  Transactions
-                </Tab>
-              </TabList>
-              <TabIndicator
-                mt="-1.5px"
-                height="3px"
-                bg="purple"
-                color="color1"
-                borderRadius="1px"
-              />
-              <TabPanels>
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && <ManageTab strategy={strategy} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && <RiskTab strategy={strategy} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategyCached && <DetailsTab strategy={strategyCached} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && <FAQTab strategy={strategy} />}
-                </TabPanel>
-
-                <TabPanel width={'100%'} padding={0}>
-                  {strategy && (
-                    <TransactionsTab
-                      strategy={strategy}
-                      txHistory={txHistory}
-                    />
-                  )}
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </Flex>
-        </Flex>
-      </Flex>
-
-      {/* MOBILE VIEW */}
-      <Box
-        display={{ base: 'flex', lg: 'none' }}
-        flexDirection="column"
-        width="100%"
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="16px"
-          bg="#1B1724"
-          paddingTop="24px"
-          paddingLeft="8px"
-          paddingRight="8px"
-          paddingBottom="16px"
-        >
-          <Flex width="100%" justifyContent="center">
+        <Box>
+          <Link href="/?tab=strategies">
             <Button
+              bg={'mycard_light'}
+              color={'text_primary'}
               leftIcon={<ArrowBackIcon />}
-              variant="ghost"
-              color="white"
-              fontWeight="bold"
-              fontSize="18px"
-              padding="12px 16px"
-              borderWidth="1px"
-              borderColor="#CFCFEA"
-              borderRadius="12px"
-              _hover={{ bg: 'transparent', color: 'white' }}
-              onClick={() => router.push('/?tab=strategies')}
-              height="auto"
+              _hover={{
+                bg: 'transparent',
+                color: 'white',
+              }}
             >
               Back
             </Button>
-          </Flex>
-
-          <Box
-            borderRadius="12px"
-            display="flex"
-            gap="16px"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Avatar src={strategy?.holdingTokens[0]?.logo || ''} size="lg" />
-            <Text fontWeight="600" fontSize="32px" color="white">
-              {strategy?.name}
-            </Text>
-            {strategy?.settings.isAudited && (
-              <Box
-                width="24px"
-                height="24px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                backgroundColor="#1AFCA0"
-                borderRadius="full"
-              >
-                <Image src={shield.src} alt="badge" />
-              </Box>
-            )}
-          </Box>
-
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap="8px"
-            alignItems="center"
-          >
-            <Flex align="center" gap="4px">
-              <Box
-                bg="#181824"
-                display="flex"
-                alignItems="center"
-                padding="8px"
-                borderRadius="md"
-              >
-                <Text
-                  color="border_light"
-                  fontWeight="bold"
-                  fontSize="16px"
-                  mr={1}
-                >
-                  APY
-                </Text>
-                <Text color="light_green" fontWeight="bold" fontSize="22px">
-                  {strategyCached?.apySplit?.baseApy
-                    ? `${(strategyCached.apySplit.baseApy * 100).toFixed(2)}%`
-                    : '23.94%'}
-                </Text>
-              </Box>
-              <Box
-                bg="black"
-                color="white"
-                display="flex"
-                alignItems="center"
-                fontSize="14px"
-                fontWeight="500"
-                padding="4px 8px"
-                borderRadius="20px"
-              >
-                <span role="img" aria-label="fire">
-                  🔥
-                </span>
-                {`${strategyCached?.leverage?.toFixed(2)}x boosted`}
-              </Box>
-            </Flex>
-            <Link
-              href={strategy?.metadata.auditUrl || '#'}
-              color="#8E8E8E"
-              fontSize="14px"
-              display="flex"
-              alignItems="center"
-              gap="4px"
-              isExternal
-              fontWeight="600"
-              justifyContent="center"
-            >
-              Contract details <ExternalLinkIcon />
-            </Link>
-          </Box>
-
-          <Flex width="100%" gap={3} mb={3}>
-            <Box
-              flex="1"
-              bg="mycard"
-              padding="16px"
-              textAlign="center"
-              display="flex"
-              flexDirection="column"
-              gap="4px"
-              alignItems="center"
-              justifyContent="center"
-              borderRadius="md"
-            >
-              <Text color="#CFCFEA" fontSize="14px">
-                Your holdings:
-              </Text>
-              <Text color="white" fontWeight="extrabold" fontSize="22px">
-                {address && balData && balData.data && balData.data.tokenInfo
-                  ? `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                  : '-'}
-              </Text>
-            </Box>
-            <Box
-              flex="1"
-              bg="#1A1A27"
-              padding="16px"
-              textAlign="center"
-              display="flex"
-              flexDirection="column"
-              gap="4px"
-              alignItems="center"
-              justifyContent="center"
-              borderWidth="1px"
-              borderColor="#CFCFEA4D"
-              borderRadius="12px"
-            >
-              <Text color="#CFCFEA" fontSize="14px">
-                Net earnings:
-              </Text>
-              <Text
-                color={profit > 0 ? 'cyan' : profit < 0 ? 'red' : 'text'}
-                fontWeight="extrabold"
-                fontSize="22px"
-              >
-                {address &&
-                profit !== 0 &&
-                !strategy?.isRetired() &&
-                balData.data &&
-                balData.data.tokenInfo
-                  ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                  : '-'}
-              </Text>
-            </Box>
-          </Flex>
-
-          {strategy && <MobileHarvestTime strategy={strategy} />}
+          </Link>
         </Box>
-
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="16px"
-          padding="16px 8px"
+        <Stack
+          direction={{ base: 'column', md: 'row' }}
+          justifyContent={'space-between'}
+          width={'100%'}
         >
-          <Accordion
-            index={accordionIndex}
-            defaultIndex={[0]}
-            onChange={(expandedIndex) => {
-              if (Array.isArray(expandedIndex)) {
-                setAccordionIndex(expandedIndex[0] ?? 0);
-              } else {
-                setAccordionIndex(expandedIndex);
-              }
-            }}
-            allowToggle
-            width="100%"
-            display="flex"
-            flexDirection="column"
-            gap="10px"
-          >
-            <AccordionItem border="none">
-              <AccordionButton
-                bg="dark_bg"
-                color="white"
-                padding={'16px 16px'}
-                _expanded={{ color: '#3EE5C2' }}
-                borderWidth="1px"
-                borderColor="#2D2D3D"
-                borderRadius="8px"
-              >
-                <Text
-                  flex="1"
-                  textAlign="left"
-                  fontWeight="700"
-                  fontSize="14px"
+          {strategy && (
+            <VStack gap={6}>
+              <StrategyInfoComponent strategy={strategy} />
+              {!strategy?.isRetired() && strategyCached && (
+                <Box
+                  alignItems={'flex-start'}
+                  justifyItems={'flex-start'}
+                  width={'100%'}
                 >
-                  Manage
-                </Text>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel padding="0px">
-                {strategy && <ManageTab strategy={strategy} isMobile />}
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem border="none">
-              <AccordionButton
-                bg="dark_bg"
-                color="white"
-                padding={'16px 16px'}
-                _expanded={{ color: '#3EE5C2' }}
-                borderWidth="1px"
-                borderColor="#2D2D3D"
-                borderRadius="8px"
-              >
-                <Text
-                  flex="1"
-                  textAlign="left"
-                  fontWeight="700"
-                  fontSize="14px"
-                >
-                  Risk
-                </Text>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel padding="0px">
-                {strategy && <RiskTab strategy={strategy} isMobile />}
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem border="none">
-              <AccordionButton
-                bg="dark_bg"
-                color="white"
-                padding={'16px 16px'}
-                _expanded={{ color: '#3EE5C2' }}
-                borderWidth="1px"
-                borderColor="#2D2D3D"
-                borderRadius="8px"
-              >
-                <Text
-                  flex="1"
-                  textAlign="left"
-                  fontWeight="700"
-                  fontSize="14px"
-                >
-                  Details
-                </Text>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel padding="0px">
-                {strategyCached && (
-                  <DetailsTab strategy={strategyCached} isMobile />
-                )}
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem border="none">
-              <AccordionButton
-                bg="dark_bg"
-                color="white"
-                padding={'16px 16px'}
-                _expanded={{ color: '#3EE5C2' }}
-                borderWidth="1px"
-                borderColor="#2D2D3D"
-                borderRadius="8px"
-              >
-                <Text
-                  flex="1"
-                  textAlign="left"
-                  fontWeight="700"
-                  fontSize="14px"
-                >
-                  FAQs
-                </Text>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel padding="0px">
-                {strategy && <FAQTab strategy={strategy} isMobile />}
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem border="none">
-              <AccordionButton
-                bg="dark_bg"
-                color="white"
-                padding={'16px 16px'}
-                _expanded={{ color: '#3EE5C2' }}
-                borderWidth="1px"
-                borderColor="#2D2D3D"
-                borderRadius="8px"
-              >
-                <Text
-                  flex="1"
-                  textAlign="left"
-                  fontWeight="700"
-                  fontSize="14px"
-                >
-                  Transactions
-                </Text>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel padding="0px">
-                {strategy && (
-                  <TransactionsTab
+                  <APYInfo
                     strategy={strategy}
-                    txHistory={txHistory}
-                    isMobile
+                    strategyAPIResult={strategyCached}
                   />
+                </Box>
+              )}
+            </VStack>
+          )}
+
+          {strategy && (
+            <VStack gap={6}>
+              <HoldingsAndEarnings
+                strategy={strategy}
+                address={address}
+                balData={balData}
+                profit={profit}
+              />
+              <HarvestTime strategy={strategy} balData={balData} />
+            </VStack>
+          )}
+        </Stack>
+
+        {!isMobile && (
+          <Tabs
+            position="relative"
+            variant="unstyled"
+            width={'100%'}
+            index={tabIndex}
+            onChange={handleTabsChange}
+          >
+            <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Manage clicked');
+                }}
+              >
+                Manage
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Risk clicked');
+                }}
+              >
+                Risks
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Details clicked');
+                }}
+              >
+                Details
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('FAQs clicked');
+                }}
+              >
+                FAQs
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Transactions clicked');
+                }}
+              >
+                Transactions
+              </Tab>
+            </TabList>
+            <TabIndicator
+              mt="-1.5px"
+              height="3px"
+              bg="purple"
+              color="color1"
+              borderRadius="1px"
+            />
+            <TabPanels>
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <ManageTab strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <RiskTab strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategyCached && <DetailsTab strategy={strategyCached} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <FAQTab strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && (
+                  <TransactionsTab strategy={strategy} txHistory={txHistory} />
                 )}
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        </Box>
-      </Box>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        )}
+
+        {/* MOBILE VIEW */}
+        {isMobile && (
+          <Box display="flex" flexDirection="column" gap="16px">
+            <Accordion
+              index={accordionIndex}
+              defaultIndex={[0]}
+              onChange={(expandedIndex) => {
+                if (Array.isArray(expandedIndex)) {
+                  setAccordionIndex(expandedIndex[0] ?? 0);
+                } else {
+                  setAccordionIndex(expandedIndex);
+                }
+              }}
+              allowToggle
+              width="100%"
+              display="flex"
+              flexDirection="column"
+              gap="10px"
+              borderRadius={'lg'}
+            >
+              {strategy &&
+                [
+                  {
+                    label: 'Manage',
+                    content: <ManageTab strategy={strategy} isMobile />,
+                  },
+                  {
+                    label: 'Risk',
+                    content: <RiskTab strategy={strategy} isMobile />,
+                  },
+                  {
+                    label: 'Details',
+                    content: strategyCached && (
+                      <DetailsTab strategy={strategyCached} isMobile />
+                    ),
+                  },
+                  {
+                    label: 'FAQs',
+                    content: <FAQTab strategy={strategy} />,
+                  },
+                  {
+                    label: 'Transactions',
+                    content: (
+                      <TransactionsTab
+                        strategy={strategy}
+                        txHistory={txHistory}
+                        isMobile
+                      />
+                    ),
+                  },
+                ].map((item, index) => (
+                  <AccordionItem
+                    border="none"
+                    key={index}
+                    bg={'mycard'}
+                    padding={'8px'}
+                    borderRadius={'lg'}
+                    _active={{ bg: 'mycard_light' }}
+                    _hover={{ bg: 'mycard_light' }}
+                  >
+                    <AccordionButton
+                      color="text_secondary"
+                      padding={'16px 16px'}
+                      _expanded={{ color: 'purple' }}
+                      borderRadius="lg"
+                      _active={{ bg: 'mycard_light' }}
+                      _hover={{ bg: 'mycard_light' }}
+                      _focusVisible={{
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <Text
+                        flex="1"
+                        textAlign="left"
+                        fontWeight="700"
+                        fontSize="14px"
+                      >
+                        {item.label}
+                      </Text>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel padding="0px">
+                      {item.content}
+                    </AccordionPanel>
+                  </AccordionItem>
+                ))}
+            </Accordion>
+          </Box>
+        )}
+      </Flex>
     </Container>
   );
 };

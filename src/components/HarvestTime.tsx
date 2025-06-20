@@ -5,7 +5,6 @@ import { StrategyInfo } from '@/store/strategies.atoms';
 import { HarvestTimeAtom } from '@/store/harvest.atom';
 import { useAtomValue } from 'jotai';
 import { formatTimediff, getDisplayCurrencyAmount } from '@/utils';
-import { isMobile } from 'react-device-detect';
 
 interface HarvestTimeProps {
   strategy: StrategyInfo<any>;
@@ -64,7 +63,7 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
   return (
     <Flex width={'100%'} flexDirection={'column'}>
       <Flex width={'100%'} justifyContent="space-between">
-        {!isMobile && !strategy.settings.hideHarvestInfo && (
+        {!strategy.settings.hideHarvestInfo && (
           <Tooltip
             label={`This is when your investment increases as STRK rewards are automatically claimed and reinvested into the strategy's tokens.`}
           >
@@ -152,28 +151,22 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
         {!strategy.settings.hideHarvestInfo && (
           <Flex
             alignItems={'center'}
-            height={'40px'}
-            bg={'mycard'}
-            borderRadius={'lg'}
-            padding={'8px'}
             marginTop={'10px'}
-            gap={'2px'}
+            gap={'2'}
+            direction={{ base: 'column', md: 'row' }}
+            width={'100%'}
           >
             <Text
               color={'text_secondary'}
               fontSize={'12px'}
               fontWeight={'400'}
               lineHeight={'100%'}
+              padding={'8px'}
+              bg={'mycard'}
+              width={'100%'}
+              borderRadius={'lg'}
             >
-              Total rewards harvested:
-            </Text>
-
-            <Text
-              color={'white'}
-              fontSize={'12px'}
-              fontWeight={'400'}
-              lineHeight={'100%'}
-            >
+              Total rewards harvested:{' '}
               {getDisplayCurrencyAmount(
                 harvestTime?.data?.totalStrkHarvestedByContract.STRKAmount || 0,
                 2,
@@ -181,27 +174,17 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
               STRK
             </Text>
 
-            <Text color={'text_secondary'} opacity={'0.4'} margin={'0 5px'}>
-              {' '}
-              |{' '}
-            </Text>
-
             <Text
               color={'text_secondary'}
               fontSize={'12px'}
               fontWeight={'400'}
+              padding={'8px'}
               lineHeight={'100%'}
+              bg={'mycard'}
+              width={'100%'}
+              borderRadius={'lg'}
             >
-              Total number of times harvested:
-            </Text>
-
-            <Text
-              color={'white'}
-              fontSize={'12px'}
-              fontWeight={'400'}
-              lineHeight={'100%'}
-            >
-              -
+              Total number of times harvested: -
             </Text>
           </Flex>
         )}

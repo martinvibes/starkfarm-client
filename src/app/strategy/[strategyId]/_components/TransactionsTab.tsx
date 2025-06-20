@@ -51,7 +51,7 @@ function DesktopTransactionHistory(props: { transactions: ITransaction[] }) {
             sx={{
               overflow: 'hidden',
               'border-collapse': 'separate',
-              'border-spacing': '0px 5px',
+              'border-spacing': '0px 3px',
             }}
           >
             <Thead
@@ -91,7 +91,7 @@ function DesktopTransactionHistory(props: { transactions: ITransaction[] }) {
                   fontWeight={'600'}
                   textTransform={'capitalize'}
                 >
-                  Wallet address
+                  Transaction hash
                 </Th>
                 <Th
                   color={'white'}
@@ -199,14 +199,12 @@ function MobileTransactionHistory(props: { transactions: ITransaction[] }) {
         return (
           <Box
             key={index}
-            borderRadius="8px"
-            borderWidth="1px"
-            borderColor={isDeposit ? 'light_green' : 'red_2'}
+            borderRadius="lg"
             bg="bg_2"
-            p={3}
             display="flex"
             flexDirection="column"
             gap={1}
+            padding={'16px'}
           >
             <Flex alignItems="center" gap={2} mb={1}>
               <Box
@@ -242,8 +240,8 @@ function MobileTransactionHistory(props: { transactions: ITransaction[] }) {
               ).toLocaleString()}{' '}
               {token?.name}
             </Text>
-            <Text color="border_light" fontSize="13px">
-              Wallet:{' '}
+            <Text color="white" fontSize="13px">
+              Tx Hash:{' '}
               <Link
                 href={`https://starkscan.co/tx/${tx.txHash}`}
                 target="_blank"
@@ -252,7 +250,7 @@ function MobileTransactionHistory(props: { transactions: ITransaction[] }) {
                 {shortAddress(tx.txHash)}
               </Link>
             </Text>
-            <Text color="silver_gray" fontSize="13px">
+            <Text color="text_secondary" fontSize="13px">
               {timeAgo(new Date(tx.timestamp * 1000))}
             </Text>
           </Box>
@@ -295,19 +293,7 @@ export function TransactionsTab(props: TransactionsTabProps) {
             No transactions found
           </Text>
         )
-      ) : (
-        <Text
-          fontSize={'14px'}
-          textAlign={'center'}
-          color="text_secondary"
-          padding="16px"
-          bg="mycard"
-          borderRadius={'lg'}
-        >
-          Connect your wallet to view transaction history
-        </Text>
-      )}
-      {strategy.settings.isTransactionHistDisabled && (
+      ) : strategy.settings.isTransactionHistDisabled ? (
         <Text
           fontSize={'14px'}
           textAlign={'center'}
@@ -319,6 +305,17 @@ export function TransactionsTab(props: TransactionsTabProps) {
         >
           Transaction history is not available for this strategy yet. If enabled
           in future, will include the entire history.
+        </Text>
+      ) : (
+        <Text
+          fontSize={'14px'}
+          textAlign={'center'}
+          color="text_secondary"
+          padding="16px"
+          bg="mycard"
+          borderRadius={'lg'}
+        >
+          Connect your wallet to view transaction history
         </Text>
       )}
     </Flex>

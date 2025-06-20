@@ -18,16 +18,19 @@ interface FAQTabProps {
 }
 
 export function FAQTab(props: FAQTabProps) {
-  const { strategy, isMobile } = props;
+  const { strategy } = props;
 
   return (
-    <Flex flexDirection={'column'} padding={'24px 0px'} gap={'24px'}>
-      <Text fontSize={'24px'} color={'white'} fontWeight={'600'}>
+    <Flex flexDirection={'column'} padding={'24px 16px'} gap={'24px'}>
+      <Text
+        fontSize={{ base: '16px', md: '24px' }}
+        color={'white'}
+        fontWeight={'600'}
+      >
         Get your questions answered
       </Text>
-
-      <Flex>
-        <Flex flexDirection={'column'} width={'696px'} gap={'16px'}>
+      <Flex direction={{ base: 'column', md: 'row' }} width={'100%'} gap={5}>
+        <Flex flexDirection={'column'} width={'100%'} gap={'16px'}>
           {!strategy.metadata.faqs && (
             <Text fontSize={'14px'} color={'text_secondary'}>
               No FAQs at the moment
@@ -38,6 +41,7 @@ export function FAQTab(props: FAQTabProps) {
             display={'flex'}
             flexDirection={'column'}
             gap={'16px'}
+            allowToggle={true}
           >
             {strategy.metadata.faqs &&
               strategy.metadata.faqs.length > 0 &&
@@ -81,20 +85,19 @@ export function FAQTab(props: FAQTabProps) {
           gap={'16px'}
           marginLeft={'auto'}
           marginRight={'auto'}
+          width={{ base: '100%', md: '50%' }}
         >
           <Flex
             flexDirection={'column'}
-            width={'415px'}
             gap={'8px'}
             padding={'10px'}
-            borderWidth={'1px'}
             borderRadius={'8px'}
-            borderColor={'slate_blue'}
+            bg="mycard_dark"
           >
             <Text
               fontSize={'14px'}
               fontWeight={'500'}
-              color={'border_light'}
+              color={'text_secondary'}
               textAlign={'center'}
             >
               For more queries reach out to us on Telegram
@@ -102,7 +105,7 @@ export function FAQTab(props: FAQTabProps) {
             <Text
               fontSize={'14px'}
               fontWeight={'400'}
-              color={'silver_gray'}
+              color={'text_secondary'}
               textAlign={'center'}
             >
               Our team will respond to you soon!
@@ -115,13 +118,13 @@ export function FAQTab(props: FAQTabProps) {
               padding={'12px 20px'}
               borderRadius={'100px'}
               borderWidth={'1px'}
-              borderColor={'color_7'}
-              color={'color_7'}
+              borderColor={'purple'}
+              color={'purple'}
               fontSize={'14px'}
               fontWeight={'700'}
               _hover={{
-                bg: 'transparent',
-                color: 'color_7',
+                bg: 'mycard_dark',
+                color: 'purple',
               }}
             >
               Connect on Telegram

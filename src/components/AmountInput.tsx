@@ -482,7 +482,9 @@ const AmountInput = forwardRef(
                 as={Button}
                 height={'100%'}
                 rightIcon={<ChevronDownIcon width={'20px'} height={'20px'} />}
-                width={'200px'}
+                maxWidth={'200px'}
+                minWidth={'140px'}
+                width={'100%'}
                 bg={'mycard_light'}
                 color="text_primary"
                 fontSize={'16px'}
@@ -611,7 +613,7 @@ const AmountInput = forwardRef(
         {simulatedMaxAmount.amount === 0 && (
           <Tooltip
             label={
-              <Text>
+              <Text color={'text_secondary'}>
                 The liquidity at the current market price, is only in{' '}
                 {
                   inputsInfo.find((_, index) => index !== props.index)
@@ -625,8 +627,8 @@ const AmountInput = forwardRef(
             <Text
               marginTop="2px"
               marginLeft={'7px'}
-              color="light_grey"
               fontSize={'12px'}
+              color={'text_secondary'}
             >
               The liquidity at the current market price, is only in{' '}
               {

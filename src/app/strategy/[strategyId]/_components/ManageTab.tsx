@@ -1,4 +1,4 @@
-import { Flex, ListItem, Text, UnorderedList } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { StrategyInfo } from '@/store/strategies.atoms';
@@ -30,7 +30,7 @@ export function ManageTab(props: ManageTabProps) {
         <Text fontSize={'24px'} fontWeight={'600'} color={'text_secondary'}>
           How does it work?
         </Text>
-        <UnorderedList
+        {/* <UnorderedList
           fontSize={'14px'}
           fontWeight={'400'}
           color={'text_secondary'}
@@ -49,7 +49,8 @@ export function ManageTab(props: ManageTabProps) {
             Receive an NFT as representation for your stake on STRKFarm.
           </ListItem>
           <ListItem>Withdraw anytime by redeeming your NFT for USDC.</ListItem>
-        </UnorderedList>
+        </UnorderedList> */}
+        <Box color={'text_secondary'}>{strategy.description}</Box>
 
         <ContractDetails strategy={strategy} />
         {/* <VStack alignItems={'flex-start'} gap={'8px'}>
