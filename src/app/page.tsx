@@ -93,12 +93,20 @@ export default function Home() {
   }, [searchParams]);
 
   return (
-    <Container maxWidth={'1152px'} margin={'0 auto'}>
-      <Box padding={'15px 30px'} borderRadius="10px" margin={'20px 0px 10px'}>
+    <Container
+      maxWidth={'1152px'}
+      margin={'0 auto'}
+      padding={{ base: '15px 10px' }}
+    >
+      <Box
+        padding={{ base: '15px 15px' }}
+        borderRadius="10px"
+        margin={'20px 0px 10px'}
+      >
         <Text
           color={'text_primary'}
-          fontSize={{ base: '28px', md: '35px' }}
-          lineHeight={'30px'}
+          fontSize={{ base: '32px', md: '35px' }}
+          lineHeight={{ base: '40px', md: '30px' }}
           marginBottom={'10px'}
           textAlign={'center'}
         >
@@ -108,7 +116,8 @@ export default function Home() {
         <Text
           color="text_secondary"
           textAlign={'center'}
-          fontSize={{ base: '16px', md: '18px' }}
+          fontSize={{ base: '20px', md: '18px' }}
+          lineHeight={{ base: '28px', md: '20px' }}
           marginBottom={'0px'}
         >
           Discover and invest in custom-built yield strategies.

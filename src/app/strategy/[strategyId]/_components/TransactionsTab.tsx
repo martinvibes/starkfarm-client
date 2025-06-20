@@ -36,11 +36,120 @@ interface TransactionsTabProps {
       __typename: 'Investment_flows';
     }[];
   };
+  isMobile?: boolean;
 }
 
 export function TransactionsTab(props: TransactionsTabProps) {
   const { address } = useAccount();
-  const { strategy, txHistory } = props;
+  const { strategy, txHistory, isMobile } = props;
+
+  if (isMobile) {
+    return (
+      <Flex flexDirection="column" gap="16px" width="100%">
+        <Text fontSize="18px" color="white" fontWeight="600" mb={2}>
+          Transaction history
+        </Text>
+        {!strategy.settings.isTransactionHistDisabled && (
+          <Text fontSize="14px" color="border_light" mb={2}>
+            There may be delays fetching data. If your transaction isn&apos;t
+            found, try again later.
+          </Text>
+        )}
+        {address ? (
+          txHistory.findManyInvestment_flows.length !== 0 ? (
+            <Flex flexDirection="column" gap={3}>
+              {txHistory.findManyInvestment_flows.map((tx, index) => {
+                const token = getTokenInfoFromAddr(tx.asset);
+                const decimals = token?.decimals;
+                const isDeposit = tx.type === 'deposit';
+                return (
+                  <Box
+                    key={index}
+                    borderRadius="8px"
+                    borderWidth="1px"
+                    borderColor={isDeposit ? 'light_green' : 'red_2'}
+                    bg="bg_2"
+                    p={3}
+                    display="flex"
+                    flexDirection="column"
+                    gap={1}
+                  >
+                    <Flex alignItems="center" gap={2} mb={1}>
+                      <Box
+                        bg={isDeposit ? 'light_green' : 'red_2'}
+                        padding="4px"
+                        borderRadius="50%"
+                        width="24px"
+                        height="24px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        {isDeposit ? (
+                          <ArrowDownIcon color={'black'} />
+                        ) : (
+                          <ArrowUpIcon color={'black'} />
+                        )}
+                      </Box>
+                      <Text
+                        fontWeight="bold"
+                        color={isDeposit ? 'light_green' : 'red_2'}
+                        fontSize="15px"
+                      >
+                        {isDeposit ? 'Deposited' : 'Withdrawn'}
+                      </Text>
+                    </Flex>
+                    <Text color="white" fontSize="15px">
+                      Amount:{' '}
+                      {Number(
+                        new MyNumber(
+                          tx.amount,
+                          decimals!,
+                        ).toEtherToFixedDecimals(token.displayDecimals),
+                      ).toLocaleString()}{' '}
+                      {token?.name}
+                    </Text>
+                    <Text color="border_light" fontSize="13px">
+                      Wallet:{' '}
+                      <Link
+                        href={`https://starkscan.co/tx/${tx.txHash}`}
+                        target="_blank"
+                        color="color_7"
+                      >
+                        {shortAddress(tx.txHash)}
+                      </Link>
+                    </Text>
+                    <Text color="silver_gray" fontSize="13px">
+                      {timeAgo(new Date(tx.timestamp * 1000))}
+                    </Text>
+                  </Box>
+                );
+              })}
+            </Flex>
+          ) : (
+            <Text fontSize={'14px'} textAlign={'center'} color="light_grey">
+              No transactions found
+            </Text>
+          )
+        ) : (
+          <Text fontSize={'14px'} textAlign={'center'} color="light_grey">
+            Connect your wallet to view transaction history
+          </Text>
+        )}
+        {strategy.settings.isTransactionHistDisabled && (
+          <Text
+            fontSize={'14px'}
+            textAlign={'center'}
+            color="light_grey"
+            marginTop={'20px'}
+          >
+            Transaction history is not available for this strategy yet. If
+            enabled in future, will include the entire history.
+          </Text>
+        )}
+      </Flex>
+    );
+  }
 
   return (
     <Flex flexDirection={'column'} padding={'24px 0px'} gap={'24px'}>

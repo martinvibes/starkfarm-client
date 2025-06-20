@@ -53,8 +53,10 @@ const TVL: React.FC = () => {
           // borderColor={'color_3'}
         >
           <Stat>
-            <StatLabel>Total Value locked (TVL)</StatLabel>
-            <StatNumber>
+            <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
+              Total Value locked (TVL)
+            </StatLabel>
+            <StatNumber fontSize={{ base: '24px' }} color={'text'}>
               $
               {isPending ? (
                 <Spinner size="sm" color="white" marginLeft={'5px'} />
@@ -78,8 +80,10 @@ const TVL: React.FC = () => {
           // borderColor={'color_3'}
         >
           <Stat>
-            <StatLabel>Your holdings</StatLabel>
-            <StatNumber>
+            <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
+              Your holdings
+            </StatLabel>
+            <StatNumber fontSize={{ base: '24px' }} color={'text'}>
               $
               {userStatsPending ? (
                 <Spinner size="sm" color="white" marginLeft={'5px'} />
@@ -103,7 +107,7 @@ const TVL: React.FC = () => {
           // borderColor={'color_3'}
         >
           <Stat>
-            <StatLabel fontWeight={'bold'}>
+            <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
               Your referral link{' '}
               <Tooltip label="Learn more">
                 {/* TODO: update the url */}
@@ -125,7 +129,7 @@ const TVL: React.FC = () => {
                   <Spinner size="sm" color="white" marginTop={'8px'} />
                 ) : (
                   <StatNumber
-                    fontSize="1.5rem"
+                    fontSize={{ base: '20px' }}
                     textDecoration="underline"
                     fontWeight="600"
                     cursor={'pointer'}
@@ -138,7 +142,7 @@ const TVL: React.FC = () => {
                 )
               ) : (
                 <Tooltip label="Connect wallet">
-                  <StatNumber fontSize="1.5rem" fontWeight="600">
+                  <StatNumber fontSize={{ base: '20px' }} fontWeight="600">
                     -
                   </StatNumber>
                 </Tooltip>

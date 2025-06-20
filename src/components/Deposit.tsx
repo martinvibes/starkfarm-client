@@ -223,6 +223,7 @@ function InternalDeposit(props: DepositProps) {
   const [investedSummary, setInvestedSummary] = useState<Web3Number | null>(
     null,
   );
+
   useEffect(() => {
     if (!callsInfo.length) {
       setInvestedSummary(null);
@@ -294,16 +295,19 @@ function InternalDeposit(props: DepositProps) {
     );
   }, [tvlInfo]);
 
+  console.log('canSubmit [2]', investedSummary, loadingInvestmentSummary);
   const canSubmit = useMemo(() => {
+    console.log('canSubmit [1]', isTVLFull, isDeposit, depositInfo.loading);
     if (isTVLFull && isDeposit) {
       return false;
     }
     if (depositInfo.loading) {
       return false;
     }
-    if (!investedSummary || loadingInvestmentSummary) {
-      return false;
-    }
+
+    // if (!investedSummary || loadingInvestmentSummary) {
+    //   return false;
+    // }
     // todo consider max cap of each token as well
     return inputsInfo.some((a) => a.amount.greaterThan(0));
   }, [

@@ -70,6 +70,10 @@ const theme = extendTheme({
 
     disabled_button: '#2A2A3D80',
     disabled_button_text: '#7D7D93',
+
+    dark_bg: '#111119',
+    purple_tint: '#CFCFEA',
+    lavender_gray: '#B4B1BD',
   },
   fontSizes: {
     large: '50px',

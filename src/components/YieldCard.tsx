@@ -14,8 +14,6 @@ import {
   Badge,
   Box,
   Flex,
-  Grid,
-  GridItem,
   Heading,
   HStack,
   Image,
@@ -465,67 +463,119 @@ function GetRiskLevel(riskFactor: number) {
 
 function StrategyMobileCard(props: YieldCardProps) {
   const { pool, index } = props;
+  const isNew = pool.additional?.tags?.includes(StrategyLiveStatus.NEW);
+  const hasAudit = !!pool.additional?.auditUrl;
+  const riskLevel = pool.additional?.riskFactor || 0;
+  // Only show the main protocol
+  const protocol = pool.protocol;
+
   return (
-    <Grid
-      color={'white'}
+    <Box
+      display={{ base: 'flex', md: 'none' }}
+      flexDirection="column"
       bg={getStratCardBg(
-        pool.additional?.tags[0] || StrategyLiveStatus.ACTIVE,
+        pool.additional?.tags?.[0] || StrategyLiveStatus.ACTIVE,
         index,
       )}
-      templateColumns={'repeat(3, 1fr)'}
-      templateRows={
-        props.showProtocolName ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)'
-      }
-      display={{ base: 'grid', md: 'none' }}
-      padding={'20px'}
-      gap={2}
-      borderBottom={'1px solid var(--chakra-colors-bg)'}
-      as={'a'}
-      {...getLinkProps(pool, props.showProtocolName)}
+      borderRadius="16px"
+      border="1px solid #232336"
+      padding="18px 18px 14px 18px"
+      marginY="10px"
+      width="100%"
+      position="relative"
     >
-      <GridItem colSpan={3} rowSpan={props.showProtocolName ? 2 : 1}>
-        <StrategyInfo
-          pool={pool}
-          index={index}
-          showProtocolName={props.showProtocolName}
-        />
-      </GridItem>
-      <GridItem colSpan={1} rowSpan={2}>
-        <Text
-          textAlign={'right'}
-          color={'color2'}
-          fontWeight={'bold'}
-          fontSize={'13px'}
-        >
-          APY
-        </Text>
-        <StrategyAPY pool={pool} index={index} />
-      </GridItem>
-      <GridItem colSpan={1} rowSpan={2}>
-        <Text
-          textAlign={'right'}
-          color={'color2'}
-          fontWeight={'bold'}
-          fontSize={'13px'}
-        >
-          RISK
-        </Text>
-        {pool.additional?.riskFactor
-          ? GetRiskLevel(pool.additional?.riskFactor)
-          : '-'}
-      </GridItem>
-      <GridItem colSpan={1} rowSpan={2}>
-        <Text
-          textAlign={'right'}
-          color={'color2'}
-          fontWeight={'bold'}
-          fontSize={'13px'}
-        >
-          TVL
-        </Text>
-        <StrategyTVL pool={pool} index={index} />
-      </GridItem>
-    </Grid>
+      {/* Top row: Avatars, name, shield, New badge */}
+      <Flex align="center" justify="space-between" width="100%">
+        <HStack spacing={2} align="center">
+          <AvatarGroup size="md" max={2}>
+            {pool.pool.logos.slice(0, 2).map((logo, i) => (
+              <Avatar key={i} src={logo} />
+            ))}
+          </AvatarGroup>
+          <Text fontWeight="bold" fontSize="18px" color="white">
+            {pool.pool.name}
+          </Text>
+          {hasAudit && (
+            <Box
+              width="24px"
+              height="24px"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              backgroundColor="#1AFCA0"
+              borderRadius="full"
+              ml={1}
+            >
+              <Image
+                src={shield.src}
+                alt="badge"
+                width={'16px'}
+                height={'16px'}
+              />
+            </Box>
+          )}
+        </HStack>
+        {isNew && (
+          <Box
+            bg="#4DB2FF"
+            color="black"
+            fontWeight="bold"
+            fontSize="14px"
+            px={3}
+            py={1}
+            borderRadius="8px"
+          >
+            New
+          </Box>
+        )}
+      </Flex>
+
+      {/* Protocol row */}
+      <HStack spacing={3} mt={2} mb={1}>
+        <HStack spacing={1}>
+          <Avatar size="xs" src={protocol.logo} />
+          <Text color="#B3B3C6" fontSize="15px">
+            {protocol.name}
+          </Text>
+        </HStack>
+      </HStack>
+
+      {/* APY, TVL, Risk row */}
+      <Flex mt={3} width="100%" align="flex-end" justify="space-between">
+        <Box>
+          <Text color="#B3B3C6" fontWeight="600" fontSize="16px">
+            APY
+          </Text>
+          <Text color="white" fontWeight="bold" fontSize="20px" mt={1}>
+            {(pool.apr * 100).toFixed(2)}%
+          </Text>
+        </Box>
+        <Box>
+          <Text color="#B3B3C6" fontWeight="600" fontSize="16px">
+            TVL
+          </Text>
+          <Text color="white" fontWeight="bold" fontSize="20px" mt={1}>
+            {`$${getDisplayCurrencyAmount(pool.tvl, 0)}`}
+          </Text>
+        </Box>
+        <Box textAlign="right">
+          <Text color="#B3B3C6" fontWeight="600" fontSize="16px">
+            Risk
+          </Text>
+          <HStack mt={1} spacing={1} justify="flex-end">
+            {[...Array(5)].map((_, i) => (
+              <Box
+                key={i}
+                width="6px"
+                height="22px"
+                borderRadius="4px"
+                bg={i < riskLevel ? '#1AFCA0' : '#232336'}
+              />
+            ))}
+          </HStack>
+        </Box>
+      </Flex>
+    </Box>
   );
 }
 

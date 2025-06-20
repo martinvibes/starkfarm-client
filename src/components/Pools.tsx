@@ -108,6 +108,7 @@ export default function Pools() {
         display={'flex'}
         flexDirection={'column'}
         gap={'16px'}
+        padding={{ base: '0px' }}
       >
         <Box padding={'1rem 1.5rem'} bg={'mycard_dark'} borderRadius={'lg'}>
           <ProtocolFilters />
