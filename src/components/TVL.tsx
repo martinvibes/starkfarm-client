@@ -40,17 +40,17 @@ const TVL: React.FC = () => {
   return (
     <Grid
       templateColumns={{ base: 'repeat(1, 1, 1fr)', md: 'repeat(3, 1fr)' }}
-      gap={{ base: '8px' }}
+      gap="2"
       width="100%"
     >
       <GridItem display="flex">
         <Card
           width={'100%'}
-          padding={{ base: '16px 32px' }}
-          bg={'dark_navy'}
-          borderWidth={'1px'}
-          borderColor={'slate_blue'}
-          borderRadius={'8px'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
         >
           <Stat>
             <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
@@ -73,11 +73,11 @@ const TVL: React.FC = () => {
       <GridItem display="flex">
         <Card
           width={'100%'}
-          padding={{ base: '16px 32px' }}
-          bg={'dark_navy'}
-          borderWidth={'1px'}
-          borderColor={'slate_blue'}
-          borderRadius={'8px'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
         >
           <Stat>
             <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>
@@ -100,11 +100,11 @@ const TVL: React.FC = () => {
       <GridItem display="flex">
         <Card
           width={'100%'}
-          padding={{ base: '16px 32px' }}
-          bg={'dark_navy'}
-          borderWidth={'1px'}
-          borderColor={'slate_blue'}
-          borderRadius={'8px'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
         >
           <Stat>
             <StatLabel fontSize={{ base: '18px' }} color={'purple_tint'}>

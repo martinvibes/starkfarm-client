@@ -110,117 +110,107 @@ export default function Pools() {
         gap={'16px'}
         padding={{ base: '0px' }}
       >
-        <ProtocolFilters />
-        <Box width={'100%'} marginTop={'10px'}>
-          <Box width={{ base: '100%', md: '70%' }} float={'left'}>
-            <CategoryFilters />
-          </Box>
-          <Container
-            float={'left'}
-            padding="0px"
-            width={{ base: '100%', md: '30%' }}
-          >
-            <Pagination
-              pagesCount={pagesCount}
-              currentPage={currentPage}
-              isDisabled={false}
-              onPageChange={(page) => {
-                setCurrentPage(page);
-              }}
+        <Box padding={'1rem 1.5rem'} bg={'mycard_dark'} borderRadius={'lg'}>
+          <ProtocolFilters />
+          <Box width={'100%'} marginTop={'10px'}>
+            <Box width={{ base: '100%', md: '70%' }} float={'left'}>
+              <CategoryFilters />
+            </Box>
+            <Container
+              float={'left'}
+              padding="0px"
+              width={{ base: '100%', md: '30%' }}
             >
-              <PaginationContainer
-                align="right"
-                float={'right'}
-                padding={'0px'}
-                marginTop={{ base: '10px', lg: '0px' }}
+              <Pagination
+                pagesCount={pagesCount}
+                currentPage={currentPage}
+                isDisabled={false}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                }}
               >
-                <PaginationPrevious
-                  marginRight="4px"
-                  bg="highlight"
-                  color="purple_gray"
-                  _hover={{
-                    bg: 'purple_hover_2',
-                    color: 'black',
-                  }}
+                <PaginationContainer
+                  align="right"
+                  float={'right'}
+                  padding={'0px'}
                 >
-                  <Text>{'<'}</Text>
-                </PaginationPrevious>
-                <PaginationPageGroup>
-                  {pages.map((page: number) => (
-                    <PaginationPage
-                      key={`pagination_page_${page}`}
-                      page={page}
-                      padding={'0px 15px'}
-                      isActive={page === currentPage}
-                      background={
-                        page === currentPage ? 'bright_purple' : 'highlight'
-                      }
-                      fontSize={'13px'}
-                      color={page === currentPage ? 'black' : 'silver_gray'}
-                      _active={{
-                        bg: 'bright_purple',
-                        color: 'black',
-                      }}
-                      _hover={{
-                        bg: page === currentPage ? 'purple' : 'purple_hover_2',
-                        color: page === currentPage ? 'black' : 'black',
-                      }}
-                    />
-                  ))}
-                </PaginationPageGroup>
-                <PaginationNext
-                  marginLeft="4px"
-                  bg="highlight"
-                  color="purple_gray"
-                  _hover={{
-                    bg: 'purple_hover_2',
-                    color: 'black',
-                  }}
-                >
-                  <Text>{'>'}</Text>
-                </PaginationNext>
-              </PaginationContainer>
-            </Pagination>
-          </Container>
+                  <PaginationPrevious
+                    marginRight="4px"
+                    bg="mycard_light"
+                    color="text_secondary"
+                    _hover={{
+                      bg: 'mycard_light_2x',
+                      color: 'black',
+                    }}
+                  >
+                    <Text>{'<'}</Text>
+                  </PaginationPrevious>
+                  <PaginationPageGroup>
+                    {pages.map((page: number) => (
+                      <PaginationPage
+                        key={`pagination_page_${page}`}
+                        page={page}
+                        padding={'0px 15px'}
+                        isActive={page === currentPage}
+                        background={
+                          page === currentPage
+                            ? 'bright_purple'
+                            : 'mycard_light'
+                        }
+                        fontSize={'13px'}
+                        color={page === currentPage ? 'black' : 'text_primary'}
+                        _active={{
+                          bg: 'purple',
+                          color: 'black',
+                        }}
+                        _hover={{
+                          bg:
+                            page === currentPage
+                              ? 'purple_hover_2'
+                              : 'mycard_light_2x',
+                          color:
+                            page === currentPage ? 'black' : 'text_primary',
+                        }}
+                      />
+                    ))}
+                  </PaginationPageGroup>
+                  <PaginationNext
+                    marginLeft="4px"
+                    bg="mycard_light"
+                    color="purple_gray"
+                    _hover={{
+                      bg: 'mycard_light_2x',
+                      color: 'black',
+                    }}
+                  >
+                    <Text>{'>'}</Text>
+                  </PaginationNext>
+                </PaginationContainer>
+              </Pagination>
+            </Container>
+          </Box>
         </Box>
 
-        <Container
-          width="100%"
-          float={'left'}
-          padding={'0px'}
-          marginTop={'10px'}
-        >
+        <Container width="100%" float={'left'} padding={'0px'}>
           <Table
             variant="simple"
-            // border={{ base: 'none', lg: '1px solid #2D2D3D' }}
-            borderWidth={{ base: '0px', lg: '1px' }}
-            borderColor={{ base: 'none', lg: '#2D2D3D' }}
             sx={{
-              borderRadius: '12px',
               overflow: 'hidden',
               'border-collapse': 'separate',
-              'border-spacing': '0px',
+              'border-spacing': '0px 7px',
             }}
+            gap={2}
           >
             <Thead
               display={{ base: 'none', md: 'table-header-group' }}
-              bg={'color_3'}
+              bg={'mycard_light'}
+              borderTopRadius={'12px'}
             >
               <Tr color={'white'}>
-                <Th
-                  borderRightWidth={'1px'}
-                  borderColor={'slate_blue'}
-                  fontSize={'14px'}
-                  fontWeight={'600'}
-                >
+                <Th borderLeftRadius={'lg'}>
                   <Text color="white">Pool name</Text>
                 </Th>
-                <Th
-                  borderRightWidth={'1px'}
-                  borderColor={'slate_blue'}
-                  fontSize={'14px'}
-                  fontWeight={'600'}
-                >
+                <Th float={'right'}>
                   <HeaderSorter
                     heading="APY"
                     align="left"
@@ -230,28 +220,23 @@ export default function Pools() {
                     active={aprStatus}
                   />
                 </Th>
-                <Th
-                  borderRightWidth={'1px'}
-                  borderColor={'slate_blue'}
-                  fontSize={'14px'}
-                  fontWeight={'600'}
-                >
-                  <HeaderSorter
-                    heading="Risk"
-                    align="left"
-                    mainColor="white"
-                    inActiveColor="#d9d9f726"
-                    onClick={handleSortChange('RISK')}
-                    active={riskStatus}
-                  />
+                <Th>
+                  <Box
+                    width={'100%'}
+                    display={'flex'}
+                    justifyContent={'center'}
+                  >
+                    <HeaderSorter
+                      heading="Risk"
+                      align="left"
+                      mainColor="white"
+                      inActiveColor="#d9d9f726"
+                      onClick={handleSortChange('RISK')}
+                      active={riskStatus}
+                    />
+                  </Box>
                 </Th>
-                <Th
-                  textAlign={'left'}
-                  borderRightWidth={'1px'}
-                  borderColor={'slate_blue'}
-                  fontSize={'14px'}
-                  fontWeight={'600'}
-                >
+                <Th float={'right'}>
                   <HeaderSorter
                     heading="TVL"
                     align="right"
@@ -260,11 +245,6 @@ export default function Pools() {
                     onClick={handleSortChange('TVL')}
                     active={tvlStatus}
                   />
-                </Th>
-                <Th color="white" fontSize={'14px'} fontWeight={'600'}>
-                  <Text color="white" textAlign={'right'}>
-                    MY BAL
-                  </Text>
                 </Th>
               </Tr>
             </Thead>

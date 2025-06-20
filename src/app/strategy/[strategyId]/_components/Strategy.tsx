@@ -11,12 +11,10 @@ import {
   HStack,
   Link,
   Spinner,
-  Tab,
-  TabList,
   TabPanels,
   TabPanel,
   Tabs,
-  TabIndicator,
+  Tab,
   Text,
   Tooltip,
   Accordion,
@@ -24,6 +22,8 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  TabList,
+  TabIndicator,
 } from '@chakra-ui/react';
 import { ArrowBackIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -33,7 +33,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import shield from '@/assets/shield.svg';
 
-import HarvestTime from '@/components/HarvestTime';
 import { DUMMY_BAL_ATOM, returnEmptyBal } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
 import { strategiesAtom, StrategyInfo } from '@/store/strategies.atoms';
@@ -51,6 +50,110 @@ import { DetailsTab } from './DetailsTab';
 import { FAQTab } from './FAQTab';
 import { TransactionsTab } from './TransactionsTab';
 import MobileHarvestTime from '@/components/MobileHarvestTime';
+import HarvestTime from '@/components/HarvestTime';
+
+function HoldingsText({
+  strategy,
+  address,
+  balData,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  balData: any;
+}) {
+  if (strategy.settings.isInMaintenance)
+    return <span style={{ color: 'orange' }}>Maintenance Mode</span>;
+  if (!address) return 'Connect wallet';
+  if (balData.isLoading || !balData.data?.tokenInfo) {
+    return (
+      <>
+        <Spinner size="sm" marginTop={'5px'} />
+      </>
+    );
+  }
+  if (balData.isError) {
+    console.error('Balance data error:', balData.error);
+    return 'Error';
+  }
+  const value = Number(
+    balData.data.amount.toEtherToFixedDecimals(
+      balData.data.tokenInfo?.displayDecimals || 2,
+    ),
+  );
+  if (value === 0 || strategy?.isRetired()) return '-';
+  return `${balData.data.amount.toEtherToFixedDecimals(
+    balData.data.tokenInfo?.displayDecimals || 2,
+  )} ${balData.data.tokenInfo?.name}`;
+}
+
+function NetEarningsText({
+  strategy,
+  address,
+  profit,
+  balData,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  profit: number;
+  balData: any;
+}) {
+  if (
+    !address ||
+    profit === 0 ||
+    strategy?.isRetired() ||
+    strategy.settings.isInMaintenance
+  )
+    return '-';
+  return `${profit?.toFixed(
+    balData.data.tokenInfo?.displayDecimals || 2,
+  )} ${balData.data.tokenInfo?.name}`;
+}
+
+function HoldingsAndEarnings({
+  strategy,
+  address,
+  balData,
+  profit,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  balData: any;
+  profit: number;
+}) {
+  return (
+    <Flex width={'100%'} justifyContent={'space-between'}>
+      <Box>
+        <Text>
+          <b>Your Holdings </b>
+        </Text>
+        <Text color="cyan">
+          <HoldingsText
+            strategy={strategy}
+            address={address}
+            balData={balData}
+          />
+        </Text>
+      </Box>
+      {!strategy.settings.isTransactionHistDisabled && (
+        <Tooltip label={!strategy?.isRetired() && 'Life time earnings'}>
+          <Box>
+            <Text textAlign={'right'} fontWeight={'none'}>
+              <b>Net earnings</b>
+            </Text>
+            <Text textAlign={'right'} color={profit >= 0 ? 'cyan' : 'red'}>
+              <NetEarningsText
+                strategy={strategy}
+                address={address}
+                profit={profit}
+                balData={balData}
+              />
+            </Text>
+          </Box>
+        </Tooltip>
+      )}
+    </Flex>
+  );
+}
 
 const Strategy = ({ params }: StrategyParams) => {
   const address = useAtomValue(addressAtom);
@@ -145,7 +248,6 @@ const Strategy = ({ params }: StrategyParams) => {
   );
   console.log('balData', balData);
 
-  // fetch tx history
   const txHistoryAtom = useMemo(
     () => TxHistoryAtom(strategyAddress, address!),
     [address, strategyAddress],
@@ -171,10 +273,6 @@ const Strategy = ({ params }: StrategyParams) => {
     return txHistoryResult.data || { findManyInvestment_flows: [] };
   }, [JSON.stringify(txHistoryResult.data)]);
 
-  // compute profit
-  // profit doesnt change quickly in real time, but total deposit amount can change
-  // and it can impact the profit calc as txHistory may not be updated at the same time as balData
-  // So, we compute profit once only
   const [profit, setProfit] = useState(0);
   const computeProfit = useCallback(() => {
     if (!txHistory.findManyInvestment_flows.length) return 0;
@@ -230,15 +328,24 @@ const Strategy = ({ params }: StrategyParams) => {
 
   if (!isMounted) return null;
 
+  function getUniqueById(items: { id: string; logo: string }[]) {
+    const uniqueItems = new Map<string, { id: string; logo: string }>();
+    items.forEach((item) => {
+      if (!uniqueItems.has(item.id)) {
+        uniqueItems.set(item.id, item);
+      }
+    });
+    return Array.from(uniqueItems.values());
+  }
   return (
-    <>
-      <Container
-        display={{ base: 'none', lg: 'flex' }}
-        justifyContent={'center'}
-        width={'100%'}
-        margin={'0 auto'}
-        padding={0}
-      >
+    <Container
+      display={'flex'}
+      justifyContent={'center'}
+      width={'100%'}
+      margin={'0 auto'}
+      padding={0}
+    >
+      <Flex width={'100%'} flexDirection={'column'} alignItems={'center'}>
         <Flex
           width={'100%'}
           flexDirection={'column'}
@@ -613,7 +720,7 @@ const Strategy = ({ params }: StrategyParams) => {
             </Tabs>
           </Flex>
         </Flex>
-      </Container>
+      </Flex>
 
       {/* MOBILE VIEW */}
       <Box
@@ -950,7 +1057,7 @@ const Strategy = ({ params }: StrategyParams) => {
           </Accordion>
         </Box>
       </Box>
-    </>
+    </Container>
   );
 };
 

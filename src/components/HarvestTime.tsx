@@ -146,7 +146,7 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
             <Stat
               display={'flex'}
               flexDirection={'column'}
-              bg={'dark_navy'}
+              bg={'color_5'}
               height={'73px'}
               borderWidth={'1px'}
               borderColor={'slate_blue'}

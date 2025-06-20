@@ -172,7 +172,7 @@ body {
 td,
 tr {
   border-color: var(--chakra-colors-bg) !important;
-  border-bottom: 1px solid var(--chakra-colors-slate_blue) !important;
+  border-bottom: 1px solid var(--chakra-colors-color_3) !important;
 }
 
 th {

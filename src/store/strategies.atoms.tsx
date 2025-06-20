@@ -196,8 +196,22 @@ export function getStrategies() {
       alerts: [
         // {
         //   type: 'warning',
-        //   text: 'Note: Deposits may fail sometimes due to high utilisation on Vesu. We are working to add a dynamic TVL limit to better show limits.',
-        //   tab: 'deposit',
+        //   text: (
+        //     <p>
+        //       <strong>Note:</strong> Vesu has recently migrated. Deposits and
+        //       withdrawals for this strategy are temporarily paused until we
+        //       migrate this strategy.{' '}
+        //       <a
+        //         href="https://x.com/vesuxyz/status/1927827405030244838"
+        //         target="_blank"
+        //         rel="noopener noreferrer"
+        //       >
+        //         Learn more
+        //       </a>
+        //       .
+        //     </p>
+        //   ),
+        //   tab: 'all',
         // },
         {
           type: 'info',
@@ -205,6 +219,8 @@ export function getStrategies() {
           tab: 'all',
         },
       ],
+      isPaused: false,
+      isInMaintenance: false,
       isAudited: false,
       quoteToken: convertToV2TokenInfo(getTokenInfoFromName('STRK')),
     },
@@ -216,13 +232,34 @@ export function getStrategies() {
       v.name,
       v.description as string,
       v,
-      StrategyLiveStatus.HOT,
+      StrategyLiveStatus.ACTIVE,
       {
         maxTVL: 0,
         isAudited: v.auditUrl ? true : false,
         auditUrl: v.auditUrl,
         isPaused: false,
-        alerts: [],
+        isInMaintenance: false,
+        alerts: [
+          // {
+          //   type: 'warning',
+          //   text: (
+          //     <p>
+          //       <strong>Note:</strong> Vesu has recently migrated. Deposits and
+          //       withdrawals for this strategy are temporarily paused until we
+          //       migrate this strategy.{' '}
+          //       <a
+          //         href="https://x.com/vesuxyz/status/1927827405030244838"
+          //         target="_blank"
+          //         rel="noopener noreferrer"
+          //       >
+          //         Learn more
+          //       </a>
+          //       .
+          //     </p>
+          //   ),
+          //   tab: 'all',
+          // },
+        ],
         quoteToken: convertToV2TokenInfo(
           getTokenInfoFromName(v.depositTokens[0]?.symbol || ''),
         ),
@@ -230,7 +267,7 @@ export function getStrategies() {
     );
   });
 
-  const ekuboCLStrats = EkuboCLVaultStrategies.map((v) => {
+  const ekuboCLStrats = [EkuboCLVaultStrategies[0]].map((v) => {
     return new EkuboClStrategy(
       v.name,
       v.description as ReactNode,

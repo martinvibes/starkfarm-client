@@ -29,33 +29,29 @@ const theme = extendTheme({
   colors: {
     transparent: 'rgba(0, 0, 0, 0)',
     opacity_50p: 'rgba(0, 0, 0, 0.5)',
-    color1: 'rgba(53, 60, 79, 1)',
-    color1_65p: 'rgba(53, 60, 79, 0.65)',
-    color1_50p: 'rgba(53, 60, 79, 0.5)',
-    color1_35p: 'rgba(53, 60, 79, 0.35)',
-    color1_light: '#bcc9ff80',
-    color2: 'rgba(132, 132, 195, 1)',
-    color2Text: 'rgb(184 184 239)',
-    color2_65p: 'rgba(132, 132, 195, 0.65)',
-    color2_50p: 'rgba(30, 30, 44, 0.5)',
-    highlight: '#1A1A27', // light grey
-    light_grey: '#9ca9ad',
     disabled_text: '#818181',
     disabled_bg: '#5f5f5f',
 
-    purple: '#6F4FF2',
+    purple: '#9069F0',
     purple_60p: '#6F5CA599',
     purple_hover: '#4C2CD7',
     purple_hover_2: '#C5A6FF',
     purple_active: '#3B20B4',
     bright_purple: '#907CFF',
     purple_gray: '#DFDFEC',
-    cyan: '#7DFACB',
-    bg: '#181824', // dark blue
+
+    mybg: 'black', // dark blue
     bg_2: '#1B1724',
     bg_3: '#090910',
+
+    mycard: '#19191b',
+    mycard_light: '#212121',
+    mycard_light_2x: '#303136',
+    mycard_dark: '#121212',
+
     grey_text: '#B6B6B6',
-    text: '#F8F8FF',
+    text_primary: 'white',
+    text_secondary: '#b2b3bd',
 
     yellow: '#EFDB72',
     yellow_2: '#FFA500',
@@ -63,26 +59,14 @@ const theme = extendTheme({
     red: '#e18787',
     red_2: '#FF5F5F',
 
-    dark_navy: '#181824',
-    slate_blue: '#2D2D3D',
-    silver_gray: '#8E8E8E',
-
     // green colors
     light_green: '#3EE5C2',
     light_green_2: '#61FCAE',
     light_green_30p: '#3EE5C24D',
 
-    color_3: '#363651',
-    color_4: '#4DB8FF',
-    color_5: '#16131E',
-    color_6: '#111119',
-    color_7: '#6E59FF',
-
     border_light: '#CFCFEA',
     border_light_3p: '#CFCFEA0D',
     border_light_30p: '#CFCFEA4D',
-
-    black_3p: '#00000008',
 
     disabled_button: '#2A2A3D80',
     disabled_button_text: '#7D7D93',
@@ -154,7 +138,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         connectors={getConnectors(isMobile)}
       >
         <ChakraBaseProvider theme={theme}>
-          <Flex minHeight={'100vh'} bgColor={'dark_bg'}>
+          <Flex minHeight={'100vh'} bgColor={'mybg'}>
             <React.Suspense>
               <Container width={'100%'} padding="0px">
                 <Navbar

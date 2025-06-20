@@ -320,11 +320,38 @@ const AmountInput = forwardRef(
               boxSize: '15px',
             }}
           >
-            <Tooltip label={balance.toEtherStr()}>
-              <Text fontSize={'18px'} fontWeight={'500'} color="text">
-                {balance.toEtherToFixedDecimals(4)} {props.token.name}
-              </Text>
-            </Tooltip>
+            {props.strategy.settings.isInMaintenance ? (
+              '-'
+            ) : (
+              <>
+                <Tooltip label={balance.toEtherStr()}>
+                  <b style={{ marginLeft: '5px' }}>
+                    {balance.toEtherToFixedDecimals(4)}
+                  </b>
+                </Tooltip>
+                <Button
+                  size={'sm'}
+                  marginLeft={'5px'}
+                  color="color2"
+                  bg="highlight"
+                  padding="0"
+                  maxHeight={'25px'}
+                  _hover={{
+                    bg: 'highlight',
+                    color: 'color_50p',
+                  }}
+                  _active={{
+                    bg: 'highlight',
+                    color: 'color_50p',
+                  }}
+                  onClick={handleMaxClick}
+                  isDisabled={isLoading || balData.isError}
+                  aria-label="Set maximum amount"
+                >
+                  [Max]
+                </Button>
+              </>
+            )}
           </LoadingWrap>
         </Box>
       );

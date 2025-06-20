@@ -19,6 +19,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  TabIndicator,
   Text,
 } from '@chakra-ui/react';
 import { useAccount } from '@starknet-react/core';
@@ -103,9 +104,9 @@ export default function Home() {
         margin={'20px 0px 10px'}
       >
         <Text
-          color={'light_green'}
-          fontSize={{ base: '32px', md: '35px' }}
-          lineHeight={{ base: '40px', md: '30px' }}
+          color={'text_primary'}
+          fontSize={{ base: '28px', md: '35px' }}
+          lineHeight={'30px'}
           marginBottom={'10px'}
           textAlign={'center'}
         >
@@ -113,14 +114,13 @@ export default function Home() {
           🚀
         </Text>
         <Text
-          color="white"
+          color="text_secondary"
           textAlign={'center'}
           fontSize={{ base: '20px', md: '18px' }}
           lineHeight={{ base: '28px', md: '20px' }}
           marginBottom={'0px'}
         >
-          Identify & Invest in the best $STRK rewarding pools and maximize your
-          rewards
+          Discover and invest in custom-built yield strategies.
         </Text>
       </Box>
 
@@ -133,16 +133,12 @@ export default function Home() {
         index={tabIndex}
         onChange={handleTabsChange}
         marginTop={'10px'}
+        padding={0}
       >
-        <TabList>
+        <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
           <Tab
-            width={'100%'}
-            bg="purple_60p"
-            color="lavender_gray"
-            fontSize={'14px'}
-            fontWeight={'700'}
-            borderTopLeftRadius={'8px'}
-            _selected={{ bg: 'bright_purple', color: 'black' }}
+            color={'text_secondary'}
+            _selected={{ color: 'purple', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('Strategies opened');
             }}
@@ -150,13 +146,8 @@ export default function Home() {
             Strategies✨
           </Tab>
           <Tab
-            width={'100%'}
-            bg="purple_60p"
-            color="lavender_gray"
-            fontSize={'14px'}
-            fontWeight={'700'}
-            borderTopRightRadius={'8px'}
-            _selected={{ bg: 'bright_purple', color: 'black' }}
+            color={'text_secondary'}
+            _selected={{ color: 'purple', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('All pools clicked');
             }}
@@ -164,30 +155,34 @@ export default function Home() {
             Find yields
           </Tab>
         </TabList>
+        <TabIndicator
+          mt="-1.5px"
+          height="3px"
+          bg="purple"
+          color="color1"
+          borderRadius="1px"
+          boxShadow={'0px 0px 8px 0px var(--chakra-colors-purple)'}
+        />
         <TabPanels>
           <TabPanel
-            bg="highlight"
+            bg="color_3"
             float={'left'}
             width={'100%'}
-            borderWidth={'1px'}
-            borderColor={'slate_blue'}
-            borderTopLeftRadius={{ base: '0px', md: '8px' }}
-            borderTopRightRadius={{ base: '0px', md: '8px' }}
-            borderBottomLeftRadius={{ base: '8px' }}
-            borderBottomRightRadius={{ base: '8px' }}
+            // borderWidth={'1px'}
+            borderColor={'color_3'}
+            borderRadius={'8px'}
+            padding={'1rem 0'}
           >
             <Strategies />
           </TabPanel>
           <TabPanel
-            bg="highlight"
+            bg="color_3"
             width={'100%'}
             float={'left'}
-            borderWidth={'1px'}
-            borderColor={'slate_blue'}
-            borderTopLeftRadius={{ base: '0px', md: '8px' }}
-            borderTopRightRadius={{ base: '0px', md: '8px' }}
-            borderBottomLeftRadius={{ base: '8px' }}
-            borderBottomRightRadius={{ base: '8px' }}
+            // borderWidth={'1px'}
+            borderColor={'color_3'}
+            borderRadius={'8px'}
+            padding={'1rem 0'}
           >
             <Pools />
           </TabPanel>
