@@ -15,31 +15,17 @@ export function DetailsTab(props: DetailsTabProps) {
 
   return (
     <Flex flexDirection={'column'} padding={'24px 16px'} gap={'24px'}>
-      <Flex flexDirection={'column'} gap={'8px'}>
-        <Text
-          fontSize={{ base: '16px', md: '24ps' }}
-          color={'white'}
-          fontWeight={'600'}
-        >
-          Behind the scenes
-        </Text>
-        <Text fontSize={'14px'} color={'border_light'}>
-          Actions done automatically by the strategy (smart-contract) with an
-          investment of $1000
-        </Text>
-      </Flex>
-
-      <Flex>
+      <Flex width={'100%'}>
         {strategy.actions.length > 0 && (
           <Flex
             flexDirection={'column'}
             width={'623px'}
             gap={'16px'}
-            padding={'32px 16px'}
+            padding={'0 16px'}
           >
             <>
               <Text fontSize={'24px'} fontWeight={'600'} color={'white'}>
-                Action
+                Steps performed by the strategy
               </Text>
               {strategy.actions.map((action, index) => (
                 <Box
@@ -47,10 +33,8 @@ export function DetailsTab(props: DetailsTabProps) {
                   display={{ base: 'block', md: 'flex' }}
                   key={index}
                   width={'100%'}
-                  color="light_grey"
+                  bg="mycard"
                   fontSize={'14px'}
-                  borderWidth={'1px'}
-                  borderColor={'slate_blue'}
                   borderRadius={'8px'}
                   padding={'10px'}
                 >

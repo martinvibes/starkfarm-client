@@ -93,6 +93,7 @@ export class DeltaNeutralMM extends IStrategy<void> {
         netRisk: 0,
         notARisks: [],
       },
+      contractDetails: [],
       additionalInfo: undefined,
     };
 

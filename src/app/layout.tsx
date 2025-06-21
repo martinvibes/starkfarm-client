@@ -34,9 +34,14 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#111119" />
+        <meta name="theme-color" content="black" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
       </head>
-      <body>
+      <body style={{ background: 'black' }}>
         {children}
         <Analytics />
       </body>

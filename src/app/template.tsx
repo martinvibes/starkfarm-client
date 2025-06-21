@@ -32,6 +32,7 @@ const theme = extendTheme({
     disabled_text: '#818181',
     disabled_bg: '#5f5f5f',
 
+    highlight: '#303136',
     purple: '#9069F0',
     purple_60p: '#6F5CA599',
     purple_hover: '#4C2CD7',

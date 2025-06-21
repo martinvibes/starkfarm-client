@@ -1,4 +1,12 @@
-import { Avatar, AvatarGroup, Box, Flex, Image, Text } from '@chakra-ui/react';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Flex,
+  Image,
+  Link,
+  Text,
+} from '@chakra-ui/react';
 import shield from '@/assets/shield.svg';
 import { StrategyInfo } from '@/store/strategies.atoms';
 
@@ -35,18 +43,22 @@ export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
       >
         {strategy ? strategy.name : 'Strategy Not found'}
       </Text>
-      <Box
-        display={'flex'}
-        alignItems={'center'}
-        justifyContent={'center'}
-        bg={'light_green'}
-        width={'24px'}
-        height={'24px'}
-        padding={'3px 5px'}
-        borderRadius={'20px'}
-      >
-        <Image src={shield.src} alt="badge" />
-      </Box>
+      {strategy.metadata.auditUrl && (
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          bg={'light_green'}
+          width={'27px'}
+          height={'27px'}
+          padding={'3px 5px'}
+          borderRadius={'20px'}
+        >
+          <Link href={strategy.metadata.auditUrl} target="_blank">
+            <Image src={shield.src} alt="badge" />
+          </Link>
+        </Box>
+      )}
     </Flex>
   );
 }

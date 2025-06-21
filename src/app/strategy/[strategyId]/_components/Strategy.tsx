@@ -144,7 +144,13 @@ function HoldingsAndEarnings({
             </Text>
             <Text
               textAlign={'right'}
-              color={profit >= 0 ? 'light_green_2' : 'red'}
+              color={
+                profit == 0
+                  ? 'text_secondary'
+                  : profit > 0
+                    ? 'light_green_2'
+                    : 'red'
+              }
             >
               <NetEarningsText
                 strategy={strategy}

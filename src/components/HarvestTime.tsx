@@ -153,7 +153,7 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
             alignItems={'center'}
             marginTop={'10px'}
             gap={'2'}
-            direction={{ base: 'column', md: 'row' }}
+            direction={{ base: 'column' }}
             width={'100%'}
           >
             <Text

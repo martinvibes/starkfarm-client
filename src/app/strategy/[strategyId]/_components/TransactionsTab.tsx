@@ -22,6 +22,7 @@ import {
 } from '@/utils';
 import MyNumber from '@/utils/MyNumber';
 import { StrategyInfo } from '@/store/strategies.atoms';
+import CONSTANTS from '@/constants';
 
 interface ITransaction {
   amount: string;
@@ -163,7 +164,7 @@ function DesktopTransactionHistory(props: { transactions: ITransaction[] }) {
                         color={'text_secondary'}
                       >
                         <Link
-                          href={`https://starkscan.co/tx/${tx.txHash}`}
+                          href={`${CONSTANTS.BLOCK_EXPLORER}/tx/${tx.txHash}`}
                           target="_blank"
                         >
                           {shortAddress(tx.txHash)} <ExternalLinkIcon />
@@ -243,7 +244,7 @@ function MobileTransactionHistory(props: { transactions: ITransaction[] }) {
             <Text color="white" fontSize="13px">
               Tx Hash:{' '}
               <Link
-                href={`https://starkscan.co/tx/${tx.txHash}`}
+                href={`${CONSTANTS.BLOCK_EXPLORER}/tx/${tx.txHash}`}
                 target="_blank"
                 color="color_7"
               >

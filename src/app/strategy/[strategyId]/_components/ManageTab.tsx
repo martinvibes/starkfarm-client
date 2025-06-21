@@ -50,7 +50,9 @@ export function ManageTab(props: ManageTabProps) {
           </ListItem>
           <ListItem>Withdraw anytime by redeeming your NFT for USDC.</ListItem>
         </UnorderedList> */}
-        <Box color={'text_secondary'}>{strategy.description}</Box>
+        <Box color={'text_secondary'} fontSize={'14px'}>
+          {strategy.description}
+        </Box>
 
         <ContractDetails strategy={strategy} />
         {/* <VStack alignItems={'flex-start'} gap={'8px'}>

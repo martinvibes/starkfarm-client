@@ -393,25 +393,28 @@ function InternalDeposit(props: DepositProps) {
           width="100%"
           marginTop={'15px'}
           gap={'6px'}
+          fontSize={'12px'}
         >
-          <Flex justifyContent={'flex-end'}>
-            <Text color="border_light" fontSize={'16px'} fontWeight={'500'}>
-              {!tvlInfo || !tvlInfo?.data ? (
-                <Spinner size="2xs" />
-              ) : (
-                Number(
-                  tvlInfo.data?.amounts[0].amount.toFixed(2),
-                ).toLocaleString()
-              )}
-            </Text>
-            <Text color={'silver_gray'} fontSize={'16px'} fontWeight={'500'}>
-              {' '}
-              {' / '}
-            </Text>
-            <Text color={'silver_gray'} fontSize={'16px'} fontWeight={'500'}>
-              {props.strategy.settings.maxTVL.toLocaleString()}{' '}
-              {inputsInfo[0].tokenInfo?.symbol}
-            </Text>
+          <Flex width={'100%'} justifyContent={'space-between'}>
+            <Text color={'text_secondary'}>TVL Limt:</Text>
+            <Flex justifyContent={'flex-end'} gap={1}>
+              <Text color="text_secondary" fontWeight={'500'}>
+                {!tvlInfo || !tvlInfo?.data ? (
+                  <Spinner size="2xs" />
+                ) : (
+                  Number(
+                    tvlInfo.data?.amounts[0].amount.toFixed(2),
+                  ).toLocaleString()
+                )}
+              </Text>
+              <Text color={'text_secondary'} fontWeight={'500'}>
+                {'/'}
+              </Text>
+              <Text color={'text_secondary'} fontWeight={'500'}>
+                {props.strategy.settings.maxTVL.toLocaleString()}{' '}
+                {inputsInfo[0].tokenInfo?.symbol}
+              </Text>
+            </Flex>
           </Flex>
           <Progress
             colorScheme="teal"
@@ -435,7 +438,7 @@ function InternalDeposit(props: DepositProps) {
               borderRadius={'10px'}
             >
               <AlertIcon />
-              <Text fontSize={'12px'} color={'color2'}>
+              <Text fontSize={'12px'} color={'text_secondary'}>
                 TVL limit reached. Please wait for increase in limits.
               </Text>
             </Alert>

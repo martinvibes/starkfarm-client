@@ -31,11 +31,12 @@ export function FAQTab(props: FAQTabProps) {
       </Text>
       <Flex direction={{ base: 'column', md: 'row' }} width={'100%'} gap={5}>
         <Flex flexDirection={'column'} width={'100%'} gap={'16px'}>
-          {!strategy.metadata.faqs && (
-            <Text fontSize={'14px'} color={'text_secondary'}>
-              No FAQs at the moment
-            </Text>
-          )}
+          {!strategy.metadata.faqs ||
+            (strategy.metadata.faqs.length == 0 && (
+              <Text fontSize={'14px'} color={'text_secondary'}>
+                No FAQs at the moment
+              </Text>
+            ))}
           <Accordion
             width={'100%'}
             display={'flex'}

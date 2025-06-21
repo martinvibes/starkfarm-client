@@ -82,6 +82,7 @@ export const CONSTANTS = {
       '0x7023a5cadc8a5db80e4f0fde6b330cbd3c17bbbf9cb145cbabd7bd5e6fb7b0b',
   },
   MOBILE_MSG: 'Desktop/Tablet only',
+  BLOCK_EXPLORER: 'https://voyager.online',
 };
 
 export const TOKENS: TokenInfo[] = [
