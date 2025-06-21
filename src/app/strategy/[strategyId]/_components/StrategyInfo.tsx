@@ -12,7 +12,6 @@ import { StrategyInfo } from '@/store/strategies.atoms';
 
 export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
   const { strategy } = props;
-
   return (
     <Flex gap={'16px'} alignItems={'center'}>
       <AvatarGroup size={{ base: 'sm', md: 'md' }} mr={'5px'}>

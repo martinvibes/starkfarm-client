@@ -523,3 +523,16 @@ export function getLiveStatusEnum(status: number) {
   }
   return StrategyLiveStatus.RETIRED;
 }
+
+export const getRiskString = (riskValue: number): string => {
+  if (riskValue === 0) {
+    return 'No risk';
+  } else if (riskValue <= 1) {
+    return 'Very Low';
+  } else if (riskValue <= 2) {
+    return 'Low';
+  } else if (riskValue < 3) {
+    return 'Medium';
+  }
+  return 'High';
+};

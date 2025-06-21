@@ -85,6 +85,8 @@ export class AutoTokenStrategy extends IStrategy<void> {
         notARisks: [],
       },
       additionalInfo: undefined,
+      contractDetails: [],
+      investmentSteps: [],
     };
     super(
       `auto_token_${token.toLowerCase()}`,

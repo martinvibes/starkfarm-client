@@ -20,19 +20,19 @@ import { Accordion } from '@chakra-ui/react';
 
 import { filteredPools } from '@/store/protocols';
 import {
-  STRKFarmBaseAPYsAtom,
-  STRKFarmStrategyAPIResult,
-} from '@/store/strkfarm.atoms';
+  TrovesBaseAPYsAtom,
+  TrovesStrategyAPIResult,
+} from '@/store/troves.atoms';
 
 import { YieldStrategyCard } from './YieldCard';
 import { addressAtom } from '@/store/claims.atoms';
 import { QuestionIcon } from '@chakra-ui/icons';
 
 export default function Strategies() {
-  const strkFarmPoolsRes = useAtomValue(STRKFarmBaseAPYsAtom);
+  const strkFarmPoolsRes = useAtomValue(TrovesBaseAPYsAtom);
   const strkFarmPools = useMemo(() => {
     if (!strkFarmPoolsRes || !strkFarmPoolsRes.data)
-      return [] as STRKFarmStrategyAPIResult[];
+      return [] as TrovesStrategyAPIResult[];
     return strkFarmPoolsRes.data.strategies;
   }, [strkFarmPoolsRes]);
   const address = useAtomValue(addressAtom);

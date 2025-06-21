@@ -38,12 +38,12 @@ const banner_images = [
   {
     desktop: '/banners/endur.svg',
     mobile: '/banners/endur_mobile.svg',
-    link: 'https://endur.fi/r/strkfarm',
+    link: 'https://endur.fi/r/troves',
   },
   {
     desktop: '/banners/seed_grant.svg',
     mobile: '/banners/seed_grant_small.jpg',
-    link: 'https://x.com/strkfarm/status/1787783906982260881',
+    link: 'https://x.com/troves/status/1787783906982260881',
   },
 ];
 

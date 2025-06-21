@@ -9,4 +9,13 @@ export const MYSTYLES = {
       color: 'text_primary',
     },
   },
+  TOOLTIP: {
+    STANDARD: {
+      bg: 'mybg',
+      padding: '16px',
+      borderRadius: 'lg',
+      borderWidth: '2px',
+      borderColor: 'mycard',
+    },
+  },
 };

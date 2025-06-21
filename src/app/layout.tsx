@@ -6,20 +6,20 @@ import React from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'STRKFarm | Yield aggregator on Starknet',
+  title: 'Troves | Yield aggregator on Starknet',
   description:
-    'Find and invest in high yield pools. STRKFarm is the best yield aggregator on Starknet.',
+    'Find and invest in high yield pools. Troves is the best yield aggregator on Starknet.',
   openGraph: {
-    title: 'STRKFarm | Yield aggregator on Starknet',
+    title: 'Troves | Yield aggregator on Starknet',
     description:
-      'Find and invest in high yield pools. STRKFarm is the best yield aggregator on Starknet.',
+      'Find and invest in high yield pools. Troves is the best yield aggregator on Starknet.',
     images: ['https://static-assets-8zct.onrender.com/strkfarm/og-img-png.png'],
   },
   twitter: {
     creator: '@akiraonstarknet',
-    title: 'STRKFarm | Yield aggregator on Starknet',
+    title: 'Troves | Yield aggregator on Starknet',
     description:
-      'Find and invest in high yield pools. STRKFarm is the best yield aggregator on Starknet.',
+      'Find and invest in high yield pools. Troves is the best yield aggregator on Starknet.',
     card: 'player',
     images: ['https://static-assets-8zct.onrender.com/strkfarm/og-img-png.png'],
   },

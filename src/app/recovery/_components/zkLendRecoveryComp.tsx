@@ -276,11 +276,11 @@ export default function ZklendRecoveryComp() {
         <Alert
           status={'info'}
           fontSize={'14px'}
-          color={'#a7a0c1'}
+          color={'white'}
           borderRadius={'10px'}
           fontWeight={'medium'}
           border={'1px solid #633dbf'}
-          bg="color2_50p"
+          bg="mycard"
           paddingY={'10px'}
           marginTop={'10px'}
           px={'16px'}
@@ -308,7 +308,7 @@ export default function ZklendRecoveryComp() {
             will be distributed to the affected users in a similar way in
             future. The details of the same will be announced on our{' '}
             <a
-              href="https://x.com/strkfarm"
+              href="https://x.com/troves"
               style={{ textDecoration: 'underline' }}
             >
               X page
@@ -328,12 +328,12 @@ export default function ZklendRecoveryComp() {
         {(!isLoading || !address) && (
           <Table variant="simple">
             <Thead display={{ base: 'none', md: 'table-header-group' }}>
-              <Tr fontSize={'18px'} color={'white'} bg="#000">
+              <Tr fontSize={'18px'} color={'white'} bg="mycard">
                 <Th textAlign={'left'}>Amount</Th>
               </Tr>
             </Thead>
             <Tbody>
-              <Tr color={'white'} bg={'color1_50p'}>
+              <Tr color={'white'} bg={'mycard'}>
                 <Td>
                   <Box
                     width={'100%'}
@@ -357,7 +357,7 @@ export default function ZklendRecoveryComp() {
                   </Box>
                 </Td>
               </Tr>
-              <Tr color={'white'} bg={'color2_50p'}>
+              <Tr color={'white'} bg={'mycard'}>
                 <Td>
                   <Box
                     width={'100%'}
@@ -381,7 +381,7 @@ export default function ZklendRecoveryComp() {
                   </Box>
                 </Td>
               </Tr>
-              <Tr color={'white'} bg={'color1_50p'}>
+              <Tr color={'white'} bg={'mycard'}>
                 <Td>
                   <Box
                     width={'100%'}

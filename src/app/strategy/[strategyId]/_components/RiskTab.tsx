@@ -8,8 +8,10 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { StrategyInfo } from '@/store/strategies.atoms';
-import { getRiskColor, getRiskExplaination } from '@strkfarm/sdk';
+import { getRiskColor, getRiskExplaination, RiskFactor } from '@strkfarm/sdk';
 import { useMemo } from 'react';
+import { MYSTYLES } from '@/style';
+import { getRiskString } from '@/strategies/IStrategy';
 
 interface RiskTabProps {
   strategy: StrategyInfo<any>;
@@ -19,31 +21,38 @@ interface RiskTabProps {
 export function RiskTab(props: RiskTabProps) {
   const { strategy, isMobile } = props;
 
-  const getRiskString = (riskValue: number): string => {
-    if (riskValue === 0) {
-      return 'No risk';
-    } else if (riskValue <= 1) {
-      return 'Very Low';
-    } else if (riskValue <= 2) {
-      return 'Low';
-    } else if (riskValue < 3) {
-      return 'Medium';
-    }
-    return 'High';
-  };
+  function getToolTip(risk: RiskFactor) {
+    return (
+      <Box color={'text_secondary'}>
+        <Text>
+          <b>Definition:</b> {getRiskExplaination(risk.type)}
+        </Text>
+        {risk.reason && (
+          <Text mt={2} fontSize={'sm'}>
+            <b>Justification:</b> {risk.reason}
+          </Text>
+        )}
+      </Box>
+    );
+  }
 
   const risks = useMemo(() => {
     const _risks = strategy.metadata.risk.riskFactor.map((risk) => ({
       type: risk.type.toLowerCase(),
       value: risk.value,
       color: getRiskColor(risk),
-      toolTip: getRiskExplaination(risk.type),
+      toolTip: getToolTip(risk),
     }));
     const noRisks = strategy.metadata.risk.notARisks.map((risk) => ({
       type: risk.toLowerCase(),
       value: 0,
       color: 'text_secondary',
-      toolTip: `${getRiskExplaination(risk)}`,
+      toolTip: getToolTip({
+        type: risk,
+        value: 0,
+        weight: 0,
+        reason: 'This risk is not applicable to this strategy.',
+      }),
     }));
     return [..._risks, ...noRisks];
   }, [strategy.metadata.risk.riskFactor, strategy.metadata.risk.notARisks]);
@@ -57,7 +66,11 @@ export function RiskTab(props: RiskTabProps) {
           </Text>
           <Flex wrap={'wrap'} gap={2}>
             {risks.map((risk, index) => (
-              <Tooltip label={risk.toolTip} key={index}>
+              <Tooltip
+                label={risk.toolTip}
+                key={index}
+                {...MYSTYLES.TOOLTIP.STANDARD}
+              >
                 <Badge
                   padding={'8px 16px'}
                   borderRadius={'2xl'}

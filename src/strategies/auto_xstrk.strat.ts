@@ -84,6 +84,8 @@ export class AutoXSTRKStrategy extends IStrategy<void> {
         notARisks: [],
       },
       additionalInfo: undefined,
+      contractDetails: [],
+      investmentSteps: [],
     };
 
     const token = 'STRK';

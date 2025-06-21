@@ -5,7 +5,7 @@ import { RpcProvider } from 'starknet';
 import { getLiveStatusNumber, getStrategies } from '@/store/strategies.atoms';
 import MyNumber from '@/utils/MyNumber';
 import { IStrategy, NFTInfo, TokenInfo } from '@/strategies/IStrategy';
-import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
+import { TrovesStrategyAPIResult } from '@/store/troves.atoms';
 import { MY_STORE } from '@/store';
 import VesuAtoms, { vesu } from '@/store/vesu.store';
 import EndurAtoms, { endur } from '@/store/endur.store';
@@ -56,7 +56,7 @@ const provider = new RpcProvider({
 
 async function getStrategyInfo(
   strategy: IStrategy<any>,
-): Promise<STRKFarmStrategyAPIResult> {
+): Promise<TrovesStrategyAPIResult> {
   const tvl = await strategy.getTVL();
 
   const data = {
@@ -158,7 +158,7 @@ export async function GET(req: Request) {
   //   }
   // });
 
-  const stratsDataProms: Promise<STRKFarmStrategyAPIResult>[] = [];
+  const stratsDataProms: Promise<TrovesStrategyAPIResult>[] = [];
   for (let i = 0; i < strategies.length; i++) {
     stratsDataProms.push(getStrategyInfo(strategies[i]));
   }

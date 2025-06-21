@@ -69,19 +69,14 @@ const ShareOnX = () => {
     <div className="rounded-md bg-gradient-to-r from-[#322663] to-[#306652] p-0.5">
       <div className="flex flex-col lg:flex-row items-start lg:items-center py-3 lg:py-0 justify-between bg-gradient-to-r from-[#1c1b32] to-[#1e3031] h-full rounded-md px-4 hover:from-[#60fcad] transition-all  hover:to-[#60fcad] group">
         <div className="flex items-center gap-0 lg:gap-3">
-          <Image
-            src="/raffle-share.svg"
-            width={64}
-            height={64}
-            alt="STRKFarm"
-          />
+          <Image src="/raffle-share.svg" width={64} height={64} alt="Troves" />
           <p className="text-[#61FCAE] text-sm lg:text-xl font-medium group-hover:text-black">
             RT our tweet
           </p>
         </div>
 
         <Link
-          href="https://x.com/strkfarm/status/1853367850922365025"
+          href="https://x.com/troves/status/1853367850922365025"
           target="_blank"
           className="border border-[#36E780] text-white group-hover:border-black group-hover:text-black px-4 py-1 text-sm font-bold rounded-[20px] transition-all active:scale-90 ml-16 lg:ml-0 -mt-3"
           onClick={!isSharedOnX && !initialLoading ? handleShare : () => {}}

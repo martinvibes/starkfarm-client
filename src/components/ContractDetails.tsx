@@ -4,6 +4,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Badge,
   Flex,
   Image,
   Link,
@@ -13,16 +14,21 @@ import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { StrategyInfo } from '@/store/strategies.atoms';
 import CONSTANTS from '@/constants';
 import shield from '@/assets/shield.svg';
+import { shortAddress } from '@/utils';
+import { getRiskString, StrategyLiveStatus } from '@/strategies/IStrategy';
+import { getRiskColor, RiskType } from '@strkfarm/sdk';
 
 export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
   const { strategy } = props;
+  const isRetired = strategy.liveStatus === StrategyLiveStatus.RETIRED;
+
   return (
     <Flex alignItems={'center'} direction={'column'} height={'40px'} gap={5}>
       {props.strategy.metadata.contractDetails.length > 0 && (
         <Accordion width={'100%'} allowToggle={true}>
           <AccordionItem borderRadius={'lg'} border="none" bg={'mycard_light'}>
             <AccordionButton flex={1} color={'text_secondary'}>
-              Contracts Info
+              <b>Contracts Info</b>
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel
@@ -34,12 +40,21 @@ export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
             >
               {props.strategy.metadata.contractDetails.map(
                 (contract, index) => (
-                  <Flex key={index} fontSize={'14px'} gap={2}>
+                  <Flex
+                    key={index}
+                    fontSize={'14px'}
+                    gap={2}
+                    marginBottom={'5px'}
+                  >
                     <Text>
-                      {index + 1}. {contract.name}
+                      <b style={{ color: 'var(--chakra-colors-purple)' }}>
+                        {index + 1}. {contract.name}:
+                      </b>{' '}
+                      {shortAddress(contract.address.address)}
                     </Text>
                     <a
                       href={`${CONSTANTS.BLOCK_EXPLORER}/contract/${contract.address}`}
+                      style={{ marginTop: '-1px' }}
                     >
                       <ExternalLinkIcon />
                     </a>
@@ -51,6 +66,23 @@ export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
         </Accordion>
       )}
       <Flex gap={3} width={'100%'} justifyContent={'flex-start'}>
+        {!isRetired && (
+          <Badge
+            textTransform={'capitalize'}
+            display={'flex'}
+            alignItems={'center'}
+            bg="mycard_light"
+            color={getRiskColor({
+              type: RiskType.TECHNICAL_RISK, // dummy value, just to satisfy the type
+              value: strategy.metadata.risk.netRisk,
+              weight: 0, // just to satisfy the type
+            })}
+            padding={'8px'}
+            borderRadius={'16px'}
+          >
+            Risk: {getRiskString(strategy.metadata.risk.netRisk)}
+          </Badge>
+        )}
         {strategy.metadata.docs && (
           <Link
             href={strategy.metadata.docs}
@@ -59,8 +91,20 @@ export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
             textAlign={'left'}
             width={'auto'}
             fontSize={'14px'}
+            display={'flex'}
+            alignItems={'center'}
           >
-            Docs
+            <Badge
+              textTransform={'capitalize'}
+              display={'flex'}
+              alignItems={'center'}
+              bg="mycard_light"
+              padding={'8px'}
+              borderRadius={'16px'}
+              color={'text_secondary'}
+            >
+              Docs
+            </Badge>
           </Link>
         )}
         {strategy.metadata.auditUrl && (
@@ -71,16 +115,26 @@ export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
             textAlign={'left'}
             width={'auto'}
             fontSize={'14px'}
-            display={'flex'}
-            gap={1}
+            alignItems={'center'}
           >
-            <Image
-              src={shield.src}
-              alt="badge"
-              filter={'brightness(0) invert(0.7)'}
-              width={'11px'}
-            />
-            <span>Audit</span>
+            <Badge
+              textTransform={'capitalize'}
+              display={'flex'}
+              alignItems={'center'}
+              bg="mycard_light"
+              padding={'8px'}
+              borderRadius={'16px'}
+              color={'text_secondary'}
+              gap={1}
+            >
+              <Image
+                src={shield.src}
+                alt="badge"
+                filter={'brightness(0) invert(0.7)'}
+                width={'11px'}
+              />
+              <span>Audited</span>
+            </Badge>
           </Link>
         )}
       </Flex>

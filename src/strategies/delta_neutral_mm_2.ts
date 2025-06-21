@@ -16,12 +16,13 @@ import {
 } from '@/utils';
 import { getERC20Balance } from '@/store/balance.atoms';
 import { Web3Number } from '@strkfarm/sdk';
+import React from 'react';
 
 export class DeltaNeutralMM2 extends DeltaNeutralMM {
   constructor(
     token: TokenInfo,
     name: string,
-    description: string,
+    description: string | React.ReactNode,
     secondaryTokenName: TokenName,
     strategyAddress: string,
     stepAmountFactors: number[],

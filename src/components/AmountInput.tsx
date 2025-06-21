@@ -44,6 +44,7 @@ import LoadingWrap from './LoadingWrap';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { MyMenuItemProps, MyMenuListProps } from '@/utils';
 import debounce from 'lodash.debounce';
+import { MYSTYLES } from '@/style';
 
 interface AmountInputProps {
   index: number;
@@ -325,7 +326,10 @@ const AmountInput = forwardRef(
               <Text color={'text_secondary'}>-</Text>
             ) : (
               <Flex width={'100%'} align={'flex-end'} justify={'flex-end'}>
-                <Tooltip label={balance.toEtherStr()}>
+                <Tooltip
+                  label={`Exact balance: ${balance.toEtherStr()}`}
+                  {...MYSTYLES.TOOLTIP.STANDARD}
+                >
                   <Text
                     style={{ marginLeft: '5px' }}
                     color="text_primary"
@@ -623,6 +627,7 @@ const AmountInput = forwardRef(
                 re-aligns.
               </Text>
             }
+            {...MYSTYLES.TOOLTIP.STANDARD}
           >
             <Text
               marginTop="2px"
@@ -637,7 +642,7 @@ const AmountInput = forwardRef(
               }
               .{' '}
               <Link
-                href="https://docs.strkfarm.com/p/ekubo-cl-vaults"
+                href="https://docs.troves.fi/p/ekubo-cl-vaults"
                 textDecoration={'underline'}
               >
                 Learn more

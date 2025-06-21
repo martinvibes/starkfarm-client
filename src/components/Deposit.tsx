@@ -383,7 +383,7 @@ function InternalDeposit(props: DepositProps) {
           Fees:
         </Text>
         <Text fontSize={'14px'} color="text_secondary">
-          No additional fees by STRKFarm
+          No additional fees by Troves
         </Text>
       </Flex>
 
@@ -433,7 +433,7 @@ function InternalDeposit(props: DepositProps) {
           {isTVLFull && isDeposit && (
             <Alert
               status="warning"
-              bg="bg"
+              bg="mycard"
               marginTop={'20px'}
               borderRadius={'10px'}
             >

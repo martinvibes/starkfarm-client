@@ -46,7 +46,7 @@ export function ManageTab(props: ManageTabProps) {
             factor
           </ListItem>
           <ListItem>
-            Receive an NFT as representation for your stake on STRKFarm.
+            Receive an NFT as representation for your stake on Troves.
           </ListItem>
           <ListItem>Withdraw anytime by redeeming your NFT for USDC.</ListItem>
         </UnorderedList> */}

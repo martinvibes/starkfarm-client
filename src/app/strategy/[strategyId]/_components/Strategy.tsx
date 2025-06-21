@@ -37,9 +37,9 @@ import { getTokenInfoFromAddr } from '@/utils';
 import MyNumber from '@/utils/MyNumber';
 import { StrategyParams } from '../page';
 import {
-  STRKFarmBaseAPYsAtom,
-  STRKFarmStrategyAPIResult,
-} from '@/store/strkfarm.atoms';
+  TrovesBaseAPYsAtom,
+  TrovesStrategyAPIResult,
+} from '@/store/troves.atoms';
 import { ManageTab } from './ManageTab';
 import { RiskTab } from './RiskTab';
 import { DetailsTab } from './DetailsTab';
@@ -49,6 +49,7 @@ import HarvestTime from '@/components/HarvestTime';
 import { StrategyInfoComponent } from './StrategyInfo';
 import { APYInfo } from '@/components/APYInfo';
 import { isMobile } from 'react-device-detect';
+import { MYSTYLES } from '@/style';
 
 function HoldingsText({
   strategy,
@@ -133,7 +134,10 @@ function HoldingsAndEarnings({
         </Text>
       </Box>
       {!strategy.settings.isTransactionHistDisabled && (
-        <Tooltip label={!strategy?.isRetired() && 'Life time earnings'}>
+        <Tooltip
+          label={!strategy?.isRetired() && 'Life time earnings'}
+          {...MYSTYLES.TOOLTIP.STANDARD}
+        >
           <Box padding={'16px'} bg="mycard" width={'100%'} borderRadius={'lg'}>
             <Text
               textAlign={'right'}
@@ -185,10 +189,10 @@ const Strategy = ({ params }: StrategyParams) => {
         setRoute('manage');
         break;
       case 1:
-        setRoute('risk');
+        setRoute('details');
         break;
       case 2:
-        setRoute('details');
+        setRoute('risks');
         break;
       case 3:
         setRoute('faq');
@@ -214,10 +218,10 @@ const Strategy = ({ params }: StrategyParams) => {
         case 'manage':
           setTabIndex(0);
           break;
-        case 'risk':
+        case 'details':
           setTabIndex(1);
           break;
-        case 'details':
+        case 'risks':
           setTabIndex(2);
           break;
         case 'faq':
@@ -329,10 +333,10 @@ const Strategy = ({ params }: StrategyParams) => {
     setIsMounted(true);
   }, []);
 
-  const strategiesInfo = useAtomValue(STRKFarmBaseAPYsAtom);
+  const strategiesInfo = useAtomValue(TrovesBaseAPYsAtom);
   const strategyCached = useMemo(() => {
     if (!strategiesInfo || !strategiesInfo.data) return null;
-    const strategiesList: STRKFarmStrategyAPIResult[] =
+    const strategiesList: TrovesStrategyAPIResult[] =
       strategiesInfo.data.strategies;
     return strategiesList.find((s: any) => s.id === params.strategyId);
   }, [strategiesInfo, params.strategyId]);
@@ -436,19 +440,19 @@ const Strategy = ({ params }: StrategyParams) => {
                 color={'text_secondary'}
                 _selected={{ color: 'purple', fontWeight: 'bold' }}
                 onClick={() => {
-                  mixpanel.track('Risk clicked');
+                  mixpanel.track('Details clicked');
                 }}
               >
-                Risks
+                Details
               </Tab>
               <Tab
                 color={'text_secondary'}
                 _selected={{ color: 'purple', fontWeight: 'bold' }}
                 onClick={() => {
-                  mixpanel.track('Details clicked');
+                  mixpanel.track('Risk clicked');
                 }}
               >
-                Details
+                Risks
               </Tab>
               <Tab
                 color={'text_secondary'}
@@ -480,13 +484,16 @@ const Strategy = ({ params }: StrategyParams) => {
               <TabPanel width={'100%'} padding={0}>
                 {strategy && <ManageTab strategy={strategy} />}
               </TabPanel>
-
+              <TabPanel width={'100%'} padding={0}>
+                {strategyCached && strategy && (
+                  <DetailsTab
+                    strategyAPIResult={strategyCached}
+                    strategy={strategy}
+                  />
+                )}
+              </TabPanel>
               <TabPanel width={'100%'} padding={0}>
                 {strategy && <RiskTab strategy={strategy} />}
-              </TabPanel>
-
-              <TabPanel width={'100%'} padding={0}>
-                {strategyCached && <DetailsTab strategy={strategyCached} />}
               </TabPanel>
 
               <TabPanel width={'100%'} padding={0}>
@@ -529,14 +536,18 @@ const Strategy = ({ params }: StrategyParams) => {
                     content: <ManageTab strategy={strategy} isMobile />,
                   },
                   {
-                    label: 'Risk',
-                    content: <RiskTab strategy={strategy} isMobile />,
-                  },
-                  {
                     label: 'Details',
                     content: strategyCached && (
-                      <DetailsTab strategy={strategyCached} isMobile />
+                      <DetailsTab
+                        strategyAPIResult={strategyCached}
+                        strategy={strategy}
+                        isMobile
+                      />
                     ),
+                  },
+                  {
+                    label: 'Risks',
+                    content: <RiskTab strategy={strategy} isMobile />,
                   },
                   {
                     label: 'FAQs',

@@ -61,7 +61,12 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
   }, [data?.timestamp, lastHarvest]);
 
   return (
-    <Flex width={'100%'} flexDirection={'column'}>
+    <Flex
+      width={'100%'}
+      flexDirection={{ base: 'column', md: 'row' }}
+      bg={'mycard'}
+      borderRadius={'lg'}
+    >
       <Flex width={'100%'} justifyContent="space-between">
         {!strategy.settings.hideHarvestInfo && (
           <Tooltip
@@ -69,30 +74,39 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
           >
             <Flex
               alignItems={'center'}
-              gap={'32px'}
-              borderRadius={'lg'}
-              bg={'mycard'}
+              gap={'2'}
               padding={'16px'}
               width={'100%'}
+              direction={'column'}
             >
-              <Text
+              <Box
                 color="text_secondary"
                 fontSize="14px"
                 fontWeight="500"
                 display={'flex'}
+                gap={2}
+                width={'100%'}
+                justifyContent={'space-between'}
               >
-                Next Harvest in:{' '}
+                <Text style={{ width: '100%' }}>Next Harvest in:</Text>
                 {harvestTimestamp.isZero && (
-                  <Text color={'purple'} fontWeight={'bold'} marginLeft={'5px'}>
+                  <Text
+                    color={'purple'}
+                    width="100%"
+                    fontWeight={'bold'}
+                    marginLeft={'5px'}
+                    textAlign={'right'}
+                  >
                     Anytime now
                   </Text>
                 )}
-              </Text>
+              </Box>
 
               <Box
                 display="flex"
                 alignItems="center"
                 gap="10px"
+                width={'100%'}
                 justifyContent="space-between"
               >
                 {[
@@ -147,21 +161,21 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
         )}
       </Flex>
 
-      <Flex justifyContent={'space-between'}>
+      <Flex justifyContent={'space-between'} width={'100%'}>
         {!strategy.settings.hideHarvestInfo && (
           <Flex
+            padding={{ base: '0 16px 16px', md: '16px 16px 16px 0' }}
             alignItems={'center'}
-            marginTop={'10px'}
             gap={'2'}
             direction={{ base: 'column' }}
             width={'100%'}
+            justifyContent={'end'}
           >
             <Text
               color={'text_secondary'}
               fontSize={'12px'}
               fontWeight={'400'}
               lineHeight={'100%'}
-              padding={'8px'}
               bg={'mycard'}
               width={'100%'}
               borderRadius={'lg'}
@@ -178,13 +192,13 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
               color={'text_secondary'}
               fontSize={'12px'}
               fontWeight={'400'}
-              padding={'8px'}
               lineHeight={'100%'}
               bg={'mycard'}
               width={'100%'}
               borderRadius={'lg'}
             >
-              Total number of times harvested: -
+              Total number of times harvested:{' '}
+              {harvestTime?.data?.totalHarvestsByContract || '-'}
             </Text>
           </Flex>
         )}

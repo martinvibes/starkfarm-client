@@ -64,11 +64,12 @@ import {
 } from 'starknetkit/braavosMobile';
 import { WebWalletConnector } from 'starknetkit/webwallet';
 import TncModal from './TncModal';
+import fulllogo from '@public/fulllogo.png';
 
 export function getConnectors(isMobile: boolean) {
   const mobileConnector = ArgentMobileConnector.init({
     options: {
-      dappName: 'STRKFarm',
+      dappName: 'Troves',
       url: getEndpoint(),
       chainId: constants.NetworkName.SN_MAIN,
     },
@@ -199,11 +200,11 @@ export default function Navbar(props: NavbarProps) {
       modalTheme: 'dark',
       webWalletUrl: 'https://web.argent.xyz',
       argentMobileOptions: {
-        dappName: 'STRKFarm',
+        dappName: 'Troves',
         chainId: constants.NetworkName.SN_MAIN,
         url: getEndpoint(),
       },
-      dappName: 'STRKFarm',
+      dappName: 'Troves',
       connectors: getConnectors(isMobile) as StarknetkitConnector[],
     };
   }, [isMobile]);
@@ -283,7 +284,7 @@ export default function Navbar(props: NavbarProps) {
           <b>
             Strategies with{' '}
             <Link
-              href="https://x.com/strkfarm/status/1889933140657053786"
+              href="https://x.com/troves/status/1889933140657053786"
               target="_blank"
               textDecoration={'underline'}
             >
@@ -301,20 +302,20 @@ export default function Navbar(props: NavbarProps) {
       </Center> */}
       <Box
         width={'100%'}
-        maxWidth="1400px"
+        maxWidth="1152px"
         margin={'0px auto'}
-        padding={'20px 20px 10px'}
+        padding={{ base: '20px 10px 10px' }}
       >
-        <Flex width={'100%'}>
+        <Flex width={'100%'} gap={2}>
           <Link href="/" margin="auto auto auto 0" textAlign={'left'}>
-            {/* <Image
+            <Image
               src={fulllogo.src}
               alt="logo"
               height={{ base: '35px', md: '50px' }}
-            /> */}
-            <Text fontSize={'30px'} color={'purple'} fontWeight={'bold'}>
+            />
+            {/* <Text fontSize={'30px'} color={'purple'} fontWeight={'bold'}>
               Troves
-            </Text>
+            </Text> */}
           </Link>
           {/* <Link href={'/claims'} isExternal>
             <Button
@@ -341,7 +342,7 @@ export default function Navbar(props: NavbarProps) {
             </Button>
           </Link> */}
 
-          <Link href="/" margin="0 10px 0 0">
+          <Link href="/" display={'flex'} alignItems={'center'}>
             <Button
               bg="transparent"
               color="text_secondary"
@@ -377,7 +378,7 @@ export default function Navbar(props: NavbarProps) {
               🕹 {'  '}Raffle
             </Button>
           </Link> */}
-          <Link href="/community" margin="0 10px 0 0">
+          {/* <Link href="/community" display={'flex'} alignItems={'center'}>
             <Button
               bg="transparent"
               color="text_secondary"
@@ -394,13 +395,15 @@ export default function Navbar(props: NavbarProps) {
             >
               ✨ Community Program
             </Button>
-          </Link>
+          </Link> */}
 
           {!props.hideTg && (
             <Link
               href={CONSTANTS.COMMUNITY_TG}
               textDecoration="none !important"
               isExternal
+              display={'flex'}
+              alignItems={'center'}
             >
               <IconButton
                 aria-label="tg"
@@ -410,27 +413,26 @@ export default function Navbar(props: NavbarProps) {
                 icon={
                   <Avatar
                     size="sm"
-                    bg="highlight"
-                    className="glow-button"
+                    bg="purple"
                     name="T G"
-                    color="color2"
+                    color="text_primary"
                     src={tg.src}
                     _hover={{
-                      bg: 'color2_50p',
+                      bg: 'purple_hover_2',
                     }}
                   />
                 }
               />
               <Button
-                margin="0 0 0 auto"
-                borderColor="purple"
                 color="purple"
+                bg={'mycard'}
                 variant="outline"
+                borderWidth={'0'}
                 leftIcon={
                   <Avatar
                     size="xs"
                     bg="highlight"
-                    color="color2"
+                    color="text_primary"
                     name="T G"
                     src={tg.src}
                   />
@@ -447,88 +449,88 @@ export default function Navbar(props: NavbarProps) {
           )}
 
           {true && (
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={address ? <ChevronDownIcon /> : <></>}
-                iconSpacing={{ base: '1px', sm: '5px' }}
-                bgColor={'purple'}
-                color={'black'}
-                borderRadius={'100px'}
-                marginLeft={'10px'}
-                display={{ base: 'flex' }}
-                height={{ base: '2rem', sm: '2.5rem' }}
-                my={{ base: 'auto', sm: 'initial' }}
-                paddingX={{ base: '0.5rem', sm: '1rem' }}
-                fontSize={{ base: '0.5rem', sm: '0.8rem' }}
-                fontWeight={'bold'}
-                size="xs"
-                _hover={{
-                  bgColor: 'purple_hover',
-                }}
-                _active={{
-                  bgColor: 'purple_active',
-                }}
-                onClick={
-                  address
-                    ? undefined
-                    : () => {
-                        connectWallet();
-                      }
-                }
-              >
-                <Center>
-                  {address ? (
-                    <Center display="flex" alignItems="center" gap=".5rem">
-                      <Image
-                        // src={getWalletIcon(connector?.id ?? '').src}
-                        src={
-                          starkProfile?.profilePicture ||
-                          connector?.id === 'argentMobile'
-                            ? getWalletIcon(connector?.id ?? '').src
-                            : (connector?.icon.toString() ??
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s')
+            <Box display={'flex'} alignItems={'center'}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rightIcon={address ? <ChevronDownIcon /> : <></>}
+                  iconSpacing={{ base: '1px', sm: '5px' }}
+                  bgColor={'purple'}
+                  color={'black'}
+                  borderRadius={'100px'}
+                  display={{ base: 'flex' }}
+                  height={{ base: '2rem', sm: '2.5rem' }}
+                  my={{ base: 'auto', sm: 'initial' }}
+                  paddingX={{ base: '0.5rem', sm: '1rem' }}
+                  fontSize={{ base: '0.8rem', sm: '0.8rem' }}
+                  fontWeight={'bold'}
+                  _hover={{
+                    bgColor: 'purple_hover',
+                  }}
+                  _active={{
+                    bgColor: 'purple_active',
+                  }}
+                  onClick={
+                    address
+                      ? undefined
+                      : () => {
+                          connectWallet();
                         }
-                        alt="pfp"
-                        width={{ base: '20px', sm: '22px' }}
-                        height={{ base: '20px', sm: '22px' }}
-                        rounded="full"
-                        background={'mybg'}
-                        padding={'3px'}
-                      />{' '}
-                      <Text as="h3" marginTop={'3px !important'}>
-                        {starkProfile && starkProfile.name
-                          ? truncate(starkProfile.name, 6, isMobile ? 0 : 6)
-                          : shortAddress(address, 4, isMobile ? 0 : 4)}
-                      </Text>
-                    </Center>
-                  ) : (
-                    'Connect wallet'
+                  }
+                >
+                  <Center>
+                    {address ? (
+                      <Center display="flex" alignItems="center" gap=".5rem">
+                        <Image
+                          // src={getWalletIcon(connector?.id ?? '').src}
+                          src={
+                            starkProfile?.profilePicture ||
+                            connector?.id === 'argentMobile'
+                              ? getWalletIcon(connector?.id ?? '').src
+                              : (connector?.icon.toString() ??
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s')
+                          }
+                          alt="pfp"
+                          width={{ base: '20px', sm: '22px' }}
+                          height={{ base: '20px', sm: '22px' }}
+                          rounded="full"
+                          background={'mybg'}
+                          padding={'3px'}
+                        />{' '}
+                        <Text as="h3" marginTop={'3px !important'}>
+                          {starkProfile && starkProfile.name
+                            ? truncate(starkProfile.name, 6, isMobile ? 0 : 6)
+                            : shortAddress(address, 4, isMobile ? 0 : 4)}
+                        </Text>
+                      </Center>
+                    ) : (
+                      'Connect wallet'
+                    )}
+                  </Center>
+                </MenuButton>
+                <MenuList {...MyMenuListProps}>
+                  {address && (
+                    <MenuItem
+                      {...MyMenuItemProps}
+                      onClick={() => {
+                        disconnectAsync().then((data) => {
+                          console.log('wallet disconnected');
+                          setLastWallet(null);
+                        });
+                      }}
+                    >
+                      Disconnect
+                    </MenuItem>
                   )}
-                </Center>
-              </MenuButton>
-              <MenuList {...MyMenuListProps}>
-                {address && (
-                  <MenuItem
-                    {...MyMenuItemProps}
-                    onClick={() => {
-                      disconnectAsync().then((data) => {
-                        console.log('wallet disconnected');
-                        setLastWallet(null);
-                      });
-                    }}
-                  >
-                    Disconnect
-                  </MenuItem>
-                )}
-              </MenuList>
-            </Menu>
+                </MenuList>
+              </Menu>
+            </Box>
           )}
 
           {isMobile && (
             <IconButton
               aria-label="Open menu"
-              icon={<HamburgerIcon color="color2" height="30px" width="30px" />}
+              icon={<HamburgerIcon color="purple" height="30px" width="30px" />}
               background="transparent"
               display={{ base: 'flex', md: 'none' }}
               onClick={onOpen}
@@ -540,7 +542,7 @@ export default function Navbar(props: NavbarProps) {
 
           <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
             <DrawerOverlay />
-            <DrawerContent background="bg">
+            <DrawerContent background="mycard">
               <DrawerHeader color="text_secondary">Menu</DrawerHeader>
               <DrawerBody>
                 <Flex direction="column">
@@ -550,7 +552,7 @@ export default function Navbar(props: NavbarProps) {
                   {/* <Link href="/raffle" color="text_secondary" onClick={onClose}>
                     🕹 {'  '}Raffle
                   </Link> */}
-                  <Link
+                  {/* <Link
                     href="/community"
                     color="text_secondary"
                     onClick={() => {
@@ -560,7 +562,7 @@ export default function Navbar(props: NavbarProps) {
                     mt={4}
                   >
                     ✨ Community Program
-                  </Link>
+                  </Link> */}
                 </Flex>
               </DrawerBody>
             </DrawerContent>

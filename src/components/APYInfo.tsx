@@ -1,5 +1,6 @@
 import { StrategyInfo } from '@/store/strategies.atoms';
-import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
+import { TrovesStrategyAPIResult } from '@/store/troves.atoms';
+import { MYSTYLES } from '@/style';
 import {
   Flex,
   Tooltip,
@@ -15,7 +16,7 @@ import { useMemo } from 'react';
 
 export function APYInfo(props: {
   strategy: StrategyInfo<any>;
-  strategyAPIResult: STRKFarmStrategyAPIResult;
+  strategyAPIResult: TrovesStrategyAPIResult;
 }) {
   const { strategy, strategyAPIResult } = props;
 
@@ -59,7 +60,7 @@ export function APYInfo(props: {
                 <Box>
                   <Text>Rewards APY:</Text>
                   <Text fontSize={'12px'} opacity={0.7}>
-                    Incentives by STRKFarm
+                    Incentives by Troves
                   </Text>
                 </Box>
                 <Text fontWeight={'bold'}>
@@ -69,6 +70,7 @@ export function APYInfo(props: {
             )}
           </Box>
         }
+        {...MYSTYLES.TOOLTIP.STANDARD}
       >
         <Stat
           display={'flex'}
@@ -96,22 +98,27 @@ export function APYInfo(props: {
         </Stat>
       </Tooltip>
 
-      <Tooltip label="Boosted rewards from STRKFarm">
-        <Tag
-          alignSelf={'flex-end'}
-          bg="mycard_dark"
-          color={'text_secondary'}
-          fontSize={'14px'}
-          fontWeight={'500'}
-          padding={'4px 8px'}
-          width={'fit-content'}
-          height={'29px'}
-          borderRadius={'20px'}
+      {leverage > 1 && (
+        <Tooltip
+          label="Boosted rewards from Troves"
+          {...MYSTYLES.TOOLTIP.STANDARD}
         >
-          🔥{leverage.toFixed(2)}x boosted
-          {leverage === 0 && <Spinner size="xs" color="white" ml={'5px'} />}
-        </Tag>
-      </Tooltip>
+          <Tag
+            alignSelf={'flex-end'}
+            bg="mycard_dark"
+            color={'text_secondary'}
+            fontSize={'14px'}
+            fontWeight={'500'}
+            padding={'4px 8px'}
+            width={'fit-content'}
+            height={'29px'}
+            borderRadius={'20px'}
+          >
+            🔥{leverage.toFixed(2)}x boosted
+            {leverage === 0 && <Spinner size="xs" color="white" ml={'5px'} />}
+          </Tag>
+        </Tooltip>
+      )}
     </Flex>
   );
 }

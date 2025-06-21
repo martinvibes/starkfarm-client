@@ -117,9 +117,9 @@ export function TokenDeposit(props: TokenDepositProps) {
                       <Alert
                         status={alert.type}
                         fontSize={'12px'}
-                        color={'light_grey'}
+                        color={'text_secondary'}
                         borderRadius={'10px'}
-                        bg="color2_50p"
+                        bg="mycard"
                         padding={'10px'}
                         key={index}
                       >

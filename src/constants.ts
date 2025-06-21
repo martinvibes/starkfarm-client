@@ -55,8 +55,9 @@ export const CONSTANTS = {
   HAIKO: {
     BASE_APR_API: '/haiko/markets?network=mainnet',
   },
-  STRKFarm: {
-    BASE_APR_API: 'https://app.strkfarm.com/api/strategies',
+  Troves: {
+    BASE_APR_API: '/api/strategies',
+    // BASE_APR_API: 'https://app.strkfarm.com/api/strategies',
   },
   MY_SWAP: {
     POOLS_API: '/myswap/data/pools/all.json',
@@ -68,7 +69,7 @@ export const CONSTANTS = {
       '0x541681b9ad63dff1b35f79c78d8477f64857de29a27902f7298f7b620838ea',
     AutoUsdcFarm:
       '0x16912b22d5696e95ffde888ede4bd69fbbc60c5f873082857a47c543172694f',
-    AutoxSTRKFarm:
+    AutoxTroves:
       '0x2102068cf222a37076b9e322c6428cb9e7110591c8df8a733df2110fdb0c329',
     DeltaNeutralMMUSDCETH:
       '0x04937b58e05a3a2477402d1f74e66686f58a61a5070fcc6f694fb9a0b3bae422',
@@ -213,7 +214,7 @@ export const TOKENS: TokenInfo[] = [
     isERC4626: true,
   },
   {
-    token: CONSTANTS.CONTRACTS.AutoxSTRKFarm,
+    token: CONSTANTS.CONTRACTS.AutoxTroves,
     name: 'frmxSTRK',
     decimals: 18,
     displayDecimals: 2,
@@ -310,7 +311,7 @@ export const SIGNING_DATA = {
   },
   primaryType: 'Tnc',
   domain: {
-    name: 'STRKFarm',
+    name: 'Troves',
     version: '1',
     chainId: getNetwork(),
   },

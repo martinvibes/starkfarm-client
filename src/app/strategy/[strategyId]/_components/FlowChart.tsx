@@ -7,9 +7,7 @@ import {
   useNodesState,
 } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
-import STRKFarmAtoms, {
-  STRKFarmStrategyAPIResult,
-} from '@/store/strkfarm.atoms';
+import TrovesAtoms, { TrovesStrategyAPIResult } from '@/store/troves.atoms';
 
 import '@xyflow/react/dist/style.css';
 import { IInvestmentFlow } from '@strkfarm/sdk';
@@ -18,7 +16,7 @@ import { Spinner, Box } from '@chakra-ui/react';
 // import ELK from 'elkjs/lib/elk.bundled.js';
 
 const boxStyle = {
-  background: 'var(--chakra-colors-bg)',
+  background: 'var(--chakra-colors-mybg)',
   opacity: 0.9,
   color: 'white',
   padding: '10px',
@@ -227,10 +225,10 @@ function getNodesAndEdges(
 }
 
 function InternalFlowChart(props: FlowChartProps) {
-  const strategiesInfo = useAtomValue(STRKFarmAtoms.baseAPRs!);
+  const strategiesInfo = useAtomValue(TrovesAtoms.baseAPRs!);
   const strategyCached = useMemo(() => {
     if (!strategiesInfo || !strategiesInfo.data) return null;
-    const strategiesList: STRKFarmStrategyAPIResult[] =
+    const strategiesList: TrovesStrategyAPIResult[] =
       strategiesInfo.data.strategies;
     return strategiesList.find((s: any) => s.id === props.strategyId);
   }, [strategiesInfo]);
@@ -260,7 +258,7 @@ function InternalFlowChart(props: FlowChartProps) {
 
   if (strategyCached && strategyCached.investmentFlows.length > 0)
     return (
-      <Box width={'100%'} height={'500px'}>
+      <Box width={'100%'} height={'500px'} bg="mycard" borderRadius={'lg'}>
         <ReactFlow
           fitView
           nodes={nodes}

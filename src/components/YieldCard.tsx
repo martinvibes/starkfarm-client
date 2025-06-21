@@ -3,7 +3,7 @@ import { addressAtom } from '@/store/claims.atoms';
 import { isPoolRetired, PoolInfo } from '@/store/pools';
 import { getPoolInfoFromStrategy, sortAtom } from '@/store/protocols';
 import { strategiesAtom } from '@/store/strategies.atoms';
-import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
+import { TrovesStrategyAPIResult } from '@/store/troves.atoms';
 import { UserStats, userStatsAtom } from '@/store/utils.atoms';
 import { isLive, StrategyLiveStatus } from '@/strategies/IStrategy';
 import { getDisplayCurrencyAmount } from '@/utils';
@@ -254,7 +254,7 @@ function StrategyAPY(props: YieldCardProps) {
           {pool.aprSplits.length &&
             pool.aprSplits.some((a) => a.title == 'Rewards APY') && (
               <Tooltip
-                label="Boosted rewards from STRKFarm"
+                label="Boosted rewards from Troves"
                 bg="gray.300"
                 color="black"
               >
@@ -362,8 +362,8 @@ export function StrategyBalance(props: YieldCardProps) {
       position={'relative'}
     >
       {!isPoolLive && <Text>-</Text>}
-      {address && isPoolLive && pool.protocol.name === 'STRKFarm' && (
-        <Tooltip label="Your deposits in this STRKFarm strategy">
+      {address && isPoolLive && pool.protocol.name === 'Troves' && (
+        <Tooltip label="Your deposits in this Troves strategy">
           <>
             <Text fontSize={'14px'} fontWeight={'600'} textAlign={'right'}>
               ${getDisplayCurrencyAmount(holdingsInfo.usdValue, 0)}
@@ -647,7 +647,7 @@ export default function YieldCard(props: YieldCardProps) {
 }
 
 export function YieldStrategyCard(props: {
-  strat: STRKFarmStrategyAPIResult;
+  strat: TrovesStrategyAPIResult;
   index: number;
 }) {
   const strat = getPoolInfoFromStrategy(props.strat);

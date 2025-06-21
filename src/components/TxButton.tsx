@@ -1,5 +1,9 @@
 import { referralCodeAtom } from '@/store/referral.store';
 import { StrategyTxProps, monitorNewTxAtom } from '@/store/transactions.atom';
+import {
+  TrovesBaseAPYsAtom,
+  TrovesStrategyAPIResult,
+} from '@/store/troves.atoms';
 import { IStrategyProps, TokenInfo } from '@/strategies/IStrategy';
 import { getReferralUrl } from '@/utils';
 import {
@@ -74,7 +78,9 @@ export default function TxButton(props: TxButtonProps) {
       mixpanel.track('Transaction success', {
         strategyId: props.txInfo.strategyId,
         actionType: props.txInfo.actionType,
-        amount: props.txInfo.amount.toEtherToFixedDecimals(6),
+        amount: Number.isNaN(props.txInfo.amount.toString())
+          ? 0
+          : props.txInfo.amount.toEtherToFixedDecimals(6),
         tokenAddr: props.txInfo.tokenAddr,
         status: 'success',
         createdAt: new Date(),
@@ -85,7 +91,9 @@ export default function TxButton(props: TxButtonProps) {
       mixpanel.track('Transaction failed', {
         strategyId: props.txInfo.strategyId,
         actionType: props.txInfo.actionType,
-        amount: props.txInfo.amount.toEtherToFixedDecimals(6),
+        amount: Number.isNaN(props.txInfo.amount.toString())
+          ? 0
+          : props.txInfo.amount.toEtherToFixedDecimals(6),
         tokenAddr: props.txInfo.tokenAddr,
         status: 'failed',
         createdAt: new Date(),
@@ -104,6 +112,14 @@ export default function TxButton(props: TxButtonProps) {
     if (!address) return 'Connect wallet';
     return '';
   }, [isMobile, address, props]);
+
+  const strategiesInfo = useAtomValue(TrovesBaseAPYsAtom);
+  const strategyCached = useMemo(() => {
+    if (!strategiesInfo || !strategiesInfo.data) return null;
+    const strategiesList: TrovesStrategyAPIResult[] =
+      strategiesInfo.data.strategies;
+    return strategiesList.find((s: any) => s.id === props.strategy?.id);
+  }, [strategiesInfo, props.strategy?.id]);
 
   async function handleButton() {
     writeAsync().then((tx) => {
@@ -164,8 +180,8 @@ export default function TxButton(props: TxButtonProps) {
             </Text>
 
             <Text textAlign="center" fontWeight="500">
-              While your deposit is being processed, if you like STRKFarm, do
-              you mind sharing on X/Twitter?
+              While your deposit is being processed, if you like Troves, do you
+              mind sharing on X/Twitter?
             </Text>
 
             <Box
@@ -181,8 +197,8 @@ export default function TxButton(props: TxButtonProps) {
             >
               <TwitterShareButton
                 url={`${getReferralUrl(referralCode)}`}
-                title={`🚀I just invested my ${props.selectedMarket?.name ?? ''} in the high-yield  "${props.strategy?.name ?? ''}" strategy at @strkfarm, earning an impressive ${((props.strategy?.netYield || 0) * 100).toFixed(2)}% yield! 💸. \n\nWant in? Join me and start earning: `}
-                related={['strkfarm']}
+                title={`🚀I just invested my ${props.selectedMarket?.name ?? ''} in the high-yield  "${props.strategy?.name ?? ''}" strategy at @troves, earning an impressive ${((props.strategy?.netYield || strategyCached?.apy || 0) * 100).toFixed(2)}% yield! 💸. \n\nWant in? Join me and start earning: `}
+                related={['troves']}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
