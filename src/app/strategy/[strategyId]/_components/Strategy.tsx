@@ -62,7 +62,7 @@ function HoldingsText({
 }) {
   if (strategy.settings.isInMaintenance)
     return <span style={{ color: 'orange' }}>Maintenance Mode</span>;
-  if (!address) return 'Connect wallet';
+  if (!address) return 'You will see your holdings here';
   if (balData.isLoading || !balData.data?.tokenInfo) {
     return (
       <>
@@ -406,7 +406,7 @@ const Strategy = ({ params }: StrategyParams) => {
           )}
 
           {strategy && (
-            <VStack gap={6}>
+            <VStack gap={'8px'}>
               <HoldingsAndEarnings
                 strategy={strategy}
                 address={address}

@@ -64,7 +64,7 @@ import {
 } from 'starknetkit/braavosMobile';
 import { WebWalletConnector } from 'starknetkit/webwallet';
 import TncModal from './TncModal';
-import fulllogo from '@public/fulllogo.png';
+import fulllogo from '@public/fulllogo.svg';
 
 export function getConnectors(isMobile: boolean) {
   const mobileConnector = ArgentMobileConnector.init({

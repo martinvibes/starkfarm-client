@@ -51,7 +51,7 @@ export function getStratCardBg(status: StrategyLiveStatus, index: number) {
 
 function getStratCardBadgeBg(status: StrategyLiveStatus) {
   if (isLive(status)) {
-    return 'mycard_light_2x';
+    return 'badge_blue';
   } else if (status === StrategyLiveStatus.COMING_SOON) {
     return 'yellow';
   } else if (status === StrategyLiveStatus.RETIRED) {
@@ -103,13 +103,13 @@ export function StrategyInfo(props: YieldCardProps) {
                       alignItems="center"
                       justifyContent="center"
                       borderRadius={'50%'}
-                      bg={'mycard_light_2x'}
+                      bg={'badge_green'}
                       padding={'3px 5px'}
                     >
                       <Image
                         src={shield.src}
                         alt="badge"
-                        filter={'brightness(0) invert(0.5);'}
+                        filter={'brightness(0) invert(0.8);'}
                       />
                     </Box>
                   </Link>

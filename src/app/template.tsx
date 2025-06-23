@@ -41,6 +41,11 @@ const theme = extendTheme({
     bright_purple: '#907CFF',
     purple_gray: '#DFDFEC',
 
+    header: '#1d1531',
+
+    badge_blue: '#002F6A',
+    badge_green: '#016131',
+
     mybg: 'black', // dark blue
     bg_2: '#111113',
     bg_3: '#090910',
@@ -53,6 +58,7 @@ const theme = extendTheme({
     grey_text: '#B6B6B6',
     text_primary: 'white',
     text_secondary: '#b2b3bd',
+    text_secondary_2: '#D3D3D3',
 
     yellow: '#EFDB72',
     yellow_2: '#FFA500',

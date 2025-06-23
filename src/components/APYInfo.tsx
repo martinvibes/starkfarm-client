@@ -88,7 +88,7 @@ export function APYInfo(props: {
             APY
           </StatLabel>
           <StatNumber
-            color="purple"
+            color="light_green"
             lineHeight="100%"
             fontSize={'32px'}
             fontWeight={'700'}

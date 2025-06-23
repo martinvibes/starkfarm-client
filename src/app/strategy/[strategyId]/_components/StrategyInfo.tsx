@@ -47,14 +47,18 @@ export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
           display={'flex'}
           alignItems={'center'}
           justifyContent={'center'}
-          bg={'light_green'}
+          bg={'badge_green'}
           width={'27px'}
           height={'27px'}
           padding={'3px 5px'}
           borderRadius={'20px'}
         >
           <Link href={strategy.metadata.auditUrl} target="_blank">
-            <Image src={shield.src} alt="badge" />
+            <Image
+              src={shield.src}
+              alt="badge"
+              filter={'brightness(0) invert(0.8)'}
+            />
           </Link>
         </Box>
       )}

@@ -213,24 +213,32 @@ export default function Pools() {
           >
             <Thead
               display={{ base: 'none', md: 'table-header-group' }}
-              bg={'mycard_light'}
+              bg={'header'}
               borderTopRadius={'12px'}
             >
               <Tr color={'white'}>
-                <Th borderLeftRadius={'lg'}>
+                <Th
+                  borderLeftRadius={'lg'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   <Text color="white">Pool name</Text>
                 </Th>
-                <Th float={'right'}>
+                <Th
+                  float={'right'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   <HeaderSorter
                     heading="APY"
                     align="left"
                     mainColor="white"
-                    inActiveColor="#d9d9f726"
+                    inActiveColor="text_secondary_2"
                     onClick={handleSortChange('APR')}
                     active={aprStatus}
                   />
                 </Th>
-                <Th>
+                <Th borderRightWidth={'1px'} borderColor={'mybg'}>
                   <Box
                     width={'100%'}
                     display={'flex'}
@@ -240,18 +248,23 @@ export default function Pools() {
                       heading="Risk"
                       align="left"
                       mainColor="white"
-                      inActiveColor="#d9d9f726"
+                      inActiveColor="text_secondary_2"
                       onClick={handleSortChange('RISK')}
                       active={riskStatus}
                     />
                   </Box>
                 </Th>
-                <Th float={'right'}>
+                <Th
+                  float={'right'}
+                  borderRightRadius={'lg'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   <HeaderSorter
                     heading="TVL"
                     align="right"
                     mainColor="white"
-                    inActiveColor="#d9d9f726"
+                    inActiveColor="text_secondary_2"
                     onClick={handleSortChange('TVL')}
                     active={tvlStatus}
                   />
@@ -277,7 +290,7 @@ export default function Pools() {
           </Table>
           {allPools.length > 0 && pools.length === 0 && (
             <Box padding="10px 0" width={'100%'} float={'left'}>
-              <Text color="light_grey" textAlign={'center'}>
+              <Text color="text_secondary" textAlign={'center'}>
                 No pools. Check filters.
               </Text>
             </Box>

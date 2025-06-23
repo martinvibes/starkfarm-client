@@ -96,20 +96,41 @@ export default function Strategies() {
           >
             <Thead
               display={{ base: 'none', md: 'table-header-group' }}
-              bg={'mycard_light'}
+              bg={'header'}
               borderTopRadius={'12px'}
             >
               <Tr color={'white'}>
-                <Th color="white" borderLeftRadius={'lg'}>
+                <Th
+                  color="white"
+                  borderLeftRadius={'lg'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   Strategy name
                 </Th>
-                <Th color="white" textAlign={'right'}>
+                <Th
+                  color="white"
+                  textAlign={'right'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   APY
                 </Th>
-                <Th color="white" textAlign={'center'}>
+                <Th
+                  color="white"
+                  textAlign={'center'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   Risk
                 </Th>
-                <Th color="white" textAlign={'right'}>
+                <Th
+                  color="white"
+                  textAlign={'right'}
+                  borderRightRadius={address == undefined ? 'lg' : 'none'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
                   TVL
                 </Th>
                 {address != undefined && (

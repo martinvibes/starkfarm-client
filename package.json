@@ -23,7 +23,7 @@
     "@adraffy/ens-normalize": "^1.11.0",
     "@ajna/pagination": "1.4.19",
     "@apollo/client": "^3.11.8",
-    "@avnu/avnu-sdk": "^3.0.0",
+    "@avnu/avnu-sdk": "3.0.2",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.2",
     "@dagrejs/dagre": "^1.1.4",
