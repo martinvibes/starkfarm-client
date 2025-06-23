@@ -307,7 +307,7 @@ export default function Navbar(props: NavbarProps) {
         padding={{ base: '20px 10px 10px' }}
       >
         <Flex width={'100%'} gap={2}>
-          <Link href="/" margin="auto auto auto 0" textAlign={'left'}>
+          <Link href="/" margin="auto 100px auto 0" textAlign={'left'}>
             <Image
               src={fulllogo.src}
               alt="logo"
@@ -342,7 +342,12 @@ export default function Navbar(props: NavbarProps) {
             </Button>
           </Link> */}
 
-          <Link href="/" display={'flex'} alignItems={'center'}>
+          <Link
+            href="/"
+            display={'flex'}
+            alignItems={'center'}
+            marginRight="auto"
+          >
             <Button
               bg="transparent"
               color="text_secondary"
@@ -425,14 +430,16 @@ export default function Navbar(props: NavbarProps) {
               />
               <Button
                 color="purple"
-                bg={'mycard'}
+                bg={'mycard_light'}
                 variant="outline"
                 borderWidth={'0'}
+                fontSize="14px"
+                fontWeight="400"
                 leftIcon={
                   <Avatar
                     size="xs"
                     bg="highlight"
-                    color="text_primary"
+                    color="black"
                     name="T G"
                     src={tg.src}
                   />
@@ -455,17 +462,19 @@ export default function Navbar(props: NavbarProps) {
                   as={Button}
                   rightIcon={address ? <ChevronDownIcon /> : <></>}
                   iconSpacing={{ base: '1px', sm: '5px' }}
-                  bgColor={'purple'}
+                  background="connect_button_gradient"
                   color={'black'}
-                  borderRadius={'100px'}
+                  borderRadius={'8px'}
                   display={{ base: 'flex' }}
                   height={{ base: '2rem', sm: '2.5rem' }}
                   my={{ base: 'auto', sm: 'initial' }}
                   paddingX={{ base: '0.5rem', sm: '1rem' }}
                   fontSize={{ base: '0.8rem', sm: '0.8rem' }}
                   fontWeight={'bold'}
+                  transition="all 0.2s ease-in-out"
                   _hover={{
-                    bgColor: 'purple_hover',
+                    background:
+                      'linear-gradient(93.94deg, #4C2CD7 3.22%, #3B20B4 101.67%)',
                   }}
                   _active={{
                     bgColor: 'purple_active',

@@ -79,6 +79,9 @@ const theme = extendTheme({
 
     text_subtle: '#a0a2b0',
     text_subtle_50p: '#a0a2b080',
+
+    connect_button_gradient:
+      'linear-gradient(93.94deg, #9069f0 3.22%, #4a14cd 101.67%)',
   },
   fontSizes: {
     large: '50px',
