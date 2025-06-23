@@ -21,6 +21,7 @@ import { RpcProviderOptions, constants } from 'starknet';
 
 import { Inter } from 'next/font/google';
 import { isMobile } from 'react-device-detect';
+import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 mixpanel.init('118f29da6a372f0ccb6f541079cad56b');
@@ -75,6 +76,9 @@ const theme = extendTheme({
     dark_bg: '#111119',
     purple_tint: '#CFCFEA',
     lavender_gray: '#B4B1BD',
+
+    text_subtle: '#a0a2b0',
+    text_subtle_50p: '#a0a2b080',
   },
   fontSizes: {
     large: '50px',
@@ -141,13 +145,19 @@ export default function Template({ children }: { children: React.ReactNode }) {
         <ChakraBaseProvider theme={theme}>
           <Flex minHeight={'100vh'} bgColor={'mybg'}>
             <React.Suspense>
-              <Container width={'100%'} padding="0px">
+              <Container
+                display={'flex'}
+                flexDirection={'column'}
+                width={'100%'}
+                padding="0px"
+              >
                 <Navbar
                   hideTg={pathname.includes('slinks')}
                   forceShowConnect={pathname.includes('slinks')}
                 />
                 {children}
                 <Toaster />
+                <Footer />
               </Container>
             </React.Suspense>
           </Flex>

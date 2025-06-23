@@ -1,6 +1,6 @@
 'use client';
 
-import { CategoryFilters, ProtocolFilters } from '@/components/Filters';
+import { CombinedFilters } from '@/components/Filters';
 import {
   allPoolsAtomUnSorted,
   filteredPools,
@@ -176,29 +176,16 @@ export default function Pools() {
         padding={{ base: '0px' }}
       >
         <Box padding={'1rem 1.5rem'} bg={'mycard_dark'} borderRadius={'lg'}>
-          <ProtocolFilters />
-          <Box width={'100%'}>
-            <Box
-              width={{ base: '100%', md: '70%' }}
-              float={'left'}
-              marginTop={'10px'}
-            >
-              <CategoryFilters />
-            </Box>
-            <Container
-              float={'left'}
-              padding="0px"
-              width={{ base: '100%', md: '30%' }}
-              marginTop={'10px'}
-            >
+          <CombinedFilters
+            paginationComponent={
               <MyPagination
                 pagesCount={pagesCount}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 pages={pages}
               />
-            </Container>
-          </Box>
+            }
+          />
         </Box>
 
         <Container width="100%" float={'left'} padding={'0px'}>

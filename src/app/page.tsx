@@ -1,19 +1,14 @@
 'use client';
 
-import tg from '@/assets/tg.svg';
 import { useDotButton } from '@/components/EmblaCarouselDotButton';
 import Pools from '@/components/Pools';
 import Strategies from '@/components/Strategies';
 import TVL from '@/components/TVL';
-import CONSTANTS from '@/constants';
 import { useWindowSize } from '@/utils/useWindowSize';
 
 import {
   Box,
-  Center,
-  Image as ChakraImage,
   Container,
-  Link,
   Tab,
   TabList,
   TabPanel,
@@ -104,13 +99,15 @@ export default function Home() {
         margin={{ base: '0', md: '20px 0px 10px' }}
       >
         <Text
-          color={'text_primary'}
+          // color={'banner_text_gradient'}
           fontSize={{ base: '25px', md: '35px' }}
           lineHeight={{ base: '30px', md: '30px' }}
           marginBottom={'10px'}
           textAlign={'center'}
         >
-          <b>Starknet&apos;s Yield Powerhouse</b>
+          <b className="theme-gradient-text">
+            Starknet&apos;s Yield Powerhouse
+          </b>
           🚀
         </Text>
         <Text
@@ -190,7 +187,7 @@ export default function Home() {
         </TabPanels>
       </Tabs>
       {/* <hr style={{width: '100%', borderColor: '#5f5f5f', float: 'left', margin: '20px 0'}}/> */}
-      <Center padding="10px 0" width={'100%'} float={'left'}>
+      {/* <Center padding="10px 0" width={'100%'} float={'left'}>
         <Link href={CONSTANTS.COMMUNITY_TG} isExternal>
           <ChakraImage
             src={tg.src}
@@ -212,7 +209,7 @@ export default function Home() {
         >
           Made with ❤️ on Starknet
         </Box>
-      </Center>
+      </Center> */}
     </Container>
   );
 }
