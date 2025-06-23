@@ -375,7 +375,6 @@ function InternalDeposit(props: DepositProps) {
       <Flex
         justifyContent={'space-between'}
         marginTop={'30px'}
-        bg={'mycard'}
         borderRadius={'lg'}
         padding={'8px'}
       >

@@ -446,7 +446,7 @@ function GetRiskLevel(riskFactor: number) {
           position={'relative'}
           display={'flex'}
           flexDirection={'column'}
-          alignSelf={{ base: 'left', md: 'center' }}
+          alignSelf={{ base: 'left', md: 'right' }}
           justifyContent={'flex-start'}
           width={'100%'}
         >
@@ -454,7 +454,7 @@ function GetRiskLevel(riskFactor: number) {
             width={'100%'}
             display="flex"
             alignItems="center"
-            justifyContent={{ base: 'flex-start', md: 'center' }}
+            justifyContent={{ base: 'flex-start', md: 'flex-end' }}
             padding={'4px 0px'}
             height={'100%'}
             position={'relative'}

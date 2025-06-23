@@ -88,7 +88,7 @@ export function APYInfo(props: {
             APY
           </StatLabel>
           <StatNumber
-            color="light_green"
+            color={(strategyAPIResult?.apy || 0) > 0 ? 'light_green' : 'red'}
             lineHeight="100%"
             fontSize={'32px'}
             fontWeight={'700'}

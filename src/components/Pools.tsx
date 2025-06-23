@@ -239,11 +239,7 @@ export default function Pools() {
                   />
                 </Th>
                 <Th borderRightWidth={'1px'} borderColor={'mybg'}>
-                  <Box
-                    width={'100%'}
-                    display={'flex'}
-                    justifyContent={'center'}
-                  >
+                  <Box width={'100%'} display={'flex'} justifyContent={'right'}>
                     <HeaderSorter
                       heading="Risk"
                       align="left"

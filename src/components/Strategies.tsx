@@ -118,7 +118,7 @@ export default function Strategies() {
                 </Th>
                 <Th
                   color="white"
-                  textAlign={'center'}
+                  textAlign={'right'}
                   borderRightWidth={'1px'}
                   borderColor={'mybg'}
                 >

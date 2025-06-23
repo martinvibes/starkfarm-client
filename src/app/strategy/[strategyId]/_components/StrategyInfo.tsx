@@ -6,6 +6,7 @@ import {
   Image,
   Link,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import shield from '@/assets/shield.svg';
 import { StrategyInfo } from '@/store/strategies.atoms';
@@ -43,24 +44,26 @@ export function StrategyInfoComponent(props: { strategy: StrategyInfo<any> }) {
         {strategy ? strategy.name : 'Strategy Not found'}
       </Text>
       {strategy.metadata.auditUrl && (
-        <Box
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          bg={'badge_green'}
-          width={'27px'}
-          height={'27px'}
-          padding={'3px 5px'}
-          borderRadius={'20px'}
-        >
-          <Link href={strategy.metadata.auditUrl} target="_blank">
-            <Image
-              src={shield.src}
-              alt="badge"
-              filter={'brightness(0) invert(0.8)'}
-            />
-          </Link>
-        </Box>
+        <Tooltip label={<Box>Audited. Click to view report.</Box>}>
+          <Box
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            bg={'badge_green'}
+            width={'27px'}
+            height={'27px'}
+            padding={'3px 5px'}
+            borderRadius={'20px'}
+          >
+            <Link href={strategy.metadata.auditUrl} target="_blank">
+              <Image
+                src={shield.src}
+                alt="badge"
+                filter={'brightness(0) invert(0.8)'}
+              />
+            </Link>
+          </Box>
+        </Tooltip>
       )}
     </Flex>
   );
