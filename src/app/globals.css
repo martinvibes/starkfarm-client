@@ -147,12 +147,7 @@ body {
 }
 
 .theme-gradient-text {
-  background: linear-gradient(
-    to right,
-    var(--chakra-colors-purple) 10%,
-    var(--chakra-colors-cyan) 50%,
-    var(--chakra-colors-cyan) 100%
-  );
+  background: linear-gradient(90.4deg, #ffffff 0.35%, #8f68ef 101.19%);
   -webkit-background-clip: text;
   color: transparent;
 }
@@ -166,7 +161,7 @@ body {
 }
 
 .connect-button-gradient {
-  background: linear-gradient(90deg, #8f6cff 0%, #6e59ff 100%);
+  background: linear-gradient(93.94deg, #9069f0 3.22%, #4a14cd 101.67%);
 }
 
 td,
