@@ -274,32 +274,16 @@ export default function Navbar(props: NavbarProps) {
       top="0"
     >
       <TncModal />
-      {/* <Center bg="bg" color="gray" padding={0}>
+      <Center bg="bg" color="gray" padding={0}>
         <Text
           fontSize="12px"
           textAlign={'center'}
           padding="6px 5px"
           color="#a5a5d9"
         >
-          <b>
-            Strategies with{' '}
-            <Link
-              href="https://x.com/troves/status/1889933140657053786"
-              target="_blank"
-              textDecoration={'underline'}
-            >
-              {' '}
-              zkLend exploit
-            </Link>{' '}
-            exposure have been retired. You can check your partially recovered
-            funds
-            <Link href="/recovery" color="orange">
-              {' '}
-              here.
-            </Link>
-          </b>
+          <b>STRKFarm is now Troves</b>
         </Text>
-      </Center> */}
+      </Center>
       <Box
         width={'100%'}
         maxWidth="1152px"
