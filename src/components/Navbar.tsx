@@ -274,14 +274,24 @@ export default function Navbar(props: NavbarProps) {
       top="0"
     >
       <TncModal />
-      <Center bg="bg" color="gray" padding={0}>
+      <Center bg="mycard" color="text_secondary" padding={0}>
         <Text
           fontSize="12px"
           textAlign={'center'}
           padding="6px 5px"
           color="#a5a5d9"
         >
-          <b>STRKFarm is now Troves</b>
+          <span style={{ display: 'flex', gap: '2px' }}>
+            ⚡ New name. Bigger vision. STRKFarm is now{' '}
+            <b
+              style={{
+                color: 'var(--chakra-colors-purple)',
+                fontWeight: 'bold',
+              }}
+            >
+              Troves
+            </b>
+          </span>
         </Text>
       </Center>
       <Box
