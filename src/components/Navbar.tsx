@@ -465,13 +465,11 @@ export default function Navbar(props: NavbarProps) {
                   paddingX={{ base: '0.5rem', sm: '1rem' }}
                   fontSize={{ base: '0.8rem', sm: '0.8rem' }}
                   fontWeight={'bold'}
-                  transition="all 0.2s ease-in-out"
                   _hover={{
-                    background:
-                      'linear-gradient(93.94deg, #4C2CD7 3.22%, #3B20B4 101.67%)',
+                    background: 'purple_hover_2',
                   }}
                   _active={{
-                    bgColor: 'purple_active',
+                    bgColor: 'purple_hover_2',
                   }}
                   onClick={
                     address
