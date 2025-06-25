@@ -56,6 +56,7 @@ export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
                     <a
                       href={`${CONSTANTS.BLOCK_EXPLORER}/contract/${contract.address}`}
                       style={{ marginTop: '-1px' }}
+                      target="_blank"
                     >
                       <ExternalLinkIcon />
                     </a>

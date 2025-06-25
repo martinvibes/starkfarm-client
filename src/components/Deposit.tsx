@@ -372,7 +372,7 @@ function InternalDeposit(props: DepositProps) {
         />
       </Center>
 
-      <Flex
+      {/* <Flex
         justifyContent={'space-between'}
         marginTop={'30px'}
         borderRadius={'lg'}
@@ -384,7 +384,7 @@ function InternalDeposit(props: DepositProps) {
         <Text fontSize={'14px'} color="text_secondary">
           No additional fees by Troves
         </Text>
-      </Flex>
+      </Flex> */}
 
       {!props.strategy.isRetired() && props.strategy.settings.maxTVL !== 0 && (
         <Flex

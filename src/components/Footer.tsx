@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Container width={'100%'} bg="dark_bg">
+    <Container width={'100%'} bg="mycard_dark">
       <Box
         width={'100%'}
         maxWidth="1152px"
@@ -144,7 +144,7 @@ const Footer: React.FC = () => {
         <TncModal />
       </Box>
 
-      <Box borderTopWidth="1px" borderTopColor="text_subtle"></Box>
+      <Box borderTopWidth="1px" borderTopColor="white" opacity={0.2}></Box>
 
       <Box
         width={'100%'}

@@ -62,7 +62,8 @@ function HoldingsText({
 }) {
   if (strategy.settings.isInMaintenance)
     return <span style={{ color: 'orange' }}>Maintenance Mode</span>;
-  if (!address) return 'You will see your holdings here';
+  if (!address)
+    return <Text fontSize={'13px'}>You will see your holdings here</Text>;
   if (balData.isLoading || !balData.data?.tokenInfo) {
     return (
       <>

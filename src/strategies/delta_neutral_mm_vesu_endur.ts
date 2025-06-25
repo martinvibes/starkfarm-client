@@ -56,6 +56,7 @@ export class DeltaNeutralMMVesuEndur extends DeltaNeutralMM {
         logo: 'https://endur.fi/favicon.ico',
       },
     ];
+    this.metadata.risk.netRisk = 0.75;
     const risks = [this.risks[0], this.risks[2]];
     if (this.settings.alerts && this.settings.alerts.length > 0) {
       risks.push(

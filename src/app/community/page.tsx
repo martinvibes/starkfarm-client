@@ -275,7 +275,7 @@ const CommunityPage = () => {
                 </Button>
               </Box>
               <Link
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I am proud to be part of @troves community. They are issuing points and NFTs for their active users.\n\nJoin using my referral link:')}%20https://${getHosturl()}/r/${referralCode}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I am proud to be part of @trovesfi community. They are issuing points and NFTs for their active users.\n\nJoin using my referral link:')}%20https://${getHosturl()}/r/${referralCode}`}
                 isExternal={true}
               >
                 <Button
@@ -494,7 +494,7 @@ const CommunityPage = () => {
 
             <Box>
               <Link
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I just claimed my Limited Edition OG Farmer NFT on @Troves! Have you gotten yours yet? You might still be eligible, don’t miss out!')}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I just claimed my Limited Edition OG Farmer NFT on @trovesfi! Have you gotten yours yet? You might still be eligible, don’t miss out!')}`}
                 isExternal={true}
                 _hover={{
                   textDecoration: 'none',
