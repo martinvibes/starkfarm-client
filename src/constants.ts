@@ -295,7 +295,7 @@ export const provider = new RpcProvider({
 
 // ? When updating this, ensure there is redirect available for this route
 // ? to respect version of doc in github
-export const LATEST_TNC_DOC_VERSION = 'tnc/v1';
+export const LATEST_TNC_DOC_VERSION = 'tnc/v2';
 export const TnC_DOC_URL = `${getEndpoint()}/${LATEST_TNC_DOC_VERSION}`;
 export const SIGNING_DATA = {
   types: {
@@ -312,7 +312,7 @@ export const SIGNING_DATA = {
   primaryType: 'Tnc',
   domain: {
     name: 'Troves',
-    version: '1',
+    version: '2',
     chainId: getNetwork(),
   },
   message: {

@@ -170,7 +170,7 @@ const Footer: React.FC = () => {
               fontSize="sm"
               _hover={{ color: 'text_subtle', textDecoration: 'underline' }}
               mr={2}
-              href="https://assets.troves.fi/tnc.pdf"
+              href="https://assets.troves.fi/tnc_v2.pdf"
               target="_blank"
             >
               Terms and Conditions
