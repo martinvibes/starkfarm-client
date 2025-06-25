@@ -14,9 +14,11 @@ export const metadata: Metadata = {
     description:
       'Find and invest in high yield pools. Troves is the best Yield strategies on Starknet.',
     images: ['https://static-assets-8zct.onrender.com/troves/og-img-png.png'],
+    url: 'https://app.troves.fi',
+    type: 'website',
   },
   twitter: {
-    creator: '@akiraonstarknet',
+    creator: '@trovesfi',
     title: 'Troves | Yield strategies on Starknet',
     description:
       'Find and invest in high yield pools. Troves is the best Yield strategies on Starknet.',
