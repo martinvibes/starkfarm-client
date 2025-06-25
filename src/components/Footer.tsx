@@ -14,43 +14,43 @@ import TncModal from './TncModal';
 import tg from '@/assets/tg.svg';
 import x from '@/assets/x.svg';
 import fulllogo from '@public/fulllogo.png';
-import discord from '@public/discord.svg';
+import CONSTANTS from '@/constants';
 
 const footerLinks = [
   {
     heading: 'Developers',
     links: [
-      { label: 'Defi Spring', href: 'https://defispring.starknet.io/' },
       {
         label: 'Open-source',
         href: 'https://app.onlydust.com/p/strkfarm',
         isExternal: true,
       },
-      { label: 'Audit', href: 'https://www.strkfarm.com/audit' },
+      { label: 'Audit', href: 'https://www.troves.fi/audit' },
+      {
+        label: 'Github',
+        href: 'https://github.com/trovesfi',
+        isExternal: true,
+      },
     ],
   },
   {
     heading: 'General',
     links: [
+      { label: 'Defi Spring', href: 'https://defispring.starknet.io/' },
       {
         label: 'Branding kit',
         href: 'https://drive.google.com/drive/folders/1-D6uizWgdH2XwbP0f3Fc22wQgxhr_RUY?usp=sharing',
       },
-      { label: 'Status page', href: 'https://status.starkfarm.com/' },
+      { label: 'Status page', href: 'https://status.troves.fi/' },
     ],
   },
   {
     heading: 'Community',
     links: [
-      { label: 'Telegram', href: 'https://t.me/starkfarm', isExternal: true },
+      { label: 'Telegram', href: 'https://troves.fi/tg', isExternal: true },
       {
         label: 'Twitter',
-        href: 'https://twitter.com/starkfarm',
-        isExternal: true,
-      },
-      {
-        label: 'Github',
-        href: 'https://github.com/starkfarm',
+        href: 'https://twitter.com/trovesfi',
         isExternal: true,
       },
     ],
@@ -58,23 +58,23 @@ const footerLinks = [
 ];
 
 const socialLinks = [
-  {
-    icon: discord.src,
-    label: 'Discord',
-    href: 'https://discord.gg/',
-    gradient: 'linear-gradient(135deg, #6F4FF2 0%, #61FCAE 100%)',
-  },
+  // {
+  //   icon: discord.src,
+  //   label: 'Discord',
+  //   href: 'https://discord.gg/',
+  //   gradient: 'mycard_light',
+  // },
   {
     icon: tg.src,
     label: 'Telegram',
-    href: 'https://t.me/starkfarm',
-    gradient: 'linear-gradient(135deg, #6F4FF2 0%, #61FCAE 100%)',
+    href: CONSTANTS.COMMUNITY_TG,
+    gradient: 'mycard_light',
   },
   {
     icon: x.src,
     label: 'Twitter',
-    href: 'https://twitter.com/starkfarm',
-    gradient: 'linear-gradient(135deg, #6F4FF2 0%, #61FCAE 100%)',
+    href: 'https://troves.fi/twitter',
+    gradient: 'mycard_light',
   },
 ];
 
@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
         width={'100%'}
         maxWidth="1152px"
         margin={'0px auto'}
-        padding={{ base: '20px 10px 10px' }}
+        padding={{ base: '40px 10px 10px' }}
       >
         <Flex
           direction={{ base: 'column', md: 'row' }}
@@ -119,7 +119,7 @@ const Footer: React.FC = () => {
           >
             {footerLinks.map((col) => (
               <Box key={col.heading} minW="120px">
-                <Text fontWeight="bold" mb={3} color="white">
+                <Text fontWeight="bold" mb={3} color="white" fontSize={'14px'}>
                   {col.heading}
                 </Text>
                 {col.links.map((link) => (
@@ -129,7 +129,8 @@ const Footer: React.FC = () => {
                     isExternal={link.isExternal}
                     color="text_subtle"
                     display="block"
-                    marginBottom="2px"
+                    marginBottom="10px"
+                    fontSize={'13px'}
                     _hover={{ textDecoration: 'underline' }}
                   >
                     {link.label}
@@ -160,16 +161,17 @@ const Footer: React.FC = () => {
           gap="4px"
         >
           <Text fontSize="sm" color="text_subtle">
-            © 2024 STRKFarm. All right reserved.
+            © 2024 Troves. All right reserved.
           </Text>
           <Flex align="center" gap={6}>
             <Text
-              as="button"
+              as="a"
               color="text_subtle"
               fontSize="sm"
               _hover={{ color: 'text_subtle', textDecoration: 'underline' }}
-              onClick={onOpen}
               mr={2}
+              href="https://assets.troves.fi/tnc.pdf"
+              target="_blank"
             >
               Terms and Conditions
             </Text>
@@ -183,12 +185,8 @@ const Footer: React.FC = () => {
                   icon={<Image src={s.icon} alt={s.label} />}
                   target="_blank"
                   rel="noopener noreferrer"
-                  bgGradient={s.gradient}
                   borderRadius="full"
-                  boxSize="40px"
-                  minW="40px"
-                  minH="40px"
-                  p={2}
+                  bg="black"
                   _hover={{ filter: 'brightness(1.2)' }}
                 />
               ))}

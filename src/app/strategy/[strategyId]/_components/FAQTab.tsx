@@ -11,6 +11,7 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { StrategyInfo } from '@/store/strategies.atoms';
+import CONSTANTS from '@/constants';
 
 interface FAQTabProps {
   strategy: StrategyInfo<any>;
@@ -113,7 +114,7 @@ export function FAQTab(props: FAQTabProps) {
             </Text>
           </Flex>
 
-          <Link href="https://t.me/+HQ_eHaXmF-1lZDc1">
+          <Link href={CONSTANTS.COMMUNITY_TG}>
             <Button
               bg={'transparent'}
               padding={'12px 20px'}

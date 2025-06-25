@@ -17,13 +17,14 @@ import shield from '@/assets/shield.svg';
 import { shortAddress } from '@/utils';
 import { getRiskString, StrategyLiveStatus } from '@/strategies/IStrategy';
 import { getRiskColor, RiskType } from '@strkfarm/sdk';
+import docs from '@/assets/docs.svg';
 
 export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
   const { strategy } = props;
   const isRetired = strategy.liveStatus === StrategyLiveStatus.RETIRED;
 
   return (
-    <Flex alignItems={'center'} direction={'column'} height={'40px'} gap={5}>
+    <Flex alignItems={'center'} direction={'column'} gap={5}>
       {props.strategy.metadata.contractDetails.length > 0 && (
         <Accordion width={'100%'} allowToggle={true}>
           <AccordionItem borderRadius={'lg'} border="none" bg={'mycard_light'}>
@@ -102,7 +103,14 @@ export function ContractDetails(props: { strategy: StrategyInfo<any> }) {
               padding={'8px'}
               borderRadius={'16px'}
               color={'text_secondary'}
+              gap={1}
             >
+              <Image
+                src={docs.src}
+                alt="badge"
+                filter={'brightness(0) invert(0.7)'}
+                width={'14px'}
+              />
               Docs
             </Badge>
           </Link>

@@ -33,7 +33,7 @@ export const CONSTANTS = {
   LENDING_INCENTIVES_URL:
     'https://kx58j6x5me.execute-api.us-east-1.amazonaws.com/starknet/fetchFile?file=prod-api/lending/lending_strk_grant.json',
   LOGOS,
-  COMMUNITY_TG: 'https://t.me/+HQ_eHaXmF-1lZDc1',
+  COMMUNITY_TG: 'https://troves.fi/tg',
   NOSTRA: {
     LENDING_GRAPH_URL: '/nostra/app/data-yqlpb/endpoint/data/v1/action/find',
   },

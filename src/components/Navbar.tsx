@@ -1,15 +1,10 @@
-import { ChevronDownIcon, HamburgerIcon, EmailIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, EmailIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
   Button,
   Center,
   Container,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
   Flex,
   IconButton,
   Image,
@@ -300,7 +295,7 @@ export default function Navbar(props: NavbarProps) {
         margin={'0px auto'}
         padding={{ base: '20px 10px 10px' }}
       >
-        <Flex width={'100%'} gap={2}>
+        <Flex width={'100%'} gap={2} justifyContent={'space-between'}>
           <Link href="/" margin="auto 100px auto 0" textAlign={'left'}>
             <Image
               src={fulllogo.src}
@@ -336,7 +331,7 @@ export default function Navbar(props: NavbarProps) {
             </Button>
           </Link> */}
 
-          <Link
+          {/* <Link
             href="/"
             display={'flex'}
             alignItems={'center'}
@@ -358,7 +353,7 @@ export default function Navbar(props: NavbarProps) {
             >
               Home
             </Button>
-          </Link>
+          </Link> */}
           {/* <Link href="/raffle" margin="0 10px 0 0">
             <Button
               bg="transparent"
@@ -396,178 +391,180 @@ export default function Navbar(props: NavbarProps) {
             </Button>
           </Link> */}
 
-          {!props.hideTg && (
-            <Link
-              href={CONSTANTS.COMMUNITY_TG}
-              textDecoration="none !important"
-              isExternal
-              display={'flex'}
-              alignItems={'center'}
-            >
-              <IconButton
-                aria-label="tg"
-                variant={'ghost'}
-                borderColor={'color2'}
-                display={{ base: 'block', md: 'none' }}
-                icon={
-                  <Avatar
-                    size="sm"
-                    bg="purple"
-                    name="T G"
-                    color="text_primary"
-                    src={tg.src}
+          <Flex gap={2}>
+            {!props.hideTg && (
+              <Link
+                href={CONSTANTS.COMMUNITY_TG}
+                textDecoration="none !important"
+                isExternal
+                display={'flex'}
+                alignItems={'center'}
+              >
+                <IconButton
+                  aria-label="tg"
+                  variant={'ghost'}
+                  borderColor={'color2'}
+                  display={{ base: 'block', md: 'none' }}
+                  icon={
+                    <Avatar
+                      size="sm"
+                      bg="purple"
+                      name="T G"
+                      color="text_primary"
+                      src={tg.src}
+                      _hover={{
+                        bg: 'purple_hover_2',
+                      }}
+                    />
+                  }
+                />
+                <Button
+                  color="purple"
+                  bg={'mycard_light'}
+                  variant="outline"
+                  borderWidth={'0'}
+                  fontSize="14px"
+                  fontWeight="400"
+                  leftIcon={
+                    <Avatar
+                      size="xs"
+                      bg="highlight"
+                      color="black"
+                      name="T G"
+                      src={tg.src}
+                    />
+                  }
+                  _hover={{
+                    bg: 'purple_hover_2',
+                    color: 'black',
+                  }}
+                  display={{ base: 'none !important', md: 'flex !important' }}
+                >
+                  Telegram
+                </Button>
+              </Link>
+            )}
+
+            {true && (
+              <Box display={'flex'} alignItems={'center'}>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={address ? <ChevronDownIcon /> : <></>}
+                    iconSpacing={{ base: '1px', sm: '5px' }}
+                    background="connect_button_gradient"
+                    color={'black'}
+                    borderRadius={'8px'}
+                    display={{ base: 'flex' }}
+                    height={{ base: '2rem', sm: '2.5rem' }}
+                    my={{ base: 'auto', sm: 'initial' }}
+                    paddingX={{ base: '0.5rem', sm: '1rem' }}
+                    fontSize={{ base: '0.8rem', sm: '0.8rem' }}
+                    fontWeight={'bold'}
                     _hover={{
+                      background: 'purple_hover_2',
+                    }}
+                    _active={{
                       bg: 'purple_hover_2',
                     }}
-                  />
-                }
-              />
-              <Button
-                color="purple"
-                bg={'mycard_light'}
-                variant="outline"
-                borderWidth={'0'}
-                fontSize="14px"
-                fontWeight="400"
-                leftIcon={
-                  <Avatar
-                    size="xs"
-                    bg="highlight"
-                    color="black"
-                    name="T G"
-                    src={tg.src}
-                  />
-                }
-                _hover={{
-                  bg: 'purple_hover_2',
-                  color: 'black',
-                }}
-                display={{ base: 'none !important', md: 'flex !important' }}
-              >
-                Telegram
-              </Button>
-            </Link>
-          )}
-
-          {true && (
-            <Box display={'flex'} alignItems={'center'}>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rightIcon={address ? <ChevronDownIcon /> : <></>}
-                  iconSpacing={{ base: '1px', sm: '5px' }}
-                  background="connect_button_gradient"
-                  color={'black'}
-                  borderRadius={'8px'}
-                  display={{ base: 'flex' }}
-                  height={{ base: '2rem', sm: '2.5rem' }}
-                  my={{ base: 'auto', sm: 'initial' }}
-                  paddingX={{ base: '0.5rem', sm: '1rem' }}
-                  fontSize={{ base: '0.8rem', sm: '0.8rem' }}
-                  fontWeight={'bold'}
-                  _hover={{
-                    background: 'purple_hover_2',
-                  }}
-                  _active={{
-                    bgColor: 'purple_hover_2',
-                  }}
-                  onClick={
-                    address
-                      ? undefined
-                      : () => {
-                          connectWallet();
-                        }
-                  }
-                >
-                  <Center>
-                    {address ? (
-                      <Center display="flex" alignItems="center" gap=".5rem">
-                        <Image
-                          // src={getWalletIcon(connector?.id ?? '').src}
-                          src={
-                            starkProfile?.profilePicture ||
-                            connector?.id === 'argentMobile'
-                              ? getWalletIcon(connector?.id ?? '').src
-                              : (connector?.icon.toString() ??
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s')
+                    onClick={
+                      address
+                        ? undefined
+                        : () => {
+                            connectWallet();
                           }
-                          alt="pfp"
-                          width={{ base: '20px', sm: '22px' }}
-                          height={{ base: '20px', sm: '22px' }}
-                          rounded="full"
-                          background={'mybg'}
-                          padding={'3px'}
-                        />{' '}
-                        <Text as="h3" marginTop={'3px !important'}>
-                          {starkProfile && starkProfile.name
-                            ? truncate(starkProfile.name, 6, isMobile ? 0 : 6)
-                            : shortAddress(address, 4, isMobile ? 0 : 4)}
-                        </Text>
-                      </Center>
-                    ) : (
-                      'Connect wallet'
-                    )}
-                  </Center>
-                </MenuButton>
-                <MenuList {...MyMenuListProps}>
-                  {address && (
-                    <MenuItem
-                      {...MyMenuItemProps}
-                      onClick={() => {
-                        disconnectAsync().then((data) => {
-                          console.log('wallet disconnected');
-                          setLastWallet(null);
-                        });
-                      }}
-                    >
-                      Disconnect
-                    </MenuItem>
-                  )}
-                </MenuList>
-              </Menu>
-            </Box>
-          )}
-
-          {isMobile && (
-            <IconButton
-              aria-label="Open menu"
-              icon={<HamburgerIcon color="purple" height="30px" width="30px" />}
-              background="transparent"
-              display={{ base: 'flex', md: 'none' }}
-              onClick={onOpen}
-              _focus={{
-                bg: 'none',
-              }}
-            />
-          )}
-
-          <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-            <DrawerOverlay />
-            <DrawerContent background="mycard">
-              <DrawerHeader color="text_secondary">Menu</DrawerHeader>
-              <DrawerBody>
-                <Flex direction="column">
-                  <Link href="/" color="text_secondary" onClick={onClose}>
-                    Home
-                  </Link>
-                  {/* <Link href="/raffle" color="text_secondary" onClick={onClose}>
-                    🕹 {'  '}Raffle
-                  </Link> */}
-                  {/* <Link
-                    href="/community"
-                    color="text_secondary"
-                    onClick={() => {
-                      onClose();
-                      mixpanel.track('community_program_click');
-                    }}
-                    mt={4}
+                    }
                   >
-                    ✨ Community Program
-                  </Link> */}
-                </Flex>
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
+                    <Center>
+                      {address ? (
+                        <Center display="flex" alignItems="center" gap=".5rem">
+                          <Image
+                            // src={getWalletIcon(connector?.id ?? '').src}
+                            src={
+                              starkProfile?.profilePicture ||
+                              connector?.id === 'argentMobile'
+                                ? getWalletIcon(connector?.id ?? '').src
+                                : (connector?.icon.toString() ??
+                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5dG19ABS0ge6iFAgpsvE_ULDUa4fJyT7hg&s')
+                            }
+                            alt="pfp"
+                            width={{ base: '20px', sm: '22px' }}
+                            height={{ base: '20px', sm: '22px' }}
+                            rounded="full"
+                            background={'mybg'}
+                            padding={'3px'}
+                          />{' '}
+                          <Text as="h3" marginTop={'3px !important'}>
+                            {starkProfile && starkProfile.name
+                              ? truncate(starkProfile.name, 6, isMobile ? 0 : 6)
+                              : shortAddress(address, 4, isMobile ? 0 : 4)}
+                          </Text>
+                        </Center>
+                      ) : (
+                        'Connect wallet'
+                      )}
+                    </Center>
+                  </MenuButton>
+                  <MenuList {...MyMenuListProps}>
+                    {address && (
+                      <MenuItem
+                        {...MyMenuItemProps}
+                        onClick={() => {
+                          disconnectAsync().then((data) => {
+                            console.log('wallet disconnected');
+                            setLastWallet(null);
+                          });
+                        }}
+                      >
+                        Disconnect
+                      </MenuItem>
+                    )}
+                  </MenuList>
+                </Menu>
+              </Box>
+            )}
+            {/* 
+            {isMobile && (
+              <IconButton
+                aria-label="Open menu"
+                icon={<HamburgerIcon color="purple" height="30px" width="30px" />}
+                background="transparent"
+                display={{ base: 'flex', md: 'none' }}
+                onClick={onOpen}
+                _focus={{
+                  bg: 'none',
+                }}
+              />
+            )} */}
+
+            {/* <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+              <DrawerOverlay />
+              <DrawerContent background="mycard">
+                <DrawerHeader color="text_secondary">Menu</DrawerHeader>
+                <DrawerBody>
+                  <Flex direction="column">
+                    <Link href="/" color="text_secondary" onClick={onClose}>
+                      Home
+                    </Link>
+                    <Link href="/raffle" color="text_secondary" onClick={onClose}>
+                      🕹 {'  '}Raffle
+                    </Link>
+                    <Link
+                      href="/community"
+                      color="text_secondary"
+                      onClick={() => {
+                        onClose();
+                        mixpanel.track('community_program_click');
+                      }}
+                      mt={4}
+                    >
+                      ✨ Community Program
+                    </Link>
+                  </Flex>
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer> */}
+          </Flex>
         </Flex>
       </Box>
     </Container>
