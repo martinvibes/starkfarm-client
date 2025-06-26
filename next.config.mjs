@@ -27,7 +27,7 @@ const nextConfig = {
       },
       {
         source: '/ekubo/:path*',
-        destination: 'https://troves.fi/ekubo/:path*',
+        destination: 'https://mainnet-api.ekubo.org/:path*',
       },
       {
         source: '/haiko/:path*',
