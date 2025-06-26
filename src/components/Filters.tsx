@@ -1,29 +1,29 @@
-import React, { useMemo } from 'react';
-import { useAtomValue, useSetAtom } from 'jotai';
-import {
-  Avatar,
-  Box,
-  Grid,
-  Tag,
-  TagLabel,
-  Text,
-  Tooltip,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-  HStack,
-} from '@chakra-ui/react';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { Category, PoolType } from '@/store/pools';
 import {
   ALL_FILTER,
   filterAtoms,
   filters,
   updateFiltersAtom,
 } from '@/store/protocols';
-import { Category, PoolType } from '@/store/pools';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import {
+  Avatar,
+  Box,
+  Button,
+  Grid,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Tag,
+  TagLabel,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
+import { useAtomValue, useSetAtom } from 'jotai';
 import mixpanel from 'mixpanel-browser';
+import React, { useMemo } from 'react';
 
 function getTextProps(isActive: boolean) {
   return {
@@ -924,6 +924,7 @@ export function CombinedFilters({
       <Box
         width={'100%'}
         display={'flex'}
+        flexDirection={{ base: 'column', md: 'row' }}
         justifyContent={'space-between'}
         marginTop={'10px'}
       >
@@ -1179,6 +1180,7 @@ export function CombinedFilters({
           display={{ base: 'flex', md: 'none' }}
           justifyContent={'space-between'}
           gap={'10px'}
+          mt={'0.8rem'}
         >
           <Menu>
             <MenuButton

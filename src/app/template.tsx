@@ -19,9 +19,9 @@ import * as React from 'react';
 import { Toaster } from 'react-hot-toast';
 import { RpcProviderOptions, constants } from 'starknet';
 
-import { Inter } from 'next/font/google';
-import { isMobile } from 'react-device-detect';
 import Footer from '@/components/Footer';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 mixpanel.init('118f29da6a372f0ccb6f541079cad56b');
@@ -143,6 +143,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
       </Center>
     );
   }
+
+  const isMobile = useIsMobile();
 
   return (
     <JotaiProvider store={MY_STORE}>
