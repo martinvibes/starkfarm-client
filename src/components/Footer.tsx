@@ -10,7 +10,6 @@ import {
   Container,
   Grid,
 } from '@chakra-ui/react';
-import TncModal from './TncModal';
 import tg from '@/assets/tg.svg';
 import x from '@/assets/x.svg';
 import fulllogo from '@public/fulllogo.png';
@@ -140,8 +139,6 @@ const Footer: React.FC = () => {
             ))}
           </Grid>
         </Flex>
-
-        <TncModal />
       </Box>
 
       <Box borderTopWidth="1px" borderTopColor="white" opacity={0.2}></Box>

@@ -279,7 +279,20 @@ export function TransactionsTab(props: TransactionsTabProps) {
         )}
       </Box>
       {address ? (
-        txHistory.findManyInvestment_flows.length !== 0 ? (
+        strategy.settings.isTransactionHistDisabled ? (
+          <Text
+            fontSize={'14px'}
+            textAlign={'center'}
+            color="text_secondary"
+            marginTop={'20px'}
+            padding="16px"
+            bg="mycard"
+            borderRadius={'lg'}
+          >
+            Transaction history is not available for this strategy yet. If
+            enabled in future, will include the entire history.
+          </Text>
+        ) : txHistory.findManyInvestment_flows.length !== 0 ? (
           isMobile ? (
             <MobileTransactionHistory
               transactions={txHistory.findManyInvestment_flows}
@@ -294,19 +307,6 @@ export function TransactionsTab(props: TransactionsTabProps) {
             No transactions found
           </Text>
         )
-      ) : strategy.settings.isTransactionHistDisabled ? (
-        <Text
-          fontSize={'14px'}
-          textAlign={'center'}
-          color="text_secondary"
-          marginTop={'20px'}
-          padding="16px"
-          bg="mycard"
-          borderRadius={'lg'}
-        >
-          Transaction history is not available for this strategy yet. If enabled
-          in future, will include the entire history.
-        </Text>
       ) : (
         <Text
           fontSize={'14px'}

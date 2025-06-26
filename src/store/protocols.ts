@@ -10,7 +10,6 @@ import { Category, isPoolRetired, PoolInfo, PoolType } from './pools';
 import { getLiveStatusEnum } from '@/utils/strategyStatus';
 import TrovesAtoms, { troves, TrovesStrategyAPIResult } from './troves.atoms';
 import VesuAtoms, { vesu } from './vesu.store';
-import ZkLendAtoms, { zkLend } from './zklend.store';
 
 export const getProtocols = () => [
   {
@@ -63,11 +62,6 @@ export const getProtocols = () => [
   //   class: sithswap,
   //   atoms: SithswapAtoms,
   // },
-  {
-    name: zkLend.name,
-    class: zkLend,
-    atoms: ZkLendAtoms,
-  },
   {
     name: nostraLending.name,
     class: nostraLending,

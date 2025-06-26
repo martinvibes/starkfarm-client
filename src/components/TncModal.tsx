@@ -248,6 +248,9 @@ const TncModal: React.FC<TncModalProps> = (props) => {
                 disconnectAsync();
                 onClose();
               }}
+              _hover={{
+                bg: 'mycard2',
+              }}
               ml={'10px'}
             >
               Disconnect

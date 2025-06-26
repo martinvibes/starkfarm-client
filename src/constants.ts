@@ -4,13 +4,12 @@ import { getEndpoint, standariseAddress } from './utils';
 import MyNumber from './utils/MyNumber';
 
 const LOGOS = {
-  USDT: '/zklend/icons/tokens/usdt.svg?w=20',
-  USDC: '/zklend/icons/tokens/usdc.svg?w=20',
-  WBTC: '/zklend/icons/tokens/wbtc.svg?w=20',
-  ETH: '/zklend/icons/tokens/eth.svg?w=20',
-  STRK: '/zklend/icons/tokens/strk.svg?w=20',
-  DAI: '/zklend/icons/tokens/dai.svg?w=20',
-  kSTRK: '/zklend/icons/tokens/kstrk.svg?w=20',
+  USDT: 'https://assets.troves.fi/integrations/tokens/usdt.svg?w=20',
+  USDC: 'https://assets.troves.fi/integrations/tokens/usdc.svg?w=20',
+  WBTC: 'https://assets.troves.fi/integrations/tokens/wbtc.svg?w=20',
+  ETH: 'https://assets.troves.fi/integrations/tokens/eth.svg?w=20',
+  STRK: 'https://assets.troves.fi/integrations/tokens/strk.svg?w=20',
+  DAI: 'https://assets.troves.fi/integrations/tokens/dai.svg?w=20',
   xSTRK: '/imagedelivery/c1f44170-c1b0-4531-3d3b-5f0bacfe1300/logo',
 };
 
@@ -21,7 +20,6 @@ export type TokenName =
   | 'STRK'
   | 'WBTC'
   | 'DAI'
-  | 'kSTRK'
   | 'xSTRK';
 
 export const CONSTANTS = {
@@ -38,7 +36,7 @@ export const CONSTANTS = {
     LENDING_GRAPH_URL: '/nostra/app/data-yqlpb/endpoint/data/v1/action/find',
   },
   ZKLEND: {
-    BASE_APR_API: '/zklend/api/pools',
+    BASE_APR_API: '/zklend/api/poolsee',
   },
   NIMBORA: {
     DEX_APR_API: '/nimbora/yield-dex/strategies',
@@ -223,19 +221,6 @@ export const TOKENS: TokenInfo[] = [
     maxAmount: MyNumber.fromEther('10000', 18),
     stepAmount: MyNumber.fromEther('0.01', 18),
     isERC4626: true,
-  },
-  {
-    token: standariseAddress(
-      '0x045cd05ee2caaac3459b87e5e2480099d201be2f62243f839f00e10dde7f500c',
-    ),
-    name: 'kSTRK',
-    decimals: 18,
-    displayDecimals: 2,
-    logo: CONSTANTS.LOGOS.STRK,
-    minAmount: MyNumber.fromEther('10', 18),
-    maxAmount: MyNumber.fromEther('10000', 18),
-    stepAmount: MyNumber.fromEther('10', 18),
-    isERC4626: false,
   },
 ];
 

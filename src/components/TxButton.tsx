@@ -197,7 +197,7 @@ export default function TxButton(props: TxButtonProps) {
             >
               <TwitterShareButton
                 url={`${getReferralUrl(referralCode)}`}
-                title={`🚀I just invested my ${props.selectedMarket?.name ?? ''} in the high-yield  "${props.strategy?.name ?? ''}" strategy at @trovesfi, earning an impressive ${((props.strategy?.netYield || strategyCached?.apy || 0) * 100).toFixed(2)}% yield! 💸. \n\nWant in? Join me and start earning: `}
+                title={`🚀I just invested my ${props.selectedMarket?.name ?? ''} in the  "${props.strategy?.name ?? ''}" strategy at @trovesfi, earning an impressive ${((props.strategy?.netYield || strategyCached?.apy || 0) * 100).toFixed(2)}% yield! 💸. \n\nWant in? Join me and start earning: `}
                 related={['troves']}
                 style={{
                   display: 'flex',
