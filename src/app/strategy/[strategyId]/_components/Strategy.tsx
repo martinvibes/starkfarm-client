@@ -1,55 +1,55 @@
 'use client';
 
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
   Container,
   Flex,
   Link,
   Spinner,
-  TabPanels,
-  TabPanel,
-  Tabs,
+  Stack,
   Tab,
+  TabIndicator,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   Tooltip,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  TabList,
-  TabIndicator,
   VStack,
-  Stack,
 } from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import mixpanel from 'mixpanel-browser';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { APYInfo } from '@/components/APYInfo';
+import HarvestTime from '@/components/HarvestTime';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { DUMMY_BAL_ATOM, returnEmptyBal } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
 import { strategiesAtom, StrategyInfo } from '@/store/strategies.atoms';
 import { TxHistoryAtom } from '@/store/transactions.atom';
-import { getTokenInfoFromAddr } from '@/utils';
-import MyNumber from '@/utils/MyNumber';
-import { StrategyParams } from '../page';
 import {
   TrovesBaseAPYsAtom,
   TrovesStrategyAPIResult,
 } from '@/store/troves.atoms';
-import { ManageTab } from './ManageTab';
-import { RiskTab } from './RiskTab';
+import { MYSTYLES } from '@/style';
+import { getTokenInfoFromAddr } from '@/utils';
+import MyNumber from '@/utils/MyNumber';
+import { StrategyParams } from '../page';
 import { DetailsTab } from './DetailsTab';
 import { FAQTab } from './FAQTab';
-import { TransactionsTab } from './TransactionsTab';
-import HarvestTime from '@/components/HarvestTime';
+import { ManageTab } from './ManageTab';
+import { RiskTab } from './RiskTab';
 import { StrategyInfoComponent } from './StrategyInfo';
-import { APYInfo } from '@/components/APYInfo';
-import { isMobile } from 'react-device-detect';
-import { MYSTYLES } from '@/style';
+import { TransactionsTab } from './TransactionsTab';
 
 function HoldingsText({
   strategy,
@@ -330,6 +330,8 @@ const Strategy = ({ params }: StrategyParams) => {
   const colSpan1: any = { base: '5', md: '3' };
   const colSpan2: any = { base: '5', md: '2' };
 
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -353,6 +355,7 @@ const Strategy = ({ params }: StrategyParams) => {
     });
     return Array.from(uniqueItems.values());
   }
+
   return (
     <Container
       display={{ base: 'block' }}

@@ -23,9 +23,10 @@ import {
   StarknetkitConnector,
 } from 'starknetkit';
 
-import tg from '@/assets/tg.svg';
 import argentMobile from '@/assets/argentMobile.svg';
+import tg from '@/assets/tg.svg';
 import CONSTANTS from '@/constants';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { getERC20Balance } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
 import { lastWalletAtom } from '@/store/utils.atoms';
@@ -38,6 +39,7 @@ import {
   standariseAddress,
   truncate,
 } from '@/utils';
+import fulllogo from '@public/fulllogo.svg';
 import {
   InjectedConnector,
   useAccount,
@@ -47,7 +49,6 @@ import {
 } from '@starknet-react/core';
 import mixpanel from 'mixpanel-browser';
 import { useEffect, useMemo } from 'react';
-import { isMobile } from 'react-device-detect';
 import { constants } from 'starknet';
 import {
   ArgentMobileConnector,
@@ -59,7 +60,6 @@ import {
 } from 'starknetkit/braavosMobile';
 import { WebWalletConnector } from 'starknetkit/webwallet';
 import TncModal from './TncModal';
-import fulllogo from '@public/fulllogo.svg';
 
 export function getConnectors(isMobile: boolean) {
   const mobileConnector = ArgentMobileConnector.init({
@@ -186,6 +186,8 @@ export default function Navbar(props: NavbarProps) {
 
     return balance.amount.toEtherToFixedDecimals(6);
   };
+
+  const isMobile = useIsMobile();
 
   console.log(account, 'account');
 

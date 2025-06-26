@@ -1,3 +1,4 @@
+import { useIsMobile } from '@/hooks/use-mobile';
 import { referralCodeAtom } from '@/store/referral.store';
 import { StrategyTxProps, monitorNewTxAtom } from '@/store/transactions.atom';
 import {
@@ -23,7 +24,6 @@ import { useAccount, useSendTransaction } from '@starknet-react/core';
 import { useAtomValue, useSetAtom } from 'jotai';
 import mixpanel from 'mixpanel-browser';
 import { useEffect, useMemo } from 'react';
-import { isMobile } from 'react-device-detect';
 import { TwitterShareButton } from 'react-share';
 import { Call } from 'starknet';
 
@@ -44,6 +44,8 @@ export default function TxButton(props: TxButtonProps) {
   const monitorNewTx = useSetAtom(monitorNewTxAtom);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const referralCode = useAtomValue(referralCodeAtom);
+
+  const isMobile = useIsMobile();
 
   const disabledStyle = {
     bg: 'mycard_light',
