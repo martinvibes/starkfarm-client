@@ -34,6 +34,7 @@ import {
 import { atom } from 'jotai';
 import { IDapp } from '@/store/IDapp.store';
 import { ContractAddr, IStrategyMetadata, Web3Number } from '@strkfarm/sdk';
+import React from 'react';
 
 export class DeltaNeutralMM extends IStrategy<void> {
   riskFactor = 0.75;
@@ -49,7 +50,7 @@ export class DeltaNeutralMM extends IStrategy<void> {
   constructor(
     token: TokenInfo,
     name: string,
-    description: string,
+    description: string | React.ReactNode,
     secondaryTokenName: TokenName,
     strategyAddress: string,
     stepAmountFactors: number[],
@@ -84,6 +85,8 @@ export class DeltaNeutralMM extends IStrategy<void> {
           displayDecimals: tokenInfo.displayDecimals,
         },
       ],
+      launchBlock: 0,
+      faqs: [],
       protocols: [],
       maxTVL: new Web3Number('0', tokenInfo.decimals),
       risk: {
@@ -91,7 +94,9 @@ export class DeltaNeutralMM extends IStrategy<void> {
         netRisk: 0,
         notARisks: [],
       },
+      contractDetails: [],
       additionalInfo: undefined,
+      investmentSteps: [],
     };
 
     super(

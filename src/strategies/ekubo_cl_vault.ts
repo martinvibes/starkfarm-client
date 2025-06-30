@@ -136,19 +136,25 @@ export class EkuboClStrategy extends IStrategy<CLVaultStrategySettings> {
     const changes = args[0];
     const allAmounts = args[1];
     console.log('onAmountsChange [1.1]', changes, allAmounts);
-    const isToken0Change = changes.index == 0;
+    const isToken0Change = changes.index === 0;
     const input = {
       token0: isToken0Change
         ? {
             ...changes.amountInfo,
           }
         : {
-            amount: Web3Number.fromWei('0', allAmounts[0].tokenInfo.decimals),
+            amount: Web3Number.fromWei(
+              '0',
+              allAmounts[0].tokenInfo?.decimals || 0,
+            ),
             tokenInfo: allAmounts[0].tokenInfo,
           },
       token1: isToken0Change
         ? {
-            amount: Web3Number.fromWei('0', allAmounts[1].tokenInfo.decimals),
+            amount: Web3Number.fromWei(
+              '0',
+              allAmounts[1].tokenInfo?.decimals || 0,
+            ),
             tokenInfo: allAmounts[1].tokenInfo,
           }
         : { ...changes.amountInfo },

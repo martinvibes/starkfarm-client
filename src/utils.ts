@@ -74,16 +74,17 @@ export function standariseAddress(address: string | bigint) {
 }
 
 export const MyMenuListProps: MenuListProps = {
-  bg: 'highlight',
-  color: 'white',
-  borderColor: 'bg',
+  bg: 'mycard_light_2x',
+  color: 'text_primary',
+  borderColor: 'mycard',
+  boxShadow: '0px 0px 3px var(--chakra-colors-mycard_light_2x)',
   padding: 0,
 };
 
 export const MyMenuItemProps: MenuItemProps = {
-  bg: 'highlight',
+  bg: 'mycard_light_2x',
   _hover: {
-    bg: 'bg',
+    bg: 'mycard_light',
   },
 };
 
@@ -114,8 +115,8 @@ export function generateReferralCode() {
 
 export function getReferralUrl(referralCode: string) {
   if (
-    window.location.origin.includes('app.strkfarm.xyz') ||
-    window.location.origin.includes('app.strkfarm.com')
+    window.location.origin.includes('app.troves.fi') ||
+    window.location.origin.includes('app.troves.fi')
   ) {
     return `https://${getHosturl()}/r/${referralCode}`;
   }
@@ -131,7 +132,7 @@ export function getDisplayCurrencyAmount(
   });
 }
 
-// returns time to endtime in days, hours, minutes
+// returns time to endtime in days, hours, minutes, seconds
 export function formatTimediff(endTime: Date) {
   const now = new Date();
   if (now.getTime() >= endTime.getTime()) {
@@ -139,11 +140,12 @@ export function formatTimediff(endTime: Date) {
       days: 0,
       hours: 0,
       minutes: 0,
+      seconds: 0,
       isZero: true,
     };
   }
 
-  // else return number of days, months, weeks, hours, minutrs, seconds to endtime
+  // else return number of days, months, weeks, hours, minutes, seconds to endtime
   const diff = endTime.getTime() - now.getTime();
   // get days floor
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -151,11 +153,14 @@ export function formatTimediff(endTime: Date) {
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   // after accounting days and hours, get remaining minutes
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  // after accounting days, hours and minutes, get remaining seconds
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
   return {
     days,
     hours,
     minutes,
+    seconds,
     isZero: false,
   };
 }
@@ -193,18 +198,25 @@ export function getEndpoint() {
   return (
     (typeof window === 'undefined'
       ? process.env.HOSTNAME
-      : window.location.origin) || 'https://app.strkfarm.com'
+      : window.location.origin) || 'https://app.troves.fi'
   );
 }
 
 export function getHosturl() {
-  const FALLBACK = 'strkfarm.com';
+  const FALLBACK = 'troves.fi';
   try {
-    return (
-      (typeof window !== 'undefined'
-        ? window.location.hostname.split('.').slice(-2).join('.')
-        : null) || FALLBACK
-    );
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      // Check if hostname is an IPv4 or IPv6 address
+      /* prettier-ignore */
+      /* eslint-disable */
+      const isIP =
+        /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) || // IPv4
+        /^\[?([a-fA-F0-9:]+)\]?$/.test(hostname); // IPv6 (with or without brackets)
+      if (isIP) return FALLBACK;
+      return hostname.split('.').slice(-2).join('.');
+    }
+    return FALLBACK;
   } catch (e) {
     return FALLBACK;
   }

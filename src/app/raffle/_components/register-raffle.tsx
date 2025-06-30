@@ -76,7 +76,7 @@ const RegisterRaffle: React.FC = () => {
             src="/raffle-register.svg"
             width={64}
             height={64}
-            alt="STRKFarm"
+            alt="Troves"
           />
           <p className="text-[#61FCAE] group-hover:text-black text-sm lg:text-xl font-medium">
             Register if you are coming to Devcon and get one ticket.

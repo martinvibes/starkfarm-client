@@ -1,24 +1,10 @@
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Flex,
-  Spinner,
-  Stat,
-  StatLabel,
-  StatNumber,
-  Tag,
-  Text,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react';
 import { useAccount } from '@starknet-react/core';
 import { StrategyInfo } from '@/store/strategies.atoms';
 import { HarvestTimeAtom } from '@/store/harvest.atom';
 import { useAtomValue } from 'jotai';
-import { formatTimediff, getDisplayCurrencyAmount, timeAgo } from '@/utils';
-import { isMobile } from 'react-device-detect';
-import STRKFarmAtoms, {
-  STRKFarmStrategyAPIResult,
-} from '@/store/strkfarm.atoms';
+import { formatTimediff, getDisplayCurrencyAmount } from '@/utils';
 
 interface HarvestTimeProps {
   strategy: StrategyInfo<any>;
@@ -74,225 +60,150 @@ const HarvestTime: React.FC<HarvestTimeProps> = ({ strategy, balData }) => {
     return formatTimediff(nextHarvest);
   }, [data?.timestamp, lastHarvest]);
 
-  const strategiesInfo = useAtomValue(STRKFarmAtoms.baseAPRs!);
-
-  const strategyInfo = useMemo(() => {
-    if (!strategiesInfo || !strategiesInfo.data) return null;
-
-    const strategiesList: STRKFarmStrategyAPIResult[] =
-      strategiesInfo.data.strategies;
-    const strategyInfo = strategiesList.find(
-      (strat) => strat.id == strategy.id,
-    );
-    return strategyInfo ? strategyInfo : null;
-  }, [strategiesInfo]);
-
-  const leverage = useMemo(() => {
-    if (!strategyInfo) return 0;
-    return strategyInfo.leverage || 0;
-  }, [strategyInfo]);
-
-  const defaultAPYTooltip =
-    'Current APY including any fees. Net returns subject to change based on market conditions.';
   return (
-    <Box>
-      <Flex justifyContent="space-between">
-        <Flex>
-          <Tooltip
-            label={
-              <Box fontSize={'13px'}>
-                <Text>
-                  {strategy.metadata.apyMethodology || defaultAPYTooltip}
-                </Text>
-                {strategyInfo && (
-                  <Box
-                    marginTop={'10px'}
-                    justifyContent={'space-between'}
-                    display={'flex'}
-                  >
-                    <Box>
-                      <Text>Strategy APY:</Text>
-                      <Text fontSize={'12px'} opacity={0.7}>
-                        Including fees and Defi spring rewards
-                      </Text>
-                    </Box>
-                    <Text fontWeight={'bold'}>
-                      {(strategyInfo.apySplit.baseApy * 100).toFixed(2)}%
-                    </Text>
-                  </Box>
-                )}
-                {strategyInfo && strategyInfo.apySplit.rewardsApy > 0 && (
-                  <Box
-                    marginTop={'10px'}
-                    justifyContent={'space-between'}
-                    display={'flex'}
-                  >
-                    <Box>
-                      <Text>Rewards APY:</Text>
-                      <Text fontSize={'12px'} opacity={0.7}>
-                        Incentives by STRKFarm
-                      </Text>
-                    </Box>
-                    <Text fontWeight={'bold'}>
-                      {(strategyInfo.apySplit.rewardsApy * 100).toFixed(2)}%
-                    </Text>
-                  </Box>
-                )}
-              </Box>
-            }
-          >
-            <Stat
-              marginRight={'5px'}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'flex-end'}
-            >
-              <StatLabel>APY</StatLabel>
-              <StatNumber color="cyan" lineHeight="24px">
-                {((strategyInfo?.apy || 0) * 100).toFixed(2)}%
-              </StatNumber>
-            </Stat>
-          </Tooltip>
-          {strategyInfo && strategyInfo.apySplit.rewardsApy > 0 && (
-            <Flex flexDirection={'column'} justifyContent={'flex-end'}>
-              <Tooltip label="Boosted rewards from STRKFarm">
-                <Tag
-                  bg="bg"
-                  color={'white'}
-                  fontSize={'12px'}
-                  padding={'2px 5px'}
-                >
-                  🔥 Boosted
-                  {leverage == 0 && (
-                    <Spinner size="xs" color="white" ml={'5px'} />
-                  )}
-                </Tag>
-              </Tooltip>
-            </Flex>
-          )}
-        </Flex>
-
-        {!isMobile && !strategy.settings.hideHarvestInfo && (
+    <Flex
+      width={'100%'}
+      flexDirection={{ base: 'column', md: 'row' }}
+      bg={'mycard'}
+      borderRadius={'lg'}
+    >
+      <Flex width={'100%'} justifyContent="space-between">
+        {!strategy.settings.hideHarvestInfo && (
           <Tooltip
             label={`This is when your investment increases as STRK rewards are automatically claimed and reinvested into the strategy's tokens.`}
           >
-            <Box>
-              <Text
-                color="#D4D4D6"
+            <Flex
+              alignItems={'center'}
+              gap={'2'}
+              padding={'16px'}
+              width={'100%'}
+              direction={'column'}
+            >
+              <Box
+                color="text_secondary"
                 fontSize="14px"
                 fontWeight="500"
                 display={'flex'}
+                gap={2}
+                width={'100%'}
+                justifyContent={'space-between'}
               >
-                Next Harvest in:{' '}
+                <Text style={{ width: '100%' }}>Next Harvest in:</Text>
                 {harvestTimestamp.isZero && (
-                  <Text color={'cyan'} fontWeight={'bold'} marginLeft={'5px'}>
+                  <Text
+                    color={'purple'}
+                    width="100%"
+                    fontWeight={'bold'}
+                    marginLeft={'5px'}
+                    textAlign={'right'}
+                  >
                     Anytime now
                   </Text>
                 )}
-              </Text>
+              </Box>
+
               <Box
                 display="flex"
                 alignItems="center"
-                pt="5px"
                 gap="10px"
+                width={'100%'}
                 justifyContent="space-between"
               >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  flexDirection="column"
-                  gap="4px"
-                  bgColor="color2_50p"
-                  width="53px"
-                  height="53px"
-                  borderRadius="8px"
-                >
-                  <Text color="#AEAEAE" fontSize="12px" fontWeight="300">
-                    Days
-                  </Text>
-                  <Text color="white" fontWeight="semi-bold">
-                    {harvestTimestamp.days ?? 0}
-                  </Text>
-                </Box>
-
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  flexDirection="column"
-                  gap="4px"
-                  bgColor="color2_50p"
-                  width="53px"
-                  height="53px"
-                  borderRadius="8px"
-                >
-                  <Text color="#AEAEAE" fontSize="12px" fontWeight="300">
-                    Hour
-                  </Text>
-                  <Text color="white" fontWeight="semi-bold">
-                    {harvestTimestamp.hours ?? 0}
-                  </Text>
-                </Box>
-
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  flexDirection="column"
-                  gap="4px"
-                  bgColor="color2_50p"
-                  width="53px"
-                  height="53px"
-                  borderRadius="8px"
-                >
-                  <Text color="#AEAEAE" fontSize="12px" fontWeight="300">
-                    Mins
-                  </Text>
-                  <Text color="white" fontWeight="semi-bold">
-                    {harvestTimestamp.minutes ?? 0}
-                  </Text>
-                </Box>
+                {[
+                  {
+                    label: 'Days',
+                    value: harvestTimestamp.days ?? 0,
+                  },
+                  {
+                    label: 'Hrs',
+                    value: harvestTimestamp.hours ?? 0,
+                  },
+                  {
+                    label: 'Min',
+                    value: harvestTimestamp.minutes ?? 0,
+                  },
+                  {
+                    label: 'Sec',
+                    value: harvestTimestamp.seconds ?? 0,
+                  },
+                ].map((item, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexDirection="column"
+                    gap="4px"
+                    bg={'mycard_light_2x'}
+                    width="53px"
+                    height="53px"
+                    borderRadius="8px"
+                  >
+                    <Text
+                      color="text_secondary"
+                      fontSize="12px"
+                      fontWeight="300"
+                    >
+                      {item.label}
+                    </Text>
+                    <Text
+                      color="text_primary"
+                      fontSize={'16px'}
+                      fontWeight={'600'}
+                    >
+                      {item.value}
+                    </Text>
+                  </Box>
+                ))}
               </Box>
-            </Box>
+            </Flex>
           </Tooltip>
         )}
       </Flex>
 
-      {!strategy.settings.hideHarvestInfo && (
-        <Box
-          display="flex"
-          padding="5px"
-          width={'100%'}
-          bg="bg"
-          marginTop={'10px'}
-          borderRadius={'5px'}
-        >
-          <Text
-            color="white"
-            fontSize="12px"
-            fontWeight="normal"
-            textAlign={isMobile ? 'left' : 'right'}
+      <Flex justifyContent={'space-between'} width={'100%'}>
+        {!strategy.settings.hideHarvestInfo && (
+          <Flex
+            padding={{ base: '0 16px 16px', md: '16px 16px 16px 0' }}
+            alignItems={'center'}
+            gap={'2'}
+            direction={{ base: 'column' }}
             width={'100%'}
+            justifyContent={'end'}
           >
-            Harvested{' '}
-            <b>
+            <Text
+              color={'text_secondary'}
+              fontSize={'12px'}
+              fontWeight={'400'}
+              lineHeight={'100%'}
+              bg={'mycard'}
+              width={'100%'}
+              borderRadius={'lg'}
+            >
+              Total rewards harvested:{' '}
               {getDisplayCurrencyAmount(
                 harvestTime?.data?.totalStrkHarvestedByContract.STRKAmount || 0,
                 2,
               )}{' '}
               STRK
-            </b>{' '}
-            over <b>{harvestTime?.data?.totalHarvestsByContract} claims.</b>{' '}
-            {lastHarvest && (
-              <span>
-                Last harvested <b>{timeAgo(lastHarvest)}</b> (Across all users).
-              </span>
-            )}
-          </Text>
-        </Box>
-      )}
-    </Box>
+            </Text>
+
+            <Text
+              color={'text_secondary'}
+              fontSize={'12px'}
+              fontWeight={'400'}
+              lineHeight={'100%'}
+              bg={'mycard'}
+              width={'100%'}
+              borderRadius={'lg'}
+            >
+              Total number of times harvested:{' '}
+              {harvestTime?.data?.totalHarvestsByContract || '-'}
+            </Text>
+          </Flex>
+        )}
+      </Flex>
+    </Flex>
   );
 };
 

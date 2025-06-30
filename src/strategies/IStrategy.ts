@@ -118,6 +118,7 @@ export interface IStrategySettings {
   isAudited?: boolean;
   auditUrl?: string;
   isPaused?: boolean;
+  isInMaintenance?: boolean;
   quoteToken: TokenInfoV2; // used to show the holdings in this token,
   isTransactionHistDisabled?: boolean;
 }
@@ -190,10 +191,7 @@ export class IStrategyProps<T> {
   ];
 
   getSafetyFactorLine() {
-    let factorLevel = 'Low';
-    if (this.riskFactor > 2) factorLevel = 'Medium';
-    if (this.riskFactor >= 4) factorLevel = 'High';
-    return `Risk factor: ${this.riskFactor}/5 (${factorLevel} risk)`;
+    return `Risk factor: ${this.riskFactor}/5`;
   }
 
   depositMethods = async (
@@ -525,3 +523,16 @@ export function getLiveStatusEnum(status: number) {
   }
   return StrategyLiveStatus.RETIRED;
 }
+
+export const getRiskString = (riskValue: number): string => {
+  if (riskValue === 0) {
+    return 'No risk';
+  } else if (riskValue <= 1) {
+    return 'Very Low';
+  } else if (riskValue <= 2) {
+    return 'Low';
+  } else if (riskValue < 3) {
+    return 'Medium';
+  }
+  return 'High';
+};

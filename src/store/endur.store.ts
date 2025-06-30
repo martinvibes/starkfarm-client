@@ -22,7 +22,7 @@ export interface IndexedPoolData {
 
 export class Endur extends IDapp<IndexedPoolData> {
   name = 'Endur';
-  link = 'https://endur.fi/r/strkfarm';
+  link = 'https://endur.fi/r/troves';
   logo = 'https://endur.fi/favicon.ico';
   incentiveDataKey: string = 'Endur';
 }

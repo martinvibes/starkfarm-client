@@ -6,22 +6,24 @@ import React from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'STRKFarm | Yield aggregator on Starknet',
+  title: 'Troves | Yield strategies on Starknet',
   description:
-    'Find and invest in high yield pools. STRKFarm is the best yield aggregator on Starknet.',
+    'Find and invest in high yield pools. Troves is the best Yield strategies on Starknet.',
   openGraph: {
-    title: 'STRKFarm | Yield aggregator on Starknet',
+    title: 'Troves | Yield strategies on Starknet',
     description:
-      'Find and invest in high yield pools. STRKFarm is the best yield aggregator on Starknet.',
-    images: ['https://static-assets-8zct.onrender.com/strkfarm/og-img-png.png'],
+      'Find and invest in high yield pools. Troves is the best Yield strategies on Starknet.',
+    images: ['https://static-assets-8zct.onrender.com/troves/og-img-png.png'],
+    url: 'https://app.troves.fi',
+    type: 'website',
   },
   twitter: {
-    creator: '@akiraonstarknet',
-    title: 'STRKFarm | Yield aggregator on Starknet',
+    creator: '@trovesfi',
+    title: 'Troves | Yield strategies on Starknet',
     description:
-      'Find and invest in high yield pools. STRKFarm is the best yield aggregator on Starknet.',
+      'Find and invest in high yield pools. Troves is the best Yield strategies on Starknet.',
     card: 'player',
-    images: ['https://static-assets-8zct.onrender.com/strkfarm/og-img-png.png'],
+    images: ['https://static-assets-8zct.onrender.com/troves/og-img-png.png'],
   },
 };
 
@@ -33,10 +35,29 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#111119" />
+        <link rel="icon" href="/favicon/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon/favicon-16x16.png"
+        />
+        <meta name="theme-color" content="black" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
       </head>
-      <body>
+      <body style={{ background: 'black' }}>
         {children}
         <Analytics />
       </body>

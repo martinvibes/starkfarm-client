@@ -1,60 +1,242 @@
 'use client';
 
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
-  Alert,
-  AlertIcon,
-  Avatar,
-  AvatarGroup,
-  Badge,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
-  Card,
-  Center,
+  Button,
+  Container,
   Flex,
-  Grid,
-  GridItem,
-  HStack,
   Link,
-  ListItem,
-  OrderedList,
   Spinner,
+  Stack,
+  Tab,
+  TabIndicator,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   Tooltip,
   VStack,
-  Wrap,
-  WrapItem,
 } from '@chakra-ui/react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import mixpanel from 'mixpanel-browser';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { APYInfo } from '@/components/APYInfo';
 import HarvestTime from '@/components/HarvestTime';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { DUMMY_BAL_ATOM, returnEmptyBal } from '@/store/balance.atoms';
 import { addressAtom } from '@/store/claims.atoms';
 import { strategiesAtom, StrategyInfo } from '@/store/strategies.atoms';
 import { TxHistoryAtom } from '@/store/transactions.atom';
 import {
-  capitalize,
-  getTokenInfoFromAddr,
-  getUniqueById,
-  shortAddress,
-  timeAgo,
-} from '@/utils';
+  TrovesBaseAPYsAtom,
+  TrovesStrategyAPIResult,
+} from '@/store/troves.atoms';
+import { MYSTYLES } from '@/style';
+import { getTokenInfoFromAddr } from '@/utils';
 import MyNumber from '@/utils/MyNumber';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { StrategyParams } from '../page';
-import FlowChart from './FlowChart';
-import { isMobile } from 'react-device-detect';
-import { getRiskExplaination } from '@strkfarm/sdk';
-import {
-  STRKFarmBaseAPYsAtom,
-  STRKFarmStrategyAPIResult,
-} from '@/store/strkfarm.atoms';
-import { TokenDeposit } from './TokenDeposit';
+import { DetailsTab } from './DetailsTab';
+import { FAQTab } from './FAQTab';
+import { ManageTab } from './ManageTab';
+import { RiskTab } from './RiskTab';
+import { StrategyInfoComponent } from './StrategyInfo';
+import { TransactionsTab } from './TransactionsTab';
+
+function HoldingsText({
+  strategy,
+  address,
+  balData,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  balData: any;
+}) {
+  if (strategy.settings.isInMaintenance)
+    return <span style={{ color: 'orange' }}>Maintenance Mode</span>;
+  if (!address)
+    return <Text fontSize={'13px'}>You will see your holdings here</Text>;
+  if (balData.isLoading || !balData.data?.tokenInfo) {
+    return (
+      <>
+        <Spinner size="sm" marginTop={'5px'} />
+      </>
+    );
+  }
+  if (balData.isError) {
+    console.error('Balance data error:', balData.error);
+    return 'Error';
+  }
+  const value = Number(
+    balData.data.amount.toEtherToFixedDecimals(
+      balData.data.tokenInfo?.displayDecimals || 2,
+    ),
+  );
+  if (value === 0 || strategy?.isRetired()) return '-';
+  return `${balData.data.amount.toEtherToFixedDecimals(
+    balData.data.tokenInfo?.displayDecimals || 2,
+  )} ${balData.data.tokenInfo?.name}`;
+}
+
+function NetEarningsText({
+  strategy,
+  address,
+  profit,
+  balData,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  profit: number;
+  balData: any;
+}) {
+  if (
+    !address ||
+    profit === 0 ||
+    strategy?.isRetired() ||
+    strategy.settings.isInMaintenance
+  )
+    return '-';
+  return `${profit?.toFixed(
+    balData.data.tokenInfo?.displayDecimals || 2,
+  )} ${balData.data.tokenInfo?.name}`;
+}
+
+function HoldingsAndEarnings({
+  strategy,
+  address,
+  balData,
+  profit,
+}: {
+  strategy: StrategyInfo<any>;
+  address: string | undefined;
+  balData: any;
+  profit: number;
+}) {
+  return (
+    <Flex width={'100%'} justifyContent={'space-between'} gap={2}>
+      <Box padding={'16px'} bg="mycard" width={'100%'} borderRadius={'lg'}>
+        <Text color={'text_secondary'}>
+          <b>Your Holdings </b>
+        </Text>
+        <Text color="purple">
+          <HoldingsText
+            strategy={strategy}
+            address={address}
+            balData={balData}
+          />
+        </Text>
+      </Box>
+      {!strategy.settings.isTransactionHistDisabled && (
+        <Tooltip
+          label={!strategy?.isRetired() && 'Life time earnings'}
+          {...MYSTYLES.TOOLTIP.STANDARD}
+        >
+          <Box padding={'16px'} bg="mycard" width={'100%'} borderRadius={'lg'}>
+            <Text
+              textAlign={'right'}
+              fontWeight={'none'}
+              color={'text_secondary'}
+            >
+              <b>Net earnings</b>
+            </Text>
+            <Text
+              textAlign={'right'}
+              color={
+                profit == 0
+                  ? 'text_secondary'
+                  : profit > 0
+                    ? 'light_green_2'
+                    : 'red'
+              }
+            >
+              <NetEarningsText
+                strategy={strategy}
+                address={address}
+                profit={profit}
+                balData={balData}
+              />
+            </Text>
+          </Box>
+        </Tooltip>
+      )}
+    </Flex>
+  );
+}
 
 const Strategy = ({ params }: StrategyParams) => {
   const address = useAtomValue(addressAtom);
   const strategies = useAtomValue(strategiesAtom);
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [tabIndex, setTabIndex] = useState(0);
+  const [accordionIndex, setAccordionIndex] = useState(0);
+
+  function setRoute(value: string) {
+    router.push(`?tab=${value}`);
+  }
+
+  function handleTabsChange(index: number) {
+    switch (index) {
+      case 0:
+        setRoute('manage');
+        break;
+      case 1:
+        setRoute('details');
+        break;
+      case 2:
+        setRoute('risks');
+        break;
+      case 3:
+        setRoute('faq');
+        break;
+      case 4:
+        setRoute('transactions');
+        break;
+      default:
+        setRoute('manage');
+        break;
+    }
+  }
+
+  useEffect(() => {
+    mixpanel.track('Page open');
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const tab = searchParams.get('tab');
+
+      switch (tab) {
+        case 'manage':
+          setTabIndex(0);
+          break;
+        case 'details':
+          setTabIndex(1);
+          break;
+        case 'risks':
+          setTabIndex(2);
+          break;
+        case 'faq':
+          setTabIndex(3);
+          break;
+        case 'transactions':
+          setTabIndex(4);
+          break;
+        default:
+          setTabIndex(0);
+          break;
+      }
+    })();
+  }, [searchParams]);
 
   const strategy: StrategyInfo<any> | undefined = useMemo(() => {
     const id = params.strategyId;
@@ -80,8 +262,8 @@ const Strategy = ({ params }: StrategyParams) => {
   const individualBalances = useAtomValue(
     strategy?.balancesAtom || atom([returnEmptyBal()]),
   );
+  console.log('balData', balData);
 
-  // fetch tx history
   const txHistoryAtom = useMemo(
     () => TxHistoryAtom(strategyAddress, address!),
     [address, strategyAddress],
@@ -107,10 +289,6 @@ const Strategy = ({ params }: StrategyParams) => {
     return txHistoryResult.data || { findManyInvestment_flows: [] };
   }, [JSON.stringify(txHistoryResult.data)]);
 
-  // compute profit
-  // profit doesnt change quickly in real time, but total deposit amount can change
-  // and it can impact the profit calc as txHistory may not be updated at the same time as balData
-  // So, we compute profit once only
   const [profit, setProfit] = useState(0);
   const computeProfit = useCallback(() => {
     if (!txHistory.findManyInvestment_flows.length) return 0;
@@ -152,538 +330,284 @@ const Strategy = ({ params }: StrategyParams) => {
   const colSpan1: any = { base: '5', md: '3' };
   const colSpan2: any = { base: '5', md: '2' };
 
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const strategiesInfo = useAtomValue(STRKFarmBaseAPYsAtom);
+  const strategiesInfo = useAtomValue(TrovesBaseAPYsAtom);
   const strategyCached = useMemo(() => {
     if (!strategiesInfo || !strategiesInfo.data) return null;
-    const strategiesList: STRKFarmStrategyAPIResult[] =
+    const strategiesList: TrovesStrategyAPIResult[] =
       strategiesInfo.data.strategies;
     return strategiesList.find((s: any) => s.id === params.strategyId);
   }, [strategiesInfo, params.strategyId]);
 
   if (!isMounted) return null;
 
+  function getUniqueById(items: { id: string; logo: string }[]) {
+    const uniqueItems = new Map<string, { id: string; logo: string }>();
+    items.forEach((item) => {
+      if (!uniqueItems.has(item.id)) {
+        uniqueItems.set(item.id, item);
+      }
+    });
+    return Array.from(uniqueItems.values());
+  }
+
   return (
-    <>
-      <Flex marginBottom={'10px'}>
-        <AvatarGroup size={'md'} spacing={'-20px'} mr={'5px'}>
-          {strategy &&
-            strategy.metadata.depositTokens.length > 0 &&
-            strategy.metadata.depositTokens.map((token: any) => {
-              return (
-                <Avatar
-                  key={token.address}
-                  marginRight={'5px'}
-                  src={token.logo}
-                />
-              );
-            })}
-          {strategy && strategy.metadata.depositTokens.length == 0 && (
-            <Avatar marginRight={'5px'} src={strategy?.holdingTokens[0].logo} />
-          )}
-        </AvatarGroup>
-        <Text
-          marginTop={'6px'}
-          fontSize={{ base: '18px', md: '25px' }}
-          fontWeight={'bold'}
-          color="white"
+    <Container
+      display={{ base: 'block' }}
+      justifyContent={'center'}
+      width={'100%'}
+      margin={'0 auto'}
+      padding={'10px'}
+      maxWidth={'1152px'}
+    >
+      <Flex
+        width={'100%'}
+        flexDirection={'column'}
+        paddingTop={{ base: '10px', md: '32px' }}
+        gap={'48px'}
+      >
+        <Box>
+          <Link href="/?tab=strategies">
+            <Button
+              bg={'mycard_light'}
+              color={'text_primary'}
+              leftIcon={<ArrowBackIcon />}
+              _hover={{
+                bg: 'transparent',
+                color: 'white',
+              }}
+            >
+              Back
+            </Button>
+          </Link>
+        </Box>
+        <Stack
+          direction={{ base: 'column', md: 'row' }}
+          justifyContent={'space-between'}
+          width={'100%'}
         >
-          {strategy ? strategy.name : 'Strategy Not found'}
-        </Text>
-      </Flex>
-
-      {strategy && (
-        <VStack width={'100%'}>
-          <Grid width={'100%'} templateColumns="repeat(5, 1fr)" gap={2}>
-            <GridItem display="flex" colSpan={colSpan1}>
-              <Card width="100%" padding={'15px'} color="white" bg="highlight">
-                {!strategy?.isRetired() && (
-                  <HarvestTime strategy={strategy} balData={balData} />
-                )}
-                <Box display={{ base: 'block', md: 'flex' }} marginTop={'10px'}>
-                  <Box width={{ base: '100%', md: '100%' }}>
-                    <Text
-                      fontSize={'20px'}
-                      marginBottom={'0px'}
-                      fontWeight={'bold'}
-                    >
-                      How does it work?
-                    </Text>
-                    <Box
-                      color="light_grey"
-                      marginBottom="5px"
-                      fontSize={'14px'}
-                    >
-                      {strategy.description}
-                    </Box>
-                    <Wrap>
-                      {getUniqueById(
-                        strategy.actions.map((p) => ({
-                          id: p.pool.protocol.name,
-                          logo: p.pool.protocol.logo,
-                        })),
-                      ).map((p) => (
-                        <WrapItem marginRight={'10px'} key={p.id}>
-                          <Center>
-                            <Avatar
-                              size="2xs"
-                              bg={'black'}
-                              src={p.logo}
-                              marginRight={'2px'}
-                            />
-                            <Text marginTop={'2px'}>{p.id}</Text>
-                          </Center>
-                        </WrapItem>
-                      ))}
-                    </Wrap>
-                  </Box>
-                </Box>
+          {strategy && (
+            <VStack gap={6}>
+              <StrategyInfoComponent strategy={strategy} />
+              {!strategy?.isRetired() && strategyCached && (
                 <Box
-                  padding={'10px'}
-                  borderRadius={'10px'}
-                  bg={'bg'}
-                  marginTop={'20px'}
+                  alignItems={'flex-start'}
+                  justifyItems={'flex-start'}
+                  width={'100%'}
                 >
-                  {!balData.isLoading &&
-                    !balData.isError &&
-                    !balData.isPending &&
-                    balData.data &&
-                    balData.data.tokenInfo && (
-                      <Flex width={'100%'} justifyContent={'space-between'}>
-                        <Box>
-                          <Text>
-                            <b>Your Holdings </b>
-                          </Text>
-                          <Text color="cyan">
-                            {address
-                              ? Number(
-                                  balData.data.amount.toEtherToFixedDecimals(
-                                    balData.data.tokenInfo?.displayDecimals ||
-                                      2,
-                                  ),
-                                ) === 0 || strategy?.isRetired()
-                                ? '-'
-                                : `${balData.data.amount.toEtherToFixedDecimals(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                              : 'Connect wallet'}
-                          </Text>
-                        </Box>
-                        {!strategy.settings.isTransactionHistDisabled && (
-                          <Tooltip
-                            label={
-                              !strategy?.isRetired() && 'Life time earnings'
-                            }
-                          >
-                            <Box>
-                              <Text textAlign={'right'} fontWeight={'none'}>
-                                <b>Net earnings</b>
-                              </Text>
-                              <Text
-                                textAlign={'right'}
-                                color={profit >= 0 ? 'cyan' : 'red'}
-                              >
-                                {address &&
-                                profit !== 0 &&
-                                !strategy?.isRetired()
-                                  ? `${profit?.toFixed(balData.data.tokenInfo?.displayDecimals || 2)} ${balData.data.tokenInfo?.name}`
-                                  : '-'}
-                              </Text>
-                            </Box>
-                          </Tooltip>
-                        )}
-                      </Flex>
-                    )}
-                  {(balData.isLoading || !balData.data?.tokenInfo) && (
-                    <Text>
-                      <b>Your Holdings: </b>
-                      {address ? (
-                        <Spinner size="sm" marginTop={'5px'} />
-                      ) : (
-                        'Connect wallet'
-                      )}
-                    </Text>
-                  )}
-                  {balData.isError && (
-                    <Text>
-                      <b>Your Holdings: Error</b>
-                    </Text>
-                  )}
-
-                  {/* Show individual holdings is more tokens */}
-                  {individualBalances.length > 1 &&
-                    balData.data?.amount.compare('0', 'gt') && (
-                      <Tooltip label="Detailed info of your individual token holdings in the strategy. This can vary with time depending on market conditions. The above value is the holdings in aggregated as a single token.">
-                        <HStack
-                          className="flex"
-                          gap={2}
-                          fontSize={'12px'}
-                          color="light_grey"
-                          marginTop={'5px'}
-                          borderTop={'1px solid var(--chakra-colors-highlight)'}
-                          paddingTop={'5px'}
-                        >
-                          <p>Detailed Split:</p>
-                          {individualBalances.map((bx, index) => {
-                            return (
-                              <Text key={index}>
-                                {bx?.amount.toEtherToFixedDecimals(
-                                  bx.tokenInfo?.displayDecimals || 2,
-                                )}{' '}
-                                {bx?.tokenInfo?.name}
-                              </Text>
-                            );
-                          })}
-                        </HStack>
-                      </Tooltip>
-                    )}
-
-                  {address &&
-                    balData.data &&
-                    strategy.id == 'xstrk_sensei' &&
-                    profit < 0 &&
-                    profit /
-                      Number(balData.data.amount.toEtherToFixedDecimals(6)) <
-                      -0.01 && (
-                      <Alert
-                        status={'info'}
-                        fontSize={'12px'}
-                        color={'light_grey'}
-                        borderRadius={'10px'}
-                        bg="color2_50p"
-                        padding={'10px'}
-                        marginTop={'10px'}
-                      >
-                        <AlertIcon />
-                        Why did my holdings drop?{' '}
-                        <a
-                          href="https://docs.strkfarm.com/p/faq#q.-why-did-my-holdings-decrease-in-the-xstrk-sensei-strategy"
-                          style={{
-                            marginLeft: '5px',
-                            textDecoration: 'underline',
-                          }}
-                          target="_blank"
-                        >
-                          Learn more
-                        </a>
-                      </Alert>
-                    )}
+                  <APYInfo
+                    strategy={strategy}
+                    strategyAPIResult={strategyCached}
+                  />
                 </Box>
-                {strategy?.isRetired() && (
-                  <Alert
-                    fontSize={'14px'}
-                    color={'light_grey'}
-                    borderRadius={'10px'}
-                    bg="color2_50p"
-                    paddingY={'10px'}
-                    px={'14px'}
-                    mt={'5'}
-                  >
-                    <AlertIcon />
-
-                    <Text>
-                      This strategy is retired due to zkLend exploit. You can
-                      recover your partial funds from{' '}
-                      <Link href="/recovery" color={'white'}>
-                        here.
-                      </Link>
-                    </Text>
-                  </Alert>
-                )}
-              </Card>
-            </GridItem>
-
-            <GridItem display="flex" colSpan={colSpan2}>
-              {!strategy ||
-                (strategy.isSingleTokenDepositView && (
-                  <TokenDeposit strategy={strategy} isDualToken={false} />
-                ))}
-              {strategy && !strategy.isSingleTokenDepositView && (
-                <TokenDeposit strategy={strategy} isDualToken={true} />
               )}
-            </GridItem>
-          </Grid>
-
-          {!isMobile && (
-            <Card width={'100%'} color="white" bg="highlight" padding={'15px'}>
-              <Text fontSize={'20px'} marginBottom={'0px'} fontWeight={'bold'}>
-                Behind the scenes
-              </Text>
-              <Text fontSize={'14px'} marginBottom={'10px'}>
-                Actions done automatically by the strategy (smart-contract) with
-                an investment of $1000
-              </Text>
-              {strategy.steps.length > 0 && (
-                <div>
-                  <Flex
-                    color="white"
-                    width={'100%'}
-                    className="text-cell"
-                    display={{ base: 'none', md: 'flex' }}
-                  >
-                    <Text width={'50%'} padding={'5px 10px'}>
-                      Action
-                    </Text>
-                    <Text width={'30%'} textAlign={'left'} padding={'5px 10px'}>
-                      Protocol
-                    </Text>
-                    <Text
-                      width={'10%'}
-                      textAlign={'right'}
-                      padding={'5px 10px'}
-                    >
-                      Amount
-                    </Text>
-                    <Text
-                      width={'10%'}
-                      textAlign={'right'}
-                      padding={'5px 10px'}
-                    >
-                      Yield
-                    </Text>
-                  </Flex>
-                  {strategyCached &&
-                    strategyCached.actions.map((action, index) => (
-                      <Box
-                        className="text-cell"
-                        display={{ base: 'block', md: 'flex' }}
-                        key={index}
-                        width={'100%'}
-                        color="light_grey"
-                        fontSize={'14px'}
-                      >
-                        <Text
-                          width={{ base: '100%', md: '50%' }}
-                          padding={'5px 10px'}
-                        >
-                          {index + 1}
-                          {')'} {action.name}
-                        </Text>
-                        <Text
-                          width={{ base: '100%', md: '30%' }}
-                          padding={'5px 10px'}
-                        >
-                          <Avatar
-                            size="2xs"
-                            bg={'black'}
-                            src={action.token.logo}
-                            marginRight={'2px'}
-                          />{' '}
-                          {action.token.name} on
-                          <Avatar
-                            size="2xs"
-                            bg={'black'}
-                            src={action.protocol.logo}
-                            marginRight={'2px'}
-                            marginLeft={'5px'}
-                          />{' '}
-                          {action.protocol.name}
-                        </Text>
-                        <Text
-                          display={{ base: 'block', md: 'none' }}
-                          width={{ base: '100%', md: '10%' }}
-                          padding={'5px 10px'}
-                        >
-                          ${Number(action.amount).toLocaleString()} yields{' '}
-                          {(action.apy * 100).toFixed(2)}%
-                        </Text>
-                        <Text
-                          display={{ base: 'none', md: 'block' }}
-                          width={{ base: '100%', md: '10%' }}
-                          textAlign={'right'}
-                          padding={'5px 10px'}
-                        >
-                          ${Number(action.amount).toLocaleString()}
-                        </Text>
-                        <Text
-                          display={{ base: 'none', md: 'block' }}
-                          width={{ base: '100%', md: '10%' }}
-                          textAlign={'right'}
-                          padding={'5px 10px'}
-                        >
-                          {(action.apy * 100).toFixed(2)}%
-                        </Text>
-                      </Box>
-                    ))}
-                  {(!strategyCached || strategyCached.actions.length == 0) && (
-                    <Center width={'100%'} padding={'10px'}>
-                      <Spinner size={'xs'} color="white" />
-                    </Center>
-                  )}
-                </div>
-              )}
-              <FlowChart strategyId={strategy.id} />
-            </Card>
+            </VStack>
           )}
-          <Grid width={'100%'} templateColumns="repeat(5, 1fr)" gap={2}>
-            <GridItem colSpan={colSpan1} bg="highlight">
-              {/* Risks card */}
-              <Card
-                width={'100%'}
-                color="white"
-                bg="highlight"
-                padding={'15px'}
+
+          {strategy && (
+            <VStack gap={'8px'}>
+              <HoldingsAndEarnings
+                strategy={strategy}
+                address={address}
+                balData={balData}
+                profit={profit}
+              />
+              <HarvestTime strategy={strategy} balData={balData} />
+            </VStack>
+          )}
+        </Stack>
+
+        {!isMobile && (
+          <Tabs
+            position="relative"
+            variant="unstyled"
+            width={'100%'}
+            index={tabIndex}
+            onChange={handleTabsChange}
+          >
+            <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Manage clicked');
+                }}
               >
-                <Text
-                  fontSize={'20px'}
-                  marginBottom={'10px'}
-                  fontWeight={'bold'}
-                >
-                  Risks
-                </Text>
-                <OrderedList>
-                  {strategy.risks.map((r) => (
-                    <ListItem
-                      color="light_grey"
-                      key={r}
-                      fontSize={'13px'}
-                      marginBottom={'10px'}
-                      alignItems={'justify'}
-                    >
-                      {r}
-                    </ListItem>
-                  ))}
-                </OrderedList>
-                <Box>
-                  {strategy.metadata.risk.riskFactor.map(
-                    (r: any, i: number) => (
-                      <Tooltip label={getRiskExplaination(r.type)} key={i}>
-                        <Badge
-                          padding={'5px 10px'}
-                          borderRadius={'10px'}
-                          opacity={0.8}
-                          marginRight={'5px'}
-                          marginTop={'10px'}
-                        >
-                          {r.type.valueOf()}
-                        </Badge>
-                      </Tooltip>
+                Manage
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Details clicked');
+                }}
+              >
+                Details
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Risk clicked');
+                }}
+              >
+                Risks
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('FAQs clicked');
+                }}
+              >
+                FAQs
+              </Tab>
+              <Tab
+                color={'text_secondary'}
+                _selected={{ color: 'purple', fontWeight: 'bold' }}
+                onClick={() => {
+                  mixpanel.track('Transactions clicked');
+                }}
+              >
+                Transactions
+              </Tab>
+            </TabList>
+            <TabIndicator
+              mt="-1.5px"
+              height="3px"
+              bg="purple"
+              color="color1"
+              borderRadius="1px"
+            />
+            <TabPanels>
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <ManageTab strategy={strategy} />}
+              </TabPanel>
+              <TabPanel width={'100%'} padding={0}>
+                {strategyCached && strategy && (
+                  <DetailsTab
+                    strategyAPIResult={strategyCached}
+                    strategy={strategy}
+                  />
+                )}
+              </TabPanel>
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <RiskTab strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && <FAQTab strategy={strategy} />}
+              </TabPanel>
+
+              <TabPanel width={'100%'} padding={0}>
+                {strategy && (
+                  <TransactionsTab strategy={strategy} txHistory={txHistory} />
+                )}
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        )}
+
+        {/* MOBILE VIEW */}
+        {isMobile && (
+          <Box display="flex" flexDirection="column" gap="16px">
+            <Accordion
+              index={accordionIndex}
+              defaultIndex={[0]}
+              onChange={(expandedIndex) => {
+                if (Array.isArray(expandedIndex)) {
+                  setAccordionIndex(expandedIndex[0] ?? 0);
+                } else {
+                  setAccordionIndex(expandedIndex);
+                }
+              }}
+              allowToggle
+              width="100%"
+              display="flex"
+              flexDirection="column"
+              gap="10px"
+              borderRadius={'lg'}
+            >
+              {strategy &&
+                [
+                  {
+                    label: 'Manage',
+                    content: <ManageTab strategy={strategy} isMobile />,
+                  },
+                  {
+                    label: 'Details',
+                    content: strategyCached && (
+                      <DetailsTab
+                        strategyAPIResult={strategyCached}
+                        strategy={strategy}
+                        isMobile
+                      />
                     ),
-                  )}
-                </Box>
-              </Card>
-            </GridItem>
-            <GridItem colSpan={colSpan2} bg={'highlight'}>
-              {/* Transaction history card */}
-              <Card
-                width={'100%'}
-                color="white"
-                bg="highlight"
-                padding={'15px'}
-              >
-                <Text fontSize={'20px'} fontWeight={'bold'}>
-                  Transaction history
-                </Text>
-                {!strategy.settings.isTransactionHistDisabled && (
-                  <Text
-                    fontSize={'13px'}
-                    marginBottom={'10px'}
-                    color={'color2'}
+                  },
+                  {
+                    label: 'Risks',
+                    content: <RiskTab strategy={strategy} isMobile />,
+                  },
+                  {
+                    label: 'FAQs',
+                    content: <FAQTab strategy={strategy} />,
+                  },
+                  {
+                    label: 'Transactions',
+                    content: (
+                      <TransactionsTab
+                        strategy={strategy}
+                        txHistory={txHistory}
+                        isMobile
+                      />
+                    ),
+                  },
+                ].map((item, index) => (
+                  <AccordionItem
+                    border="none"
+                    key={index}
+                    bg={'mycard'}
+                    padding={'8px'}
+                    borderRadius={'lg'}
+                    _active={{ bg: 'mycard_light' }}
+                    _hover={{ bg: 'mycard_light' }}
                   >
-                    There may be delays fetching data. If your transaction{' '}
-                    {`isn't`} found, try again later.
-                  </Text>
-                )}
-
-                {txHistoryResult.isSuccess && (
-                  <>
-                    {txHistory.findManyInvestment_flows.map((tx, index) => {
-                      const token = getTokenInfoFromAddr(tx.asset);
-                      const decimals = token?.decimals;
-
-                      return (
-                        <Box
-                          className="text-cell"
-                          key={index}
-                          width={'100%'}
-                          color="light_grey"
-                          fontSize={'14px'}
-                          display={{ base: 'block', md: 'flex' }}
-                        >
-                          <Flex
-                            width={{ base: '100%' }}
-                            justifyContent={'space-between'}
-                          >
-                            <Text width={'10%'}>{index + 1}.</Text>
-                            <Box width={'40%'}>
-                              <Text
-                                textAlign={'right'}
-                                color={tx.type == 'deposit' ? 'cyan' : 'red'}
-                                fontWeight={'bold'}
-                              >
-                                {Number(
-                                  new MyNumber(
-                                    tx.amount,
-                                    decimals!,
-                                  ).toEtherToFixedDecimals(
-                                    token.displayDecimals,
-                                  ),
-                                ).toLocaleString()}{' '}
-                                {token?.name}
-                              </Text>
-                              <Text textAlign={'right'} color="color2_65p">
-                                {capitalize(tx.type)}
-                              </Text>
-                            </Box>
-
-                            <Box width={'50%'} justifyContent={'flex-end'}>
-                              <Text
-                                width={'100%'}
-                                textAlign={'right'}
-                                fontWeight={'bold'}
-                              >
-                                <Link
-                                  href={`https://starkscan.co/tx/${tx.txHash}`}
-                                  target="_blank"
-                                >
-                                  {shortAddress(tx.txHash)} <ExternalLinkIcon />
-                                </Link>
-                              </Text>
-                              <Text
-                                width={'100%'}
-                                textAlign={'right'}
-                                color="color2_65p"
-                              >
-                                {/* The default msg contains strategy name, since this for a specific strategy, replace it */}
-                                {timeAgo(new Date(tx.timestamp * 1000))}
-                              </Text>
-                            </Box>
-                          </Flex>
-                        </Box>
-                      );
-                    })}
-                  </>
-                )}
-
-                {/* If no filtered tx */}
-                {!strategy.settings.isTransactionHistDisabled &&
-                  txHistory.findManyInvestment_flows.length === 0 && (
-                    <Text
-                      fontSize={'14px'}
-                      textAlign={'center'}
-                      color="light_grey"
+                    <AccordionButton
+                      color="text_secondary"
+                      padding={'16px 16px'}
+                      _expanded={{ color: 'purple' }}
+                      borderRadius="lg"
+                      _active={{ bg: 'mycard_light' }}
+                      _hover={{ bg: 'mycard_light' }}
+                      _focusVisible={{
+                        boxShadow: 'none',
+                      }}
                     >
-                      No transactions found
-                    </Text>
-                  )}
-                {strategy.settings.isTransactionHistDisabled && (
-                  <Text
-                    fontSize={'14px'}
-                    textAlign={'center'}
-                    color="light_grey"
-                    marginTop={'20px'}
-                  >
-                    Transaction history is not available for this strategy yet.
-                    If enabled in future, will include the entire history.
-                  </Text>
-                )}
-              </Card>
-            </GridItem>
-          </Grid>
-        </VStack>
-      )}
-    </>
+                      <Text
+                        flex="1"
+                        textAlign="left"
+                        fontWeight="700"
+                        fontSize="14px"
+                      >
+                        {item.label}
+                      </Text>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel padding="0px">
+                      {item.content}
+                    </AccordionPanel>
+                  </AccordionItem>
+                ))}
+            </Accordion>
+          </Box>
+        )}
+      </Flex>
+    </Container>
   );
 };
 

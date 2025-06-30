@@ -67,7 +67,7 @@ export type DepositAtomType = {
 };
 
 function getInputInfoAtoms() {
-  return [1, 2].map((i) => {
+  return [1, 2].map((_) => {
     return atom<AmountInputInfo>({
       isMaxClicked: false,
       amount: Web3Number.fromWei('0', 0),
@@ -165,6 +165,7 @@ function InternalDeposit(props: DepositProps) {
   const setAddress = useSetAtom(addressAtom);
   useEffect(() => {
     setAddress(address);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
@@ -222,6 +223,7 @@ function InternalDeposit(props: DepositProps) {
   const [investedSummary, setInvestedSummary] = useState<Web3Number | null>(
     null,
   );
+
   useEffect(() => {
     if (!callsInfo.length) {
       setInvestedSummary(null);
@@ -293,16 +295,19 @@ function InternalDeposit(props: DepositProps) {
     );
   }, [tvlInfo]);
 
+  console.log('canSubmit [2]', investedSummary, loadingInvestmentSummary);
   const canSubmit = useMemo(() => {
+    console.log('canSubmit [1]', isTVLFull, isDeposit, depositInfo.loading);
     if (isTVLFull && isDeposit) {
       return false;
     }
     if (depositInfo.loading) {
       return false;
     }
-    if (!investedSummary || loadingInvestmentSummary) {
-      return false;
-    }
+
+    // if (!investedSummary || loadingInvestmentSummary) {
+    //   return false;
+    // }
     // todo consider max cap of each token as well
     return inputsInfo.some((a) => a.amount.greaterThan(0));
   }, [
@@ -339,7 +344,7 @@ function InternalDeposit(props: DepositProps) {
           })}
       </VStack>
 
-      <Center marginTop={'10px'}>
+      <Center marginTop={'20px'}>
         <TxButton
           txInfo={txInfo}
           buttonText={props.buttonText}
@@ -367,28 +372,55 @@ function InternalDeposit(props: DepositProps) {
         />
       </Center>
 
-      {!props.strategy.isRetired() && props.strategy.settings.maxTVL != 0 && (
-        <Box width="100%" marginTop={'15px'}>
-          <Flex justifyContent="space-between">
-            <Text fontSize={'12px'} color="color2" fontWeight={'bold'}>
-              Current TVL Limit:
-            </Text>
-            <Text fontSize={'12px'} color="color2">
-              {!tvlInfo || !tvlInfo?.data ? (
-                <Spinner size="2xs" />
-              ) : (
-                Number(
-                  tvlInfo.data?.amounts[0].amount.toFixed(2),
-                ).toLocaleString()
-              )}
-              {' / '}
-              {props.strategy.settings.maxTVL.toLocaleString()}{' '}
-              {inputsInfo[0].tokenInfo?.symbol}
-            </Text>
+      {/* <Flex
+        justifyContent={'space-between'}
+        marginTop={'30px'}
+        borderRadius={'lg'}
+        padding={'8px'}
+      >
+        <Text fontSize={'14px'} fontWeight={'400'} color="text_secondary">
+          Fees:
+        </Text>
+        <Text fontSize={'14px'} color="text_secondary">
+          No additional fees by Troves
+        </Text>
+      </Flex> */}
+
+      {!props.strategy.isRetired() && props.strategy.settings.maxTVL !== 0 && (
+        <Flex
+          flexDirection={'column'}
+          width="100%"
+          marginTop={'15px'}
+          gap={'6px'}
+          fontSize={'12px'}
+        >
+          <Flex width={'100%'} justifyContent={'space-between'}>
+            <Text color={'text_secondary'}>TVL Limt:</Text>
+            <Flex justifyContent={'flex-end'} gap={1}>
+              <Text color="text_secondary" fontWeight={'500'}>
+                {!tvlInfo || !tvlInfo?.data ? (
+                  <Spinner size="2xs" />
+                ) : (
+                  Number(
+                    tvlInfo.data?.amounts[0].amount.toFixed(2),
+                  ).toLocaleString()
+                )}
+              </Text>
+              <Text color={'text_secondary'} fontWeight={'500'}>
+                {'/'}
+              </Text>
+              <Text color={'text_secondary'} fontWeight={'500'}>
+                {props.strategy.settings.maxTVL.toLocaleString()}{' '}
+                {inputsInfo[0].tokenInfo?.symbol}
+              </Text>
+            </Flex>
           </Flex>
           <Progress
-            colorScheme="gray"
-            bg="bg"
+            colorScheme="teal"
+            bg="border_light_3p"
+            borderRadius={'6px'}
+            borderWidth={'1px'}
+            borderColor={'light_green_30p'}
             value={
               (100 *
                 (Number(tvlInfo.data?.amounts[0].amount.toFixed(2)) ||
@@ -400,18 +432,18 @@ function InternalDeposit(props: DepositProps) {
           {isTVLFull && isDeposit && (
             <Alert
               status="warning"
-              bg="bg"
+              bg="mycard"
               marginTop={'20px'}
               borderRadius={'10px'}
             >
               <AlertIcon />
-              <Text fontSize={'12px'} color={'color2'}>
+              <Text fontSize={'12px'} color={'text_secondary'}>
                 TVL limit reached. Please wait for increase in limits.
               </Text>
             </Alert>
           )}
           {/* {tvlInfo.isError ? 1 : 0}{tvlInfo.isLoading ? 1 : 0} {JSON.stringify(tvlInfo.error)} */}
-        </Box>
+        </Flex>
       )}
     </Box>
   );

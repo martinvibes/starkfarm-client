@@ -13,9 +13,6 @@ import {
   NumberInput,
   NumberInputField,
   Image as ImageC,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Button,
   Tooltip,
   Grid,
@@ -25,6 +22,8 @@ import {
   MenuList,
   MenuItem,
   Link,
+  HStack,
+  Flex,
 } from '@chakra-ui/react';
 import { useAccount } from '@starknet-react/core';
 import { useAtom, useAtomValue, Atom, useSetAtom } from 'jotai';
@@ -45,6 +44,7 @@ import LoadingWrap from './LoadingWrap';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { MyMenuItemProps, MyMenuListProps } from '@/utils';
 import debounce from 'lodash.debounce';
+import { MYSTYLES } from '@/style';
 
 interface AmountInputProps {
   index: number;
@@ -276,36 +276,37 @@ const AmountInput = forwardRef(
       }
     }
 
+    const handleMaxClick = useCallback(() => {
+      onAmountChange(maxAmount, true);
+      mixpanel.track('Chose max amount', {
+        strategyId: props.strategy.id,
+        strategyName: props.strategy.name,
+        buttonText: props.buttonText,
+        amount: inputInfo.amount.toFixed(2),
+        token: selectedMarket.name,
+        maxAmount: maxAmount.toEtherStr(),
+        address,
+      });
+    }, [
+      onAmountChange,
+      maxAmount,
+      inputInfo,
+      selectedMarket,
+      props.strategy,
+      props.buttonText,
+      address,
+    ]);
+
     function BalanceComponent(props: {
       token: TokenInfoV2;
       strategy: StrategyInfo<any>;
       buttonText: string;
     }) {
-      const handleMaxClick = useCallback(() => {
-        onAmountChange(maxAmount, true);
-        mixpanel.track('Chose max amount', {
-          strategyId: props.strategy.id,
-          strategyName: props.strategy.name,
-          buttonText: props.buttonText,
-          amount: inputInfo.amount.toFixed(2),
-          token: selectedMarket.name,
-          maxAmount: maxAmount.toEtherStr(),
-          address,
-        });
-      }, [
-        maxAmount,
-        inputInfo,
-        selectedMarket,
-        props.strategy,
-        props.buttonText,
-        address,
-      ]);
-
       const isLoading = balData.isLoading || balData.isPending;
 
       return (
-        <Box color={'light_grey'} textAlign={'right'}>
-          <Text>Available balance </Text>
+        <Box textAlign={'right'}>
+          <Text color={'text_secondary'}>Wallet balance </Text>
           <LoadingWrap
             isLoading={isLoading}
             isError={balData.isError}
@@ -321,32 +322,43 @@ const AmountInput = forwardRef(
               boxSize: '15px',
             }}
           >
-            <Tooltip label={balance.toEtherStr()}>
-              <b style={{ marginLeft: '5px' }}>
-                {balance.toEtherToFixedDecimals(4)}
-              </b>
-            </Tooltip>
-            <Button
-              size={'sm'}
-              marginLeft={'5px'}
-              color="color2"
-              bg="highlight"
-              padding="0"
-              maxHeight={'25px'}
-              _hover={{
-                bg: 'highlight',
-                color: 'color_50p',
-              }}
-              _active={{
-                bg: 'highlight',
-                color: 'color_50p',
-              }}
-              onClick={handleMaxClick}
-              isDisabled={isLoading || balData.isError}
-              aria-label="Set maximum amount"
-            >
-              [Max]
-            </Button>
+            {props.strategy.settings.isInMaintenance ? (
+              <Text color={'text_secondary'}>-</Text>
+            ) : (
+              <Flex width={'100%'} align={'flex-end'} justify={'flex-end'}>
+                <Tooltip
+                  label={`Exact balance: ${balance.toEtherStr()}`}
+                  {...MYSTYLES.TOOLTIP.STANDARD}
+                >
+                  <Text
+                    style={{ marginLeft: '5px' }}
+                    color="text_primary"
+                    fontWeight={'600'}
+                  >
+                    {balance.toEtherToFixedDecimals(4)}
+                  </Text>
+                </Tooltip>
+                <Button
+                  size={'sm'}
+                  marginLeft={'5px'}
+                  color="text_secondary"
+                  padding="0"
+                  bg="transparent"
+                  maxHeight={'25px'}
+                  _hover={{
+                    color: 'text_primary',
+                  }}
+                  _active={{
+                    color: 'text_primary',
+                  }}
+                  onClick={handleMaxClick}
+                  isDisabled={isLoading || balData.isError}
+                  aria-label="Set maximum amount"
+                >
+                  [Max]
+                </Button>
+              </Flex>
+            )}
           </LoadingWrap>
         </Box>
       );
@@ -473,24 +485,32 @@ const AmountInput = forwardRef(
               <MenuButton
                 as={Button}
                 height={'100%'}
-                rightIcon={<ChevronDownIcon />}
-                bgColor={'highlight'}
-                borderColor={'bg'}
-                borderWidth={'1px'}
-                color="color2"
+                rightIcon={<ChevronDownIcon width={'20px'} height={'20px'} />}
+                maxWidth={'200px'}
+                minWidth={'140px'}
+                width={'100%'}
+                bg={'mycard_light'}
+                color="text_primary"
+                fontSize={'16px'}
+                fontWeight={'500'}
+                padding={'10px 16px'}
+                textAlign={'left'}
                 _hover={{
-                  bg: 'bg',
+                  bg: 'mycard_light_2x',
+                }}
+                _active={{
+                  bg: 'mycard_light_2x',
                 }}
               >
-                <Center>
+                <HStack>
                   <ImageC
                     src={props.tokenInfo.logo}
                     alt={props.tokenInfo.symbol}
                     width={'20px'}
                     marginRight="5px"
                   />
-                  {props.tokenInfo.symbol}
-                </Center>
+                  <Text>{props.tokenInfo.symbol}</Text>
+                </HStack>
               </MenuButton>
               <MenuList {...MyMenuListProps}>
                 {props.supportedTokens.map((token) => (
@@ -538,9 +558,9 @@ const AmountInput = forwardRef(
           min={0}
           max={parseFloat(maxAmount.toEtherStr())}
           color={'white'}
-          bg={'bg'}
-          borderRadius={'10px'}
-          onChange={(valueStr, n) => {
+          bg={'mycard_light'}
+          borderRadius={'lg'}
+          onChange={(valueStr) => {
             const newAmount =
               valueStr && Number(valueStr) > 0
                 ? MyNumber.fromEther(valueStr, selectedMarket.decimals)
@@ -558,7 +578,7 @@ const AmountInput = forwardRef(
             });
             handleDebouncedChange(newAmount, valueStr, inputsInfo, depositInfo);
           }}
-          marginTop={'10px'}
+          marginTop={'20px'}
           keepWithinRange={false}
           clampValueOnBlur={false}
           value={inputInfo.rawAmount}
@@ -566,44 +586,63 @@ const AmountInput = forwardRef(
         >
           <NumberInputField
             border={'0px'}
-            borderRadius={'10px'}
+            borderRadius={'lg'}
             placeholder="Amount"
+            paddingRight="60px"
+            color={'white'}
           />
-          <NumberInputStepper>
-            <NumberIncrementStepper color={'white'} border={'0px'} />
-            <NumberDecrementStepper color={'white'} border={'0px'} />
-          </NumberInputStepper>
+          <Button
+            size={'sm'}
+            position="absolute"
+            right="8px"
+            top="50%"
+            transform="translateY(-50%)"
+            color="white"
+            bg="transparent"
+            padding="0 8px"
+            height="24px"
+            fontSize={'14px'}
+            fontWeight={'500'}
+            _hover={{
+              bg: 'transparent',
+              color: 'white',
+            }}
+            onClick={handleMaxClick}
+          >
+            MAX
+          </Button>
         </NumberInput>
 
         {/* Validation error messages */}
-        {simulatedMaxAmount.amount == 0 && (
+        {simulatedMaxAmount.amount === 0 && (
           <Tooltip
             label={
-              <Text>
+              <Text color={'text_secondary'}>
                 The liquidity at the current market price, is only in{' '}
                 {
-                  inputsInfo.find((_, index) => index != props.index)?.tokenInfo
-                    ?.symbol
+                  inputsInfo.find((_, index) => index !== props.index)
+                    ?.tokenInfo?.symbol
                 }
                 . It may be in {props.tokenInfo.symbol}, when the market price
                 re-aligns.
               </Text>
             }
+            {...MYSTYLES.TOOLTIP.STANDARD}
           >
             <Text
               marginTop="2px"
               marginLeft={'7px'}
-              color="light_grey"
               fontSize={'12px'}
+              color={'text_secondary'}
             >
               The liquidity at the current market price, is only in{' '}
               {
-                inputsInfo.find((_, index) => index != props.index)?.tokenInfo
+                inputsInfo.find((_, index) => index !== props.index)?.tokenInfo
                   ?.symbol
               }
               .{' '}
               <Link
-                href="https://docs.strkfarm.com/p/ekubo-cl-vaults"
+                href="https://docs.troves.fi/p/ekubo-cl-vaults"
                 textDecoration={'underline'}
               >
                 Learn more

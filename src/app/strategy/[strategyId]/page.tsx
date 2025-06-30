@@ -13,21 +13,21 @@ export async function generateMetadata({ params }: StrategyParams) {
   const strategy = strategies.find((s) => s.id === params?.strategyId);
   if (strategy) {
     return {
-      title: `${strategy.name} | STRKFarm`,
+      title: `${strategy.name} | Troves`,
       description: strategy.description,
     };
   }
 
   return {
-    title: 'Yield Strategy | STRKFarm',
+    title: 'Yield Strategy | Troves',
     description:
-      "STRKFarm's yield strategies are designed to maximize your yield farming returns. Stake your assets in our strategies to earn passive income while we take care of the rest.",
+      "Troves's yield strategies are designed to maximize your yield farming returns. Stake your assets in our strategies to earn passive income while we take care of the rest.",
   };
 }
 
 export default function StrategyPage({ params }: StrategyParams) {
   return (
-    <Container maxWidth={'1000px'} margin={'0 auto'} padding="30px 10px">
+    <Container width={'100%'} margin={'0 auto'} padding={0}>
       <Strategy params={params} />
     </Container>
   );

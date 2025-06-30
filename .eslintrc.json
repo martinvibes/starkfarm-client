@@ -47,15 +47,15 @@
     "no-dupe-class-members": 0,
 
     // Warnings
-    "no-debugger": 1,
-    "no-empty": 1,
-    "no-invalid-regexp": 1,
-    "no-unused-expressions": 1,
-    "no-native-reassign": 1,
-    "no-fallthrough": 1,
+    "no-debugger": "off",
+    "no-empty": "off",
+    "no-invalid-regexp": "off",
+    "no-unused-expressions": "off",
+    "no-native-reassign": "off",
+    "no-fallthrough": "off",
+    "eqeqeq": "off",
 
     // Errors
-    "eqeqeq": ["warn"],
     "no-undef": 2,
     "no-dupe-keys": 2,
     "no-empty-character-class": 2,

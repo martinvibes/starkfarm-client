@@ -32,7 +32,7 @@ const ActiveDeposits = () => {
         !res?.data?.success &&
         res?.data?.message === 'No active deposits found'
       ) {
-        toast.error('You should have atleast $10 deposited in STRKFarm', {
+        toast.error('You should have atleast $10 deposited in Troves', {
           position: 'bottom-right',
         });
       }
@@ -80,10 +80,10 @@ const ActiveDeposits = () => {
             src="/raffle-deposits.svg"
             width={64}
             height={64}
-            alt="STRKFarm"
+            alt="Troves"
           />
           <p className="text-[#61FCAE] group-hover:text-black text-sm lg:text-xl font-medium">
-            Deposit atleast $10 in STRKFarm
+            Deposit atleast $10 in Troves
           </p>
         </div>
 

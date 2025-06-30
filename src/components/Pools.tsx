@@ -1,6 +1,6 @@
 'use client';
 
-import { CategoryFilters, ProtocolFilters } from '@/components/Filters';
+import { CombinedFilters } from '@/components/Filters';
 import {
   allPoolsAtomUnSorted,
   filteredPools,
@@ -30,6 +30,71 @@ import {
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import YieldCard, { HeaderSorter } from './YieldCard';
+
+function MyPagination(props: {
+  pagesCount: number;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  pages: number[];
+}) {
+  const { pagesCount, currentPage, setCurrentPage, pages } = props;
+  return (
+    <Pagination
+      pagesCount={pagesCount}
+      currentPage={currentPage}
+      isDisabled={false}
+      onPageChange={(page) => {
+        setCurrentPage(page);
+      }}
+    >
+      <PaginationContainer align="right" float={'right'} padding={'0px'}>
+        <PaginationPrevious
+          marginRight="4px"
+          bg="mycard_light"
+          color="text_secondary"
+          _hover={{
+            bg: 'mycard_light_2x',
+          }}
+        >
+          <Text>{'<'}</Text>
+        </PaginationPrevious>
+        <PaginationPageGroup>
+          {pages.map((page: number) => (
+            <PaginationPage
+              key={`pagination_page_${page}`}
+              page={page}
+              padding={'0px 15px'}
+              isActive={page === currentPage}
+              background={
+                page === currentPage ? 'bright_purple' : 'mycard_light'
+              }
+              fontSize={'13px'}
+              color={page === currentPage ? 'black' : 'text_primary'}
+              _active={{
+                bg: 'purple',
+                color: 'black',
+              }}
+              _hover={{
+                bg: page === currentPage ? 'purple_hover_2' : 'mycard_light_2x',
+                color: page === currentPage ? 'black' : 'text_primary',
+              }}
+            />
+          ))}
+        </PaginationPageGroup>
+        <PaginationNext
+          marginLeft="4px"
+          bg="mycard_light"
+          color="purple_gray"
+          _hover={{
+            bg: 'mycard_light_2x',
+          }}
+        >
+          <Text>{'>'}</Text>
+        </PaginationNext>
+      </PaginationContainer>
+    </Pagination>
+  );
+}
 
 export default function Pools() {
   const allPools = useAtomValue(allPoolsAtomUnSorted);
@@ -101,119 +166,134 @@ export default function Pools() {
     }
   };
   return (
-    <Box float="left" width={'100%'}>
-      <ProtocolFilters />
-      <Box width={'100%'} marginTop={'10px'}>
-        <Box width={{ base: '100%', md: '70%' }} float={'left'}>
-          <CategoryFilters />
+    <Box>
+      <Box
+        float="left"
+        width={'100%'}
+        display={'flex'}
+        flexDirection={'column'}
+        gap={'16px'}
+        padding={{ base: '0px' }}
+      >
+        <Box padding={'1rem 1.5rem'} bg={'mycard_dark'} borderRadius={'lg'}>
+          <CombinedFilters
+            paginationComponent={
+              <MyPagination
+                pagesCount={pagesCount}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                pages={pages}
+              />
+            }
+          />
         </Box>
-        <Container
-          float={'left'}
-          padding="0px"
-          width={{ base: '100%', md: '30%' }}
-        >
-          <Pagination
-            pagesCount={pagesCount}
-            currentPage={currentPage}
-            isDisabled={false}
-            onPageChange={(page) => {
-              setCurrentPage(page);
+
+        <Container width="100%" float={'left'} padding={'0px'}>
+          <Table
+            variant="simple"
+            sx={{
+              overflow: 'hidden',
+              'border-collapse': 'separate',
+              'border-spacing': '0px 3px',
             }}
+            gap={2}
           >
-            <PaginationContainer align="right" float={'right'} p={4}>
-              <PaginationPrevious
-                marginRight="4px"
-                bg="highlight"
-                color="purple"
-              >
-                <Text>{'<'}</Text>
-              </PaginationPrevious>
-              <PaginationPageGroup>
-                {pages.map((page: number) => (
-                  <PaginationPage
-                    key={`pagination_page_${page}`}
-                    page={page}
-                    padding={'2px 10px'}
-                    isDisabled={page === currentPage}
-                    bg="highlight"
-                    color="purple"
+            <Thead
+              display={{ base: 'none', md: 'table-header-group' }}
+              bg={'header'}
+              borderTopRadius={'12px'}
+            >
+              <Tr color={'white'}>
+                <Th
+                  borderLeftRadius={'lg'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
+                  <Text color="white">Pool name</Text>
+                </Th>
+                <Th
+                  float={'right'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
+                  <HeaderSorter
+                    heading="APY"
+                    align="left"
+                    mainColor="white"
+                    inActiveColor="text_secondary_2"
+                    onClick={handleSortChange('APR')}
+                    active={aprStatus}
                   />
-                ))}
-              </PaginationPageGroup>
-              <PaginationNext marginLeft="4px" bg="highlight" color="purple">
-                <Text>{'>'}</Text>
-              </PaginationNext>
-            </PaginationContainer>
-          </Pagination>
+                </Th>
+                <Th borderRightWidth={'1px'} borderColor={'mybg'}>
+                  <Box width={'100%'} display={'flex'} justifyContent={'right'}>
+                    <HeaderSorter
+                      heading="Risk"
+                      align="left"
+                      mainColor="white"
+                      inActiveColor="text_secondary_2"
+                      onClick={handleSortChange('RISK')}
+                      active={riskStatus}
+                    />
+                  </Box>
+                </Th>
+                <Th
+                  float={'right'}
+                  borderRightRadius={'lg'}
+                  borderRightWidth={'1px'}
+                  borderColor={'mybg'}
+                >
+                  <HeaderSorter
+                    heading="TVL"
+                    align="right"
+                    mainColor="white"
+                    inActiveColor="text_secondary_2"
+                    onClick={handleSortChange('TVL')}
+                    active={tvlStatus}
+                  />
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {allPools.length > 0 && (
+                <>
+                  {pools.map((pool, index) => {
+                    return (
+                      <YieldCard
+                        key={pool.pool.id}
+                        pool={pool}
+                        index={index}
+                        showProtocolName={true}
+                      />
+                    );
+                  })}
+                </>
+              )}
+            </Tbody>
+          </Table>
+          {allPools.length > 0 && pools.length === 0 && (
+            <Box padding="10px 0" width={'100%'} float={'left'}>
+              <Text color="text_secondary" textAlign={'center'}>
+                No pools. Check filters.
+              </Text>
+            </Box>
+          )}
+          {allPools.length === 0 && (
+            <Stack>
+              <Skeleton height="70px" />
+              <Skeleton height="70px" />
+              <Skeleton height="70px" />
+            </Stack>
+          )}
         </Container>
       </Box>
 
-      <Container width="100%" float={'left'} padding={'0px'} marginTop={'10px'}>
-        <Table variant="simple">
-          <Thead display={{ base: 'none', md: 'table-header-group' }}>
-            <Tr fontSize={'18px'} color={'white'} bg="bg">
-              <Th>Pool name</Th>
-              <Th textAlign={'right'}>
-                <HeaderSorter
-                  heading="APY"
-                  mainColor="color2Text"
-                  inActiveColor="#d9d9f726"
-                  onClick={handleSortChange('APR')}
-                  active={aprStatus}
-                />
-              </Th>
-              <Th textAlign={'right'}>
-                <HeaderSorter
-                  heading="Risk"
-                  mainColor="color2Text"
-                  inActiveColor="#d9d9f726"
-                  onClick={handleSortChange('RISK')}
-                  active={riskStatus}
-                />
-              </Th>
-              <Th textAlign={'right'}>
-                <HeaderSorter
-                  heading="TVL"
-                  mainColor="color2Text"
-                  inActiveColor="#d9d9f726"
-                  onClick={handleSortChange('TVL')}
-                  active={tvlStatus}
-                />
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {allPools.length > 0 && (
-              <>
-                {pools.map((pool, index) => {
-                  return (
-                    <YieldCard
-                      key={pool.pool.id}
-                      pool={pool}
-                      index={index}
-                      showProtocolName={true}
-                    />
-                  );
-                })}
-              </>
-            )}
-          </Tbody>
-        </Table>
-        {allPools.length > 0 && pools.length === 0 && (
-          <Box padding="10px 0" width={'100%'} float={'left'}>
-            <Text color="light_grey" textAlign={'center'}>
-              No pools. Check filters.
-            </Text>
-          </Box>
-        )}
-        {allPools.length === 0 && (
-          <Stack>
-            <Skeleton height="70px" />
-            <Skeleton height="70px" />
-            <Skeleton height="70px" />
-          </Stack>
-        )}
-      </Container>
+      <MyPagination
+        pagesCount={pagesCount}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        pages={pages}
+      />
     </Box>
   );
 }

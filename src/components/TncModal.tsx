@@ -213,7 +213,7 @@ const TncModal: React.FC<TncModalProps> = (props) => {
           </Text>
 
           <Text textAlign="left" width={'100%'}>
-            By clicking agree, you agree to STRKFarm terms and conditions as
+            By clicking agree, you agree to Troves terms and conditions as
             stated in above document.
           </Text>
 
@@ -247,6 +247,9 @@ const TncModal: React.FC<TncModalProps> = (props) => {
                 mixpanel.track('TnC declined', { address });
                 disconnectAsync();
                 onClose();
+              }}
+              _hover={{
+                bg: 'mycard2',
               }}
               ml={'10px'}
             >

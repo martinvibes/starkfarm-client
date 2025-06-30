@@ -5,11 +5,11 @@ import { RpcProvider } from 'starknet';
 import { getLiveStatusNumber, getStrategies } from '@/store/strategies.atoms';
 import MyNumber from '@/utils/MyNumber';
 import { IStrategy, NFTInfo, TokenInfo } from '@/strategies/IStrategy';
-import { STRKFarmStrategyAPIResult } from '@/store/strkfarm.atoms';
+import { TrovesStrategyAPIResult } from '@/store/troves.atoms';
 import { MY_STORE } from '@/store';
 import VesuAtoms, { vesu } from '@/store/vesu.store';
 import EndurAtoms, { endur } from '@/store/endur.store';
-import kvRedis, { getDataFromRedis, getRewardsInfo } from '../lib';
+import { setDataToRedis, getDataFromRedis, getRewardsInfo } from '../lib';
 
 export const revalidate = 1800; // 30 minutes
 export const dynamic = 'force-dynamic';
@@ -56,7 +56,7 @@ const provider = new RpcProvider({
 
 async function getStrategyInfo(
   strategy: IStrategy<any>,
-): Promise<STRKFarmStrategyAPIResult> {
+): Promise<TrovesStrategyAPIResult> {
   const tvl = await strategy.getTVL();
 
   const data = {
@@ -158,7 +158,7 @@ export async function GET(req: Request) {
   //   }
   // });
 
-  const stratsDataProms: Promise<STRKFarmStrategyAPIResult>[] = [];
+  const stratsDataProms: Promise<TrovesStrategyAPIResult>[] = [];
   for (let i = 0; i < strategies.length; i++) {
     stratsDataProms.push(getStrategyInfo(strategies[i]));
   }
@@ -181,7 +181,7 @@ export async function GET(req: Request) {
       strategies: _strats,
       lastUpdated: new Date().toISOString(),
     };
-    await kvRedis.set(REDIS_KEY, data);
+    await setDataToRedis(REDIS_KEY, data);
     const response = NextResponse.json(data);
     response.headers.set(
       'Cache-Control',

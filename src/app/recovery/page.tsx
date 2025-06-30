@@ -211,11 +211,12 @@ export default function Recovery() {
             lineHeight={'30px'}
             marginBottom={'10px'}
             textAlign={'start'}
+            color={'white'}
           >
-            <b className="theme-gradient-text">Claim your amount</b>
+            <b>Claim your amount</b>
           </Text>
           <Text
-            color="color2"
+            color="text_primary"
             textAlign={'start'}
             fontSize={{ base: '12px', md: '14px' }}
             marginBottom={'0px'}
@@ -269,7 +270,7 @@ export default function Recovery() {
           borderRadius={'10px'}
           fontWeight={'medium'}
           border={'1px solid #633dbf'}
-          bg="color2_50p"
+          bg="mycard"
           paddingY={'10px'}
           marginTop={'10px'}
           px={'16px'}
@@ -281,7 +282,7 @@ export default function Recovery() {
             the time for discussing any discrepancies has passed (Feb 26th) as
             mentioned{' '}
             <a
-              href="https://x.com/strkfarm/status/1892304463513125367"
+              href="https://x.com/troves/status/1892304463513125367"
               style={{ textDecoration: 'underline' }}
             >
               here
@@ -298,7 +299,7 @@ export default function Recovery() {
             will be distributed to the affected users in a similar way after few
             weeks. The details of the same will be announced on our{' '}
             <a
-              href="https://x.com/strkfarm"
+              href="https://x.com/troves"
               style={{ textDecoration: 'underline' }}
             >
               X page
@@ -312,12 +313,12 @@ export default function Recovery() {
         {(!isLoading || !address) && (
           <Table variant="simple">
             <Thead display={{ base: 'none', md: 'table-header-group' }}>
-              <Tr fontSize={'18px'} color={'white'} bg="#000">
+              <Tr fontSize={'18px'} color={'white'} bg="mycard">
                 <Th textAlign={'left'}>Amount</Th>
               </Tr>
             </Thead>
             <Tbody>
-              <Tr color={'white'} bg={'color1_50p'}>
+              <Tr color={'white'} bg={'mycard'}>
                 <Td>
                   <Box
                     width={'100%'}
@@ -341,7 +342,7 @@ export default function Recovery() {
                   </Box>
                 </Td>
               </Tr>
-              <Tr color={'white'} bg={'color2_50p'}>
+              <Tr color={'white'} bg={'mycard'}>
                 <Td>
                   <Box
                     width={'100%'}
@@ -365,7 +366,7 @@ export default function Recovery() {
                   </Box>
                 </Td>
               </Tr>
-              <Tr color={'white'} bg={'color1_50p'}>
+              <Tr color={'white'} bg={'mycard'}>
                 <Td>
                   <Box
                     width={'100%'}

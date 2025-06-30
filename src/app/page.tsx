@@ -1,25 +1,20 @@
 'use client';
 
-import tg from '@/assets/tg.svg';
 import { useDotButton } from '@/components/EmblaCarouselDotButton';
 import Pools from '@/components/Pools';
 import Strategies from '@/components/Strategies';
 import TVL from '@/components/TVL';
-import CONSTANTS from '@/constants';
 import { useWindowSize } from '@/utils/useWindowSize';
 
 import {
   Box,
-  Center,
-  Image as ChakraImage,
   Container,
-  Link,
   Tab,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  TabIndicator,
   Text,
 } from '@chakra-ui/react';
 import { useAccount } from '@starknet-react/core';
@@ -28,7 +23,6 @@ import useEmblaCarousel from 'embla-carousel-react';
 import mixpanel from 'mixpanel-browser';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
 
 const banner_images = [
   // {
@@ -39,12 +33,12 @@ const banner_images = [
   {
     desktop: '/banners/endur.svg',
     mobile: '/banners/endur_mobile.svg',
-    link: 'https://endur.fi/r/strkfarm',
+    link: 'https://endur.fi/r/troves',
   },
   {
     desktop: '/banners/seed_grant.svg',
     mobile: '/banners/seed_grant_small.jpg',
-    link: 'https://x.com/strkfarm/status/1787783906982260881',
+    link: 'https://x.com/troves/status/1787783906982260881',
   },
 ];
 
@@ -71,10 +65,10 @@ export default function Home() {
   }
 
   function handleTabsChange(index: number) {
-    if (index === 0) {
-      setRoute('strategies');
-    } else {
+    if (index === 1) {
       setRoute('pools');
+    } else {
+      setRoute('strategies');
     }
   }
 
@@ -94,11 +88,20 @@ export default function Home() {
   }, [searchParams]);
 
   return (
-    <Container maxWidth={'1000px'} margin={'0 auto'}>
-      <Box padding={'15px 30px'} borderRadius="10px" margin={'20px 0px 10px'}>
+    <Container
+      maxWidth={'1152px'}
+      margin={'0 auto'}
+      padding={{ base: '15px 10px' }}
+    >
+      <Box
+        padding={{ base: '0px 15px 15px' }}
+        borderRadius="10px"
+        margin={{ base: '0', md: '20px 0px 10px' }}
+      >
         <Text
-          fontSize={{ base: '28px', md: '35px' }}
-          lineHeight={'30px'}
+          // color={'banner_text_gradient'}
+          fontSize={{ base: '25px', md: '35px' }}
+          lineHeight={{ base: '30px', md: '30px' }}
           marginBottom={'10px'}
           textAlign={'center'}
         >
@@ -108,74 +111,15 @@ export default function Home() {
           🚀
         </Text>
         <Text
-          color="color2"
+          color="text_secondary"
           textAlign={'center'}
-          fontSize={{ base: '16px', md: '18px' }}
-          marginBottom={'0px'}
+          fontSize={{ base: '15px', md: '18px' }}
+          lineHeight={{ base: '20px', md: '20px' }}
+          margin={{ base: '0 auto', md: '0' }}
+          maxWidth={{ base: '80%', md: '100%' }}
         >
-          Identify & Invest in the best $STRK rewarding pools and maximize your
-          rewards
+          Discover and invest in custom-built yield strategies.
         </Text>
-      </Box>
-
-      <Box className="embla" ref={emblaRef} margin={0} width={'100%'}>
-        <Box className="embla__container" cursor={'pointer'}>
-          {banner_images.map((banner, index) => (
-            <Box
-              className="embla__slide"
-              position="relative"
-              height={'auto'}
-              key={index}
-              padding={'10px'}
-            >
-              <Link href={banner.link} isExternal>
-                <ChakraImage
-                  src={
-                    (!isMobile && size.width > 450) || size.width == 0
-                      ? banner.desktop
-                      : banner.mobile
-                  }
-                  height={'auto'}
-                  boxShadow={'none'}
-                  width="100%"
-                  alt="Banner"
-                  style={{ objectFit: 'cover', borderRadius: '10px' }}
-                />
-              </Link>
-            </Box>
-          ))}
-        </Box>
-      </Box>
-
-      <Box display="grid" justifyContent="center" gap="1.2rem" mb="1.5rem">
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="flex-end"
-          alignItems="center"
-          marginRight="calc((2.6rem - 1.4rem) / 2 * -1)"
-          gap=".5rem"
-        >
-          {scrollSnaps.map((_, index) => (
-            <Box
-              key={index}
-              onClick={() => onDotButtonClick(index)}
-              width="0.8rem"
-              height="0.8rem"
-              borderRadius="50%"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              cursor="pointer"
-              backgroundColor={index === selectedIndex ? '#4D59E8' : 'black'}
-              padding="0"
-              margin="0"
-              border="1px solid #373A5D"
-              textDecoration="none"
-              appearance="none"
-            />
-          ))}
-        </Box>
       </Box>
 
       <TVL />
@@ -187,11 +131,12 @@ export default function Home() {
         index={tabIndex}
         onChange={handleTabsChange}
         marginTop={'10px'}
+        padding={0}
       >
-        <TabList>
+        <TabList borderBottom={'2px solid var(--chakra-colors-mycard)'}>
           <Tab
-            color="light_grey"
-            _selected={{ color: 'purple' }}
+            color={'text_secondary'}
+            _selected={{ color: 'purple', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('Strategies opened');
             }}
@@ -199,8 +144,8 @@ export default function Home() {
             Strategies✨
           </Tab>
           <Tab
-            color="light_grey"
-            _selected={{ color: 'purple' }}
+            color={'text_secondary'}
+            _selected={{ color: 'purple', fontWeight: 'bold' }}
             onClick={() => {
               mixpanel.track('All pools clicked');
             }}
@@ -210,24 +155,45 @@ export default function Home() {
         </TabList>
         <TabIndicator
           mt="-1.5px"
-          height="2px"
+          height="3px"
           bg="purple"
           color="color1"
           borderRadius="1px"
+          boxShadow={'0px 0px 8px 0px var(--chakra-colors-purple)'}
         />
         <TabPanels>
-          <TabPanel bg="highlight" float={'left'} width={'100%'}>
+          <TabPanel
+            bg="color_3"
+            float={'left'}
+            width={'100%'}
+            // borderWidth={'1px'}
+            borderColor={'color_3'}
+            borderRadius={'8px'}
+            padding={'1rem 0'}
+          >
             <Strategies />
           </TabPanel>
-          <TabPanel bg="highlight" width={'100%'} float={'left'}>
+          <TabPanel
+            bg="color_3"
+            width={'100%'}
+            float={'left'}
+            // borderWidth={'1px'}
+            borderColor={'color_3'}
+            borderRadius={'8px'}
+            padding={'1rem 0'}
+          >
             <Pools />
           </TabPanel>
         </TabPanels>
       </Tabs>
       {/* <hr style={{width: '100%', borderColor: '#5f5f5f', float: 'left', margin: '20px 0'}}/> */}
-      <Center padding="10px 0" width={'100%'} float={'left'}>
+      {/* <Center padding="10px 0" width={'100%'} float={'left'}>
         <Link href={CONSTANTS.COMMUNITY_TG} isExternal>
-          <ChakraImage src={tg.src} width="20" margin="0 auto" />
+          <ChakraImage
+            src={tg.src}
+            width={{ base: '10', md: '20' }}
+            margin="0 auto"
+          />
         </Link>
       </Center>
       <Center width={'100%'} float="left">
@@ -237,13 +203,13 @@ export default function Home() {
           marginTop={'20px'}
           borderTop={'1px solid var(--chakra-colors-highlight)'}
           textAlign={'center'}
-          textColor={'color2'}
+          textColor={'purple'}
           padding="10px 0"
           fontSize={'13px'}
         >
           Made with ❤️ on Starknet
         </Box>
-      </Center>
+      </Center> */}
     </Container>
   );
 }

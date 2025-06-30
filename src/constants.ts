@@ -4,13 +4,12 @@ import { getEndpoint, standariseAddress } from './utils';
 import MyNumber from './utils/MyNumber';
 
 const LOGOS = {
-  USDT: '/zklend/icons/tokens/usdt.svg?w=20',
-  USDC: '/zklend/icons/tokens/usdc.svg?w=20',
-  WBTC: '/zklend/icons/tokens/wbtc.svg?w=20',
-  ETH: '/zklend/icons/tokens/eth.svg?w=20',
-  STRK: '/zklend/icons/tokens/strk.svg?w=20',
-  DAI: '/zklend/icons/tokens/dai.svg?w=20',
-  kSTRK: '/zklend/icons/tokens/kstrk.svg?w=20',
+  USDT: 'https://assets.troves.fi/integrations/tokens/usdt.svg?w=20',
+  USDC: 'https://assets.troves.fi/integrations/tokens/usdc.svg?w=20',
+  WBTC: 'https://assets.troves.fi/integrations/tokens/wbtc.svg?w=20',
+  ETH: 'https://assets.troves.fi/integrations/tokens/eth.svg?w=20',
+  STRK: 'https://assets.troves.fi/integrations/tokens/strk.svg?w=20',
+  DAI: 'https://assets.troves.fi/integrations/tokens/dai.svg?w=20',
   xSTRK: '/imagedelivery/c1f44170-c1b0-4531-3d3b-5f0bacfe1300/logo',
 };
 
@@ -21,7 +20,6 @@ export type TokenName =
   | 'STRK'
   | 'WBTC'
   | 'DAI'
-  | 'kSTRK'
   | 'xSTRK';
 
 export const CONSTANTS = {
@@ -33,12 +31,12 @@ export const CONSTANTS = {
   LENDING_INCENTIVES_URL:
     'https://kx58j6x5me.execute-api.us-east-1.amazonaws.com/starknet/fetchFile?file=prod-api/lending/lending_strk_grant.json',
   LOGOS,
-  COMMUNITY_TG: 'https://t.me/+HQ_eHaXmF-1lZDc1',
+  COMMUNITY_TG: 'https://troves.fi/tg',
   NOSTRA: {
     LENDING_GRAPH_URL: '/nostra/app/data-yqlpb/endpoint/data/v1/action/find',
   },
   ZKLEND: {
-    BASE_APR_API: '/zklend/api/pools',
+    BASE_APR_API: '/zklend/api/poolsee',
   },
   NIMBORA: {
     DEX_APR_API: '/nimbora/yield-dex/strategies',
@@ -55,9 +53,9 @@ export const CONSTANTS = {
   HAIKO: {
     BASE_APR_API: '/haiko/markets?network=mainnet',
   },
-  STRKFarm: {
-    BASE_APR_API: '/api/strategies',
-    // BASE_APR_API: 'https://app.strkfarm.com/api/strategies',
+  Troves: {
+    // BASE_APR_API: '/api/strategies',
+    BASE_APR_API: 'https://beta.troves.fi/api/strategies',
   },
   MY_SWAP: {
     POOLS_API: '/myswap/data/pools/all.json',
@@ -69,7 +67,7 @@ export const CONSTANTS = {
       '0x541681b9ad63dff1b35f79c78d8477f64857de29a27902f7298f7b620838ea',
     AutoUsdcFarm:
       '0x16912b22d5696e95ffde888ede4bd69fbbc60c5f873082857a47c543172694f',
-    AutoxSTRKFarm:
+    AutoxTroves:
       '0x2102068cf222a37076b9e322c6428cb9e7110591c8df8a733df2110fdb0c329',
     DeltaNeutralMMUSDCETH:
       '0x04937b58e05a3a2477402d1f74e66686f58a61a5070fcc6f694fb9a0b3bae422',
@@ -83,6 +81,7 @@ export const CONSTANTS = {
       '0x7023a5cadc8a5db80e4f0fde6b330cbd3c17bbbf9cb145cbabd7bd5e6fb7b0b',
   },
   MOBILE_MSG: 'Desktop/Tablet only',
+  BLOCK_EXPLORER: 'https://voyager.online',
 };
 
 export const TOKENS: TokenInfo[] = [
@@ -213,7 +212,7 @@ export const TOKENS: TokenInfo[] = [
     isERC4626: true,
   },
   {
-    token: CONSTANTS.CONTRACTS.AutoxSTRKFarm,
+    token: CONSTANTS.CONTRACTS.AutoxTroves,
     name: 'frmxSTRK',
     decimals: 18,
     displayDecimals: 2,
@@ -222,19 +221,6 @@ export const TOKENS: TokenInfo[] = [
     maxAmount: MyNumber.fromEther('10000', 18),
     stepAmount: MyNumber.fromEther('0.01', 18),
     isERC4626: true,
-  },
-  {
-    token: standariseAddress(
-      '0x045cd05ee2caaac3459b87e5e2480099d201be2f62243f839f00e10dde7f500c',
-    ),
-    name: 'kSTRK',
-    decimals: 18,
-    displayDecimals: 2,
-    logo: CONSTANTS.LOGOS.STRK,
-    minAmount: MyNumber.fromEther('10', 18),
-    maxAmount: MyNumber.fromEther('10000', 18),
-    stepAmount: MyNumber.fromEther('10', 18),
-    isERC4626: false,
   },
 ];
 
@@ -294,7 +280,7 @@ export const provider = new RpcProvider({
 
 // ? When updating this, ensure there is redirect available for this route
 // ? to respect version of doc in github
-export const LATEST_TNC_DOC_VERSION = 'tnc/v1';
+export const LATEST_TNC_DOC_VERSION = 'tnc/v2';
 export const TnC_DOC_URL = `${getEndpoint()}/${LATEST_TNC_DOC_VERSION}`;
 export const SIGNING_DATA = {
   types: {
@@ -310,8 +296,8 @@ export const SIGNING_DATA = {
   },
   primaryType: 'Tnc',
   domain: {
-    name: 'STRKFarm',
-    version: '1',
+    name: 'Troves',
+    version: '2',
     chainId: getNetwork(),
   },
   message: {

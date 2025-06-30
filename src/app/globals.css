@@ -17,23 +17,15 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  /* color: rgb(var(--foreground-rgb)); */
+  color: #fff;
+  background-color: #fff;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.pagination-container {
-  padding: 20px 0px 2px 0px !important;
 }
 
 .glow-button {
@@ -130,7 +122,7 @@ body {
 
 .text-cell {
   border-bottom: 1px solid var(--chakra-colors-bg);
-  padding: 3px;
+  /* padding: 3px; */
 }
 
 .embla {
@@ -155,12 +147,7 @@ body {
 }
 
 .theme-gradient-text {
-  background: linear-gradient(
-    to right,
-    var(--chakra-colors-purple) 10%,
-    var(--chakra-colors-cyan) 50%,
-    var(--chakra-colors-cyan) 100%
-  );
+  background: linear-gradient(90.4deg, #ffffff 0.35%, #8f68ef 101.19%);
   -webkit-background-clip: text;
   color: transparent;
 }
@@ -173,14 +160,18 @@ body {
   );
 }
 
+.connect-button-gradient {
+  background: linear-gradient(93.94deg, #9069f0 3.22%, #4a14cd 101.67%);
+}
+
 td,
-th {
+tr {
   border-color: var(--chakra-colors-bg) !important;
-  vertical-align: top;
+  border-bottom: 1px solid var(--chakra-colors-color_3) !important;
 }
 
 th {
-  color: var(--chakra-colors-color2Text) !important;
+  border-bottom: none !important;
 }
 
 .orange {

@@ -1,5 +1,5 @@
 import CONSTANTS from '@/constants';
-import strkfarmLogo from '@public/logo.png';
+import trovesLogo from '@public/logo.png';
 import { atom } from 'jotai';
 import { atomWithQuery, AtomWithQueryResult } from 'jotai-tanstack-query';
 import { IDapp } from './IDapp.store';
@@ -12,10 +12,10 @@ import {
   PoolType,
   ProtocolAtoms,
 } from './pools';
+import { getLiveStatusEnum } from '@/utils/strategyStatus';
 import { IInvestmentFlow } from '@strkfarm/sdk';
-import { getLiveStatusEnum } from '@/strategies/IStrategy';
 
-export interface STRKFarmStrategyAPIResult {
+export interface TrovesStrategyAPIResult {
   name: string;
   id: string;
   apy: number;
@@ -57,13 +57,13 @@ export interface STRKFarmStrategyAPIResult {
   investmentFlows: IInvestmentFlow[];
 }
 
-export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
-  name = 'STRKFarm';
-  logo = strkfarmLogo.src;
+export class Troves extends IDapp<TrovesStrategyAPIResult> {
+  name = 'Troves';
+  logo = trovesLogo.src;
   incentiveDataKey = '';
 
   _computePoolsInfo(data: any) {
-    const rawPools: STRKFarmStrategyAPIResult[] = data.strategies;
+    const rawPools: TrovesStrategyAPIResult[] = data.strategies;
     const pools: PoolInfo[] = [];
     return rawPools.map((rawPool) => {
       const poolName = rawPool.name;
@@ -77,7 +77,7 @@ export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
         rewardsApy.push({
           apr: rawPool.apySplit.rewardsApy,
           title: 'Rewards APY',
-          description: 'Incentives by STRKFarm',
+          description: 'Incentives by Troves',
         });
       }
 
@@ -121,7 +121,7 @@ export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
   }
 
   getBaseAPY(p: PoolInfo, data: AtomWithQueryResult<any, Error>) {
-    const aprData: STRKFarmStrategyAPIResult[] = data.data.strategies;
+    const aprData: TrovesStrategyAPIResult[] = data.data.strategies;
     let baseAPY: number | 'Err' = 'Err';
     let splitApr: APRSplit | null = null;
     const metadata: PoolMetadata | null = null;
@@ -144,31 +144,31 @@ export class STRKFarm extends IDapp<STRKFarmStrategyAPIResult> {
   }
 }
 
-export const STRKFarmBaseAPYsAtom = atomWithQuery((get) => ({
-  queryKey: ['strkfarm_base_aprs'],
+export const TrovesBaseAPYsAtom = atomWithQuery((get) => ({
+  queryKey: ['troves_base_aprs'],
   queryFn: async ({
     queryKey,
   }): Promise<{
-    strategies: STRKFarmStrategyAPIResult[];
+    strategies: TrovesStrategyAPIResult[];
   }> => {
-    const response = await fetch(`${CONSTANTS.STRKFarm.BASE_APR_API}`);
+    const response = await fetch(`${CONSTANTS.Troves.BASE_APR_API}`);
     const data = await response.json();
     return data;
   },
 }));
 
-export const strkfarm = new STRKFarm();
-const STRKFarmAtoms: ProtocolAtoms = {
-  baseAPRs: STRKFarmBaseAPYsAtom,
+export const troves = new Troves();
+const TrovesAtoms: ProtocolAtoms = {
+  baseAPRs: TrovesBaseAPYsAtom,
   pools: atom((get) => {
     const empty: PoolInfo[] = [];
-    if (!STRKFarmAtoms.baseAPRs) return empty;
-    const baseInfo = get(STRKFarmAtoms.baseAPRs);
+    if (!TrovesAtoms.baseAPRs) return empty;
+    const baseInfo = get(TrovesAtoms.baseAPRs);
     if (baseInfo.data) {
-      const pools = strkfarm._computePoolsInfo(baseInfo.data);
-      return strkfarm.addBaseAPYs(pools, baseInfo);
+      const pools = troves._computePoolsInfo(baseInfo.data);
+      return troves.addBaseAPYs(pools, baseInfo);
     }
     return empty;
   }),
 };
-export default STRKFarmAtoms;
+export default TrovesAtoms;

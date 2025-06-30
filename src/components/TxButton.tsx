@@ -1,5 +1,10 @@
+import { useIsMobile } from '@/hooks/use-mobile';
 import { referralCodeAtom } from '@/store/referral.store';
 import { StrategyTxProps, monitorNewTxAtom } from '@/store/transactions.atom';
+import {
+  TrovesBaseAPYsAtom,
+  TrovesStrategyAPIResult,
+} from '@/store/troves.atoms';
 import { IStrategyProps, TokenInfo } from '@/strategies/IStrategy';
 import { getReferralUrl } from '@/utils';
 import {
@@ -19,7 +24,6 @@ import { useAccount, useSendTransaction } from '@starknet-react/core';
 import { useAtomValue, useSetAtom } from 'jotai';
 import mixpanel from 'mixpanel-browser';
 import { useEffect, useMemo } from 'react';
-import { isMobile } from 'react-device-detect';
 import { TwitterShareButton } from 'react-share';
 import { Call } from 'starknet';
 
@@ -41,11 +45,11 @@ export default function TxButton(props: TxButtonProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const referralCode = useAtomValue(referralCodeAtom);
 
+  const isMobile = useIsMobile();
+
   const disabledStyle = {
-    bg: 'var(--chakra-colors-disabled_bg)',
-    color: 'var(--chakra-colors-disabled_text)',
-    borderColor: 'var(--chakra-colors-disabled_bg)',
-    borderWidth: '1px',
+    bg: 'mycard_light',
+    color: 'disabled_text',
   };
 
   const {
@@ -76,7 +80,9 @@ export default function TxButton(props: TxButtonProps) {
       mixpanel.track('Transaction success', {
         strategyId: props.txInfo.strategyId,
         actionType: props.txInfo.actionType,
-        amount: props.txInfo.amount.toEtherToFixedDecimals(6),
+        amount: Number.isNaN(props.txInfo.amount.toString())
+          ? 0
+          : props.txInfo.amount.toEtherToFixedDecimals(6),
         tokenAddr: props.txInfo.tokenAddr,
         status: 'success',
         createdAt: new Date(),
@@ -87,7 +93,9 @@ export default function TxButton(props: TxButtonProps) {
       mixpanel.track('Transaction failed', {
         strategyId: props.txInfo.strategyId,
         actionType: props.txInfo.actionType,
-        amount: props.txInfo.amount.toEtherToFixedDecimals(6),
+        amount: Number.isNaN(props.txInfo.amount.toString())
+          ? 0
+          : props.txInfo.amount.toEtherToFixedDecimals(6),
         tokenAddr: props.txInfo.tokenAddr,
         status: 'failed',
         createdAt: new Date(),
@@ -103,9 +111,17 @@ export default function TxButton(props: TxButtonProps) {
       if (!address) return props.text;
       return '';
     }
-    if (!address) return 'Wallet not connected';
+    if (!address) return 'Connect wallet to continue';
     return '';
   }, [isMobile, address, props]);
+
+  const strategiesInfo = useAtomValue(TrovesBaseAPYsAtom);
+  const strategyCached = useMemo(() => {
+    if (!strategiesInfo || !strategiesInfo.data) return null;
+    const strategiesList: TrovesStrategyAPIResult[] =
+      strategiesInfo.data.strategies;
+    return strategiesList.find((s: any) => s.id === props.strategy?.id);
+  }, [strategiesInfo, props.strategy?.id]);
 
   async function handleButton() {
     writeAsync().then((tx) => {
@@ -123,6 +139,8 @@ export default function TxButton(props: TxButtonProps) {
   if (disabledText) {
     return (
       <Button
+        fontSize={'14px'}
+        fontWeight={'700'}
         _disabled={{
           ...disabledStyle,
         }}
@@ -148,10 +166,9 @@ export default function TxButton(props: TxButtonProps) {
         <ModalContent borderRadius=".5rem" maxW="32rem">
           <ModalCloseButton color="white" />
           <ModalBody
-            backgroundColor={'var(--chakra-colors-highlight)'}
+            backgroundColor={'var(--chakra-colors-purple)'}
             pt="4rem"
             pb="3rem"
-            border="1px solid var(--chakra-colors-color2_65p)"
             borderRadius=".5rem"
             color="white"
             display="flex"
@@ -165,8 +182,8 @@ export default function TxButton(props: TxButtonProps) {
             </Text>
 
             <Text textAlign="center" fontWeight="500">
-              While your deposit is being processed, if you like STRKFarm, do
-              you mind sharing on X/Twitter?
+              While your deposit is being processed, if you like Troves, do you
+              mind sharing on X/Twitter?
             </Text>
 
             <Box
@@ -182,8 +199,8 @@ export default function TxButton(props: TxButtonProps) {
             >
               <TwitterShareButton
                 url={`${getReferralUrl(referralCode)}`}
-                title={`🚀I just invested my ${props.selectedMarket?.name ?? ''} in the high-yield  "${props.strategy?.name ?? ''}" strategy at @strkfarm, earning an impressive ${((props.strategy?.netYield || 0) * 100).toFixed(2)}% yield! 💸. \n\nWant in? Join me and start earning: `}
-                related={['strkfarm']}
+                title={`🚀I just invested my ${props.selectedMarket?.name ?? ''} in the  "${props.strategy?.name ?? ''}" strategy at @trovesfi, earning an impressive ${((props.strategy?.netYield || strategyCached?.apy || 0) * 100).toFixed(2)}% yield! 💸. \n\nWant in? Join me and start earning: `}
+                related={['troves']}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -214,15 +231,19 @@ export default function TxButton(props: TxButtonProps) {
 
       <Box width={'100%'} textAlign={'center'}>
         <Button
-          color={'white'}
+          color={'black'}
           bg="purple"
           variant={'ghost'}
           width={'100%'}
           _active={{
-            bg: 'var(--chakra-colors-color2)',
+            bg: 'var(--chakra-colors-bright_purple)',
           }}
           _hover={{
-            bg: 'var(--chakra-colors-color2)',
+            bg: 'var(--chakra-colors-bright_purple)',
+          }}
+          _disabled={{
+            bg: 'disabled_button',
+            color: 'disabled_button_text',
           }}
           onClick={async () => {
             mixpanel.track('Click strategy button', {

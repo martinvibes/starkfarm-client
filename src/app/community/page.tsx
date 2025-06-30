@@ -204,6 +204,7 @@ const CommunityPage = () => {
               variant="outline"
               border="1px"
               borderRadius="5px"
+              color={'white'}
               zIndex={1}
               _before={{
                 content: `""`,
@@ -224,10 +225,10 @@ const CommunityPage = () => {
                 zIndex: -1,
               }}
               _hover={{
-                bg: 'color2_50p',
+                bg: 'mycard',
               }}
             >
-              <Text className="theme-gradient-text">Know more</Text>
+              <Text>Know more</Text>
             </Button>
           </Link>
         </Box>
@@ -274,7 +275,7 @@ const CommunityPage = () => {
                 </Button>
               </Box>
               <Link
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I am proud to be part of @strkfarm community. They are issuing points and NFTs for their active users.\n\nJoin using my referral link:')}%20https://${getHosturl()}/r/${referralCode}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I am proud to be part of @trovesfi community. They are issuing points and NFTs for their active users.\n\nJoin using my referral link:')}%20https://${getHosturl()}/r/${referralCode}`}
                 isExternal={true}
               >
                 <Button
@@ -493,7 +494,7 @@ const CommunityPage = () => {
 
             <Box>
               <Link
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I just claimed my Limited Edition OG Farmer NFT on @STRKFarm! Have you gotten yours yet? You might still be eligible, don’t miss out!')}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('I just claimed my Limited Edition OG Farmer NFT on @trovesfi! Have you gotten yours yet? You might still be eligible, don’t miss out!')}`}
                 isExternal={true}
                 _hover={{
                   textDecoration: 'none',
@@ -506,10 +507,11 @@ const CommunityPage = () => {
                   padding={{ base: '5px 10px', md: '10px' }}
                   fontSize={{ md: '14px' }}
                   background="white"
-                  color="black"
+                  color="white"
+                  bg="purple"
                   borderRadius="5px"
                   _hover={{
-                    bg: 'color1_50p',
+                    bg: 'purple',
                     color: 'white',
                   }}
                 >

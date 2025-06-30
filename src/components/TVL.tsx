@@ -2,6 +2,7 @@ import { addressAtom } from '@/store/claims.atoms';
 import { referralCodeAtom } from '@/store/referral.store';
 import { strategiesAtom } from '@/store/strategies.atoms';
 import { dAppStatsAtom, userStatsAtom } from '@/store/utils.atoms';
+import { MYSTYLES } from '@/style';
 import { copyReferralLink, getHosturl } from '@/utils';
 import { CopyIcon } from '@chakra-ui/icons';
 import {
@@ -40,14 +41,23 @@ const TVL: React.FC = () => {
   return (
     <Grid
       templateColumns={{ base: 'repeat(1, 1, 1fr)', md: 'repeat(3, 1fr)' }}
-      gap="6"
+      gap="2"
       width="100%"
     >
       <GridItem display="flex">
-        <Card width="100%" padding={'15px 30px'} color="white" bg="color2_50p">
+        <Card
+          width={'100%'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
+        >
           <Stat>
-            <StatLabel>Total Value locked (TVL)</StatLabel>
-            <StatNumber>
+            <StatLabel {...MYSTYLES.TEXT.H2Label}>
+              Total Value locked (TVL)
+            </StatLabel>
+            <StatNumber {...MYSTYLES.TEXT.H1Label}>
               $
               {isPending ? (
                 <Spinner size="sm" color="white" marginLeft={'5px'} />
@@ -62,17 +72,24 @@ const TVL: React.FC = () => {
       </GridItem>
 
       <GridItem display="flex">
-        <Card width="100%" padding={'15px 30px'} color="white" bg="color2_50p">
+        <Card
+          width={'100%'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
+        >
           <Stat>
-            <StatLabel>Your holdings</StatLabel>
-            <StatNumber>
+            <StatLabel {...MYSTYLES.TEXT.H2Label}>Your holdings</StatLabel>
+            <StatNumber {...MYSTYLES.TEXT.H1Label}>
               $
               {userStatsPending ? (
                 <Spinner size="sm" color="white" marginLeft={'5px'} />
               ) : !userData ? (
                 0
               ) : (
-                Number(userData?.holdingsUSD.toFixed(2)).toLocaleString()
+                Number(userData?.holdingsUSD?.toFixed(2)).toLocaleString()
               )}
             </StatNumber>
           </Stat>
@@ -80,9 +97,16 @@ const TVL: React.FC = () => {
       </GridItem>
 
       <GridItem display="flex">
-        <Card width="100%" padding={'15px 30px'} color="white" bg="purple">
+        <Card
+          width={'100%'}
+          padding={'15px 30px'}
+          color={'white'}
+          bg={'mycard'}
+          // borderWidth={'1px'}
+          // borderColor={'color_3'}
+        >
           <Stat>
-            <StatLabel fontWeight={'bold'}>
+            <StatLabel {...MYSTYLES.TEXT.H2Label}>
               Your referral link{' '}
               <Tooltip label="Learn more">
                 {/* TODO: update the url */}
@@ -104,20 +128,20 @@ const TVL: React.FC = () => {
                   <Spinner size="sm" color="white" marginTop={'8px'} />
                 ) : (
                   <StatNumber
-                    fontSize="1.5rem"
                     textDecoration="underline"
                     fontWeight="600"
                     cursor={'pointer'}
                     onClick={() => {
                       copyReferralLink(referralCode);
                     }}
+                    {...MYSTYLES.TEXT.H1Label}
                   >
                     {referralCode}
                   </StatNumber>
                 )
               ) : (
                 <Tooltip label="Connect wallet">
-                  <StatNumber fontSize="1.5rem" fontWeight="600">
+                  <StatNumber fontSize={{ base: '20px' }} fontWeight="600">
                     -
                   </StatNumber>
                 </Tooltip>

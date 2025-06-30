@@ -1,22 +1,15 @@
-import strkfarmLogo from '@public/logo.png';
+import trovesLogo from '@public/logo.png';
 import { atom } from 'jotai';
 import CarmineAtoms, { carmine } from './carmine.store';
 import EkuboAtoms, { ekubo } from './ekobu.store';
 import EndurAtoms, { endur } from './endur.store';
-import HaikoAtoms, { haiko } from './haiko.store';
-import HashstackAtoms, { hashstack } from './hashstack.store';
-import MySwapAtoms, { mySwap } from './myswap.store';
 import NostraDegenAtoms, { nostraDegen } from './nostradegen.store';
 import NostraDexAtoms, { nostraDex } from './nostradex.store';
 import NostraLendingAtoms, { nostraLending } from './nostralending.store';
 import { Category, isPoolRetired, PoolInfo, PoolType } from './pools';
-import STRKFarmAtoms, {
-  strkfarm,
-  STRKFarmStrategyAPIResult,
-} from './strkfarm.atoms';
+import { getLiveStatusEnum } from '@/utils/strategyStatus';
+import TrovesAtoms, { troves, TrovesStrategyAPIResult } from './troves.atoms';
 import VesuAtoms, { vesu } from './vesu.store';
-import ZkLendAtoms, { zkLend } from './zklend.store';
-import { getLiveStatusEnum } from '@/strategies/IStrategy';
 
 export const getProtocols = () => [
   {
@@ -25,9 +18,9 @@ export const getProtocols = () => [
     atoms: EndurAtoms,
   },
   {
-    name: strkfarm.name,
-    class: strkfarm,
-    atoms: STRKFarmAtoms,
+    name: troves.name,
+    class: troves,
+    atoms: TrovesAtoms,
   },
   {
     name: ekubo.name,
@@ -39,21 +32,11 @@ export const getProtocols = () => [
   //   class: jedi,
   //   atoms: JediAtoms,
   // },
-  {
-    name: mySwap.name,
-    class: mySwap,
-    atoms: MySwapAtoms,
-  },
   // {
   //   name: tenkswap.name,
   //   class: tenkswap,
   //   atoms: TenkSwapAtoms,
   // },
-  {
-    name: haiko.name,
-    class: haiko,
-    atoms: HaikoAtoms,
-  },
   {
     name: nostraDex.name,
     class: nostraDex,
@@ -80,19 +63,9 @@ export const getProtocols = () => [
   //   atoms: SithswapAtoms,
   // },
   {
-    name: zkLend.name,
-    class: zkLend,
-    atoms: ZkLendAtoms,
-  },
-  {
     name: nostraLending.name,
     class: nostraLending,
     atoms: NostraLendingAtoms,
-  },
-  {
-    name: hashstack.name,
-    class: hashstack,
-    atoms: HashstackAtoms,
   },
   {
     name: vesu.name,
@@ -177,7 +150,7 @@ export const allPoolsAtomUnSorted = atom((get) => {
 });
 
 export function getPoolInfoFromStrategy(
-  strat: STRKFarmStrategyAPIResult,
+  strat: TrovesStrategyAPIResult,
 ): PoolInfo {
   const category = [Category.Others];
   if (strat.name.includes('STRK')) {
@@ -194,9 +167,9 @@ export function getPoolInfoFromStrategy(
       logos: [...strat.logos],
     },
     protocol: {
-      name: 'STRKFarm',
+      name: 'Troves',
       link: `/strategy/${strat.id}`,
-      logo: strkfarmLogo.src,
+      logo: trovesLogo.src,
     },
     tvl: strat.tvlUsd,
     apr: strat.apy,
@@ -230,7 +203,7 @@ export function getPoolInfoFromStrategy(
     item.aprSplits.push({
       apr: strat.apySplit.rewardsApy,
       title: 'Rewards APY',
-      description: 'Additional incentives by STRKFarm',
+      description: 'Additional incentives by Troves',
     });
   }
   return item;
